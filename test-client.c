@@ -8,84 +8,84 @@
 #include <unistd.h>
 
 
-#include "client.h" 
+#include "client.h"
 
 // compile with gcc -Wall -g -o sock ./test-client.c -lwebsockets
 
 
 // =====================================================================================================================================
-//	Start of function definition  
+//	Start of function definition
 // =====================================================================================================================================
 
-// Caught on CTRL C 
+// Caught on CTRL C
 void sighandler(int sig)
 {
 	forceExit = 1;
 }
 
-/** 
+/**
 \brief Allocate a packet structure and initialise it.
 \param none
-\return pointer to new allocated packet 
-****************************************************************************************************************************/ 
-t_packet *allocatePacket() 
+\return pointer to new allocated packet
+****************************************************************************************************************************/
+t_packet *allocatePacket()
 {
-	t_packet *tmp; 
-	
-	if ((tmp=malloc(sizeof(t_packet))) == NULL ) return NULL; 
-	memset(tmp,0,sizeof(t_packet)); 
-	return tmp; 
+	t_packet *tmp;
+
+	if ((tmp=malloc(sizeof(t_packet))) == NULL ) return NULL;
+	memset(tmp,0,sizeof(t_packet));
+	return tmp;
 }
 
-/** 
-\brief Add a packet to the list of packet to be sent 
-\param wsi websocket descriptor 
-\param buf buffer to be sent 
-\param len length of packet  
-\return pointer to new allocated packet 
-****************************************************************************************************************************/ 
-int sendCommand(struct lws *wsi,unsigned char *buf,unsigned int len) 
+/**
+\brief Add a packet to the list of packet to be sent
+\param wsi websocket descriptor
+\param buf buffer to be sent
+\param len length of packet
+\return pointer to new allocated packet
+****************************************************************************************************************************/
+int sendCommand(struct lws *wsi,unsigned char *buf,unsigned int len)
 {
-	t_packet *tmp,*list=packetList; 
-		
-	if (len > MAXLEN ) return -1; 
-	if ((tmp=allocatePacket()) == NULL ) return -1; 
-	memcpy(&(tmp->buf)[LWS_PRE],buf,len); 
-	tmp->len=len; 
-	if (packetList == NULL ) 
-		packetList=tmp; 
+	t_packet *tmp,*list=packetList;
+
+	if (len > MAXLEN ) return -1;
+	if ((tmp=allocatePacket()) == NULL ) return -1;
+	memcpy(&(tmp->buf)[LWS_PRE],buf,len);
+	tmp->len=len;
+	if (packetList == NULL )
+		packetList=tmp;
 	else {
 		while (list && list->next) {
-			list=list->next; 
+			list=list->next;
 		}
-		list->next=tmp; 
-	}	
+		list->next=tmp;
+	}
 	lws_callback_on_writable(wsi);
-	return 1;  
+	return 1;
 }
 
 
-/****************************************************************************************************************************/ 
+/****************************************************************************************************************************/
 int writePacket(struct lws *wsi)
-{	
-	t_packet *tmp=packetList; 
-	int ret; 
+{
+	t_packet *tmp=packetList;
+	int ret;
 
-	if (packetList == NULL ) return 0; 
+	if (packetList == NULL ) return 0;
 
-	packetList=tmp->next; 	
+	packetList=tmp->next;
 	ret=lws_write(wsi,&(tmp->buf)[LWS_PRE],tmp->len,LWS_WRITE_BINARY);
 	free(tmp);
-	lws_callback_on_writable(wsi);  
-	return(ret);  
+	lws_callback_on_writable(wsi);
+	return(ret);
 }
 
-/****************************************************************************************************************************/ 
+/****************************************************************************************************************************/
 
 static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len)
 {
-	static unsigned int offset=0; 
-	static unsigned char rbuf[MAXLEN]; 
+	static unsigned int offset=0;
+	static unsigned char rbuf[MAXLEN];
 
 	switch (reason) {
 	case LWS_CALLBACK_CLIENT_ESTABLISHED:
@@ -93,24 +93,26 @@ static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void 
 		break;
 
  	case LWS_CALLBACK_CLIENT_WRITEABLE:
-		if (writePacket(wsi) < 0 ) forceExit=1; 	
+		if (writePacket(wsi) < 0 ) forceExit=1;
 		break;
 
 	case LWS_CALLBACK_CLIENT_RECEIVE:
-		// we have receive some data, check if it can be written in static allocated buffer (length) 
+		// we have receive some data, check if it can be written in static allocated buffer (length)
 
 		if (offset + len < MAXLEN ) {
-			memcpy(rbuf+offset,in,len); 
+			memcpy(rbuf+offset,in,len);
 			offset+=len;
-			// we have receive some data, check with websocket API if this is a final fragment 
+			// we have receive some data, check with websocket API if this is a final fragment
 			if (lws_is_final_fragment(wsi)) {
-				// call recv function here 
-				offset=0; 
-			} 
-		} else {	// length is too long... get others but ignore them... 
+
+				print("SUCCESS !");
+				// call recv function here
+				offset=0;
+			}
+		} else {	// length is too long... get others but ignore them...
 			offset=MAXLEN;
-		 	if ( lws_is_final_fragment(wsi) ) { 
-				offset=0; 	
+		 	if ( lws_is_final_fragment(wsi) ) {
+				offset=0;
 			}
 		}
 		break;
@@ -135,7 +137,7 @@ static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void 
 	return 0;
 }
 
-/****************************************************************************************************************************/ 
+/****************************************************************************************************************************/
 int main(int argc, char **argv)
 {
 	int n = 0;
@@ -152,20 +154,18 @@ int main(int argc, char **argv)
 	if (argc < 2)
 		goto usage;
 
+	i.origin = "agar.io";
 
 	while (n >= 0) {
-		n = getopt(argc, argv, "hsp:P:o:");
+		n = getopt(argc, argv, "hsp:P:");
 		if (n < 0)
 			continue;
 		switch (n) {
 		case 's':
-			i.ssl_connection = 2; 
+			i.ssl_connection = 2;
 			break;
 		case 'p':
 			i.port = atoi(optarg);
-			break;
-		case 'o':
-			i.origin = optarg;
 			break;
 		case 'P':
 			info.http_proxy_address = optarg;
@@ -175,7 +175,7 @@ int main(int argc, char **argv)
 		}
 	}
 
-	srandom(time(NULL)); 
+	srandom(time(NULL));
 
 	if (optind >= argc)
 		goto usage;
@@ -193,7 +193,7 @@ int main(int argc, char **argv)
 	i.host = i.address;
 	i.ietf_version_or_minus_one = -1;
 	i.client_exts = NULL;
-	i.path="/"; 
+	i.path="/";
 
 	info.port = CONTEXT_PORT_NO_LISTEN;
 	info.protocols = protocols;
@@ -207,21 +207,21 @@ int main(int argc, char **argv)
 	}
 
 	i.context = context;
-	
+
 	if (lws_client_connect_via_info(&i)); // just to prevent warning !!
 
-	forceExit=0; 
-	// the main magic here !! 
+	forceExit=0;
+	// the main magic here !!
 	while (!forceExit) {
 		lws_service(context, 1000);
 	}
-	// if there is some errors, we just quit  
+	// if there is some errors, we just quit
 	lwsl_err("Exiting\n");
 	lws_context_destroy(context);
 
 	return 0;
 
 usage:
-	fprintf(stderr, "Usage: ogar-client -h -s -p <port> -P <proxy> -o <origin>  <server address> \n");
+	fprintf(stderr, "Usage: ogar-client -h -s -p <port> -P <proxy> <server address> \n");
 	return 1;
 }
