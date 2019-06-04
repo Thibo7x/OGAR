@@ -33,5 +33,5 @@ struct lws_protocols protocols[] = {
 static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len);
 
 typedef struct bot{
-    int ID;
+    unsigned char ID;
 } bot;

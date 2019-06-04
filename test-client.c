@@ -91,7 +91,7 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 			break;
 			case 0x20:
 			//Add Node Message, on récupère l'ID de notre bot
-			bot.ID = rbuf[1];
+			
 			break;
 			default:
 			break;
