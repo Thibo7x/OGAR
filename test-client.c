@@ -121,12 +121,34 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 					printf("CoordY : %u", node->coordY);
 					printf("couleur : %s", couleur);
 				}
+
+				moveBot(wsi, 0,0);
 			break;
 
 			default:
 			break;
 		}
 }
+
+void moveBot(struct lws* wsi,unsigned int coordX,unsigned int coordY)
+{
+	char buffer[13];
+	buffer[0] = 0x10;
+  sprintf(buffer+1,"%c",coordX%16);
+	sprintf(buffer+2,"%c",(coordX%256)/16);
+	sprintf(buffer+3,"%c",(coordX%4096)/256);
+	sprintf(buffer+4,"%c",coordX/4096);
+	sprintf(buffer+5,"%c",(coordY)%16);
+	sprintf(buffer+6,"%c",(coordY%256)/16);
+	sprintf(buffer+7,"%c",(coordY%4096)/256);
+	sprintf(buffer+8,"%c",coordY/4096);
+	buffer[9] = 0x00;
+	buffer[10] = 0x00;
+	buffer[11] = 0x00;
+	buffer[12] = 0x00;
+	sendCommand(wsi,(unsigned char *)buffer,sizeof(buffer));
+}
+
 
 int idColor(char* couleur){
 	if (!strcmp(couleur,"red")){

@@ -52,5 +52,6 @@ typedef struct rencontre {
     unsigned int coordY;
     char couleur[7];
 } rencontre;
+void moveBot(struct lws* wsi,unsigned int coordX,unsigned int coordY);
 
 static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len);
