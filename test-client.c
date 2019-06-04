@@ -82,20 +82,35 @@ int writePacket(struct lws *wsi)
 
 void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 {
-	static unsigned char nickname[] = {0x0,0x62,0x6c,0x75,0x65,0x0};
 		switch (rbuf[0]) {
 			case 0x12:
 			//Q On Command, on répond avec le Nickname
 			printf("SUCCESS\n" );
-			sendCommand(wsi,nickname,sizeof(nickname));
+			sendCommand(wsi,BLUE_ASCII,sizeof(BLUE_ASCII));
 			break;
 			case 0x20:
 			//Add Node Message, on récupère l'ID de notre bot
-			
+			//MANQUE A ENREGISTRER L'ID DU BOT DANS BOT.ID
 			break;
 			default:
 			break;
 		}
+}
+
+char* chooseColor(char* couleur){
+	if (strcmp(couleur,"blue"))
+		return BLUE_ASCII;
+	if (strcmp(couleur,"yellow"))
+		return YELLOW_ASCII;
+	if (strcmp(couleur,"green"))
+		return GREEN_ASCII;
+	if (strcmp(couleur,"red"))
+		return RED_ASCII;
+	if (strcmp(couleur,"cyan"))
+		return CYAN_ASCII;
+	if (strcmp(couleur,"purple"))
+		return PURPLE_ASCII;
+	return "PROBLEME";
 }
 
 /****************************************************************************************************************************/
@@ -175,7 +190,7 @@ int main(int argc, char **argv)
 
 	struct lws_context_creation_info info;
 	struct lws_client_connect_info i;
-	char* couleur;
+	static char* couleur;
 	struct lws_context *context;
 	const char *protocol,*temp;
 
