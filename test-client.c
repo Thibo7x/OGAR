@@ -86,10 +86,14 @@ static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void 
 {
 	static unsigned int offset=0;
 	static unsigned char rbuf[MAXLEN];
+  static unsigned char slt[] = {0xff,0x0,0x0,0x0,0x0};
+	static unsigned char slt2[] = {0xfe,0x0d,0x0,0x0,0x0};
 
 	switch (reason) {
 	case LWS_CALLBACK_CLIENT_ESTABLISHED:
 		fprintf(stderr, "ogar: LWS_CALLBACK_CLIENT_ESTABLISHED\n");
+		sendCommand(wsi,slt, sizeof(slt));
+		sendCommand(wsi,slt2, sizeof(slt2));
 		break;
 
  	case LWS_CALLBACK_CLIENT_WRITEABLE:
