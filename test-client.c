@@ -82,7 +82,7 @@ int writePacket(struct lws *wsi)
 
 void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 {
-
+	unsigned char *reader_c = rbuf+3;
 		switch (rbuf[0]) {
 			case 0x12:
 			//Q On Command, on répond avec le Nickname
@@ -95,7 +95,32 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 			break;
 
 			case 0x10:
-			int nb_nodes = len
+				while ( (*reader_c != 0) || (*(reader_c+1) != 0) )
+				{
+					rencontre *node = malloc(sizeof(node));
+					node->ID = (*reader_c); // ID
+					reader_c += 4;
+					node->coordX = (unsigned int)(*reader_c) + 16*((unsigned int)*(reader_c+1)) + 256*((unsigned int)*(reader_c+2)) + 4096*((unsigned int)*(reader_c+3)); // CoordX
+					reader_c += 4;
+					node->coordY = (unsigned int)(*reader_c) + 16*((unsigned int)*(reader_c+1)) + 256*((unsigned int)*(reader_c+2)) + 4096*((unsigned int)*(reader_c+3)); // CoordY
+					reader_c += 3;
+					int i = 0; // Couleur
+					while (*(reader_c+i) != 00)
+					{
+						node->couleur[i] = *reader_c;
+						i++;
+					}
+					node->couleur[i] = '0'; // 00 final
+					i = 0;
+					while (*(reader_c+i) != '0') i++;
+					reader_c += (i+1);
+					free(node);
+
+					printf("NODE n°%c", node->ID);
+					printf("CoordX : %u", node->coordX);
+					printf("CoordY : %u", node->coordY);
+					printf("couleur : %s", couleur);
+				}
 			break;
 
 			default:

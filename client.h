@@ -41,15 +41,15 @@ struct lws_protocols protocols[] = {
 
 typedef struct bot {
     int ID;
-    int coordX;
-    int coordY;
+    unsigned int coordX;
+    unsigned int coordY;
 } bot;
 bot* chien;
 
 typedef struct rencontre {
     int ID;
-    int coordX;
-    int coordY;
+    unsigned int coordX;
+    unsigned int coordY;
     char couleur[7];
 } rencontre;
 
