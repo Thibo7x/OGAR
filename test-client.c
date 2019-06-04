@@ -86,7 +86,7 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 			case 0x12:
 			//Q On Command, on répond avec le Nickname
 			printf("SUCCESS\n" );
-			sendCommand(wsi,CODES_ASCII[1],sizeof(CODES_ASCII[1]));
+			sendCommand(wsi,CODES_ASCII[idColor(couleur)],CODES_ASCII_LENGTH[idColor(couleur)]);
 			break;
 			case 0x20:
 			//Add Node Message, on récupère l'ID de notre bot
@@ -189,7 +189,6 @@ int main(int argc, char **argv)
 
 	struct lws_context_creation_info info;
 	struct lws_client_connect_info i;
-	static char* couleur;
 	struct lws_context *context;
 	const char *protocol,*temp;
 
@@ -217,7 +216,6 @@ int main(int argc, char **argv)
 			break;
 		case 'n':
 		  couleur = optarg;
-			printf("%s\n",couleur);
 			break;
 		case 'h':
 			goto usage;
