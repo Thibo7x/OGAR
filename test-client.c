@@ -80,6 +80,22 @@ int writePacket(struct lws *wsi)
 	return(ret);
 }
 
+void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
+{
+	static unsigned char nickname[] = {0x0,0x62,0x6c,0x75,0x65,0x0};
+		switch (rbuf[0]) {
+			case 0x12:
+			//Q On Command, on répond avec le Nickname
+			printf("SUCCESS\n" );
+			sendCommand(wsi,nickname,sizeof(nickname));
+			break;
+
+			default:
+			break;
+
+		}
+}
+
 /****************************************************************************************************************************/
 
 static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len)
@@ -109,7 +125,7 @@ static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void 
 			// we have receive some data, check with websocket API if this is a final fragment
 			if (lws_is_final_fragment(wsi)) {
 
-				printf("SUCCESS !");
+				rcvFunction(wsi,rbuf,len);
 				// call recv function here
 				offset=0;
 			}
