@@ -39,8 +39,18 @@ struct lws_protocols protocols[] = {
 	}
 };
 
-static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len);
-
-typedef struct bot{
-    unsigned char ID;
+typedef struct bot {
+    int ID;
+    int coordX;
+    int coordY;
 } bot;
+bot* chien;
+
+typedef struct rencontre {
+    int ID;
+    int coordX;
+    int coordY;
+    char couleur[7];
+} rencontre;
+
+static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len);

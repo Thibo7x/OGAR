@@ -82,14 +82,22 @@ int writePacket(struct lws *wsi)
 
 void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 {
+
 		switch (rbuf[0]) {
 			case 0x12:
 			//Q On Command, on répond avec le Nickname
 			sendCommand(wsi,CODES_ASCII[idColor(couleur)],CODES_ASCII_LENGTH[idColor(couleur)]);
 			break;
+
 			case 0x20:
 			//Add Node Message, on récupère l'ID de notre bot
+			chien->ID = rbuf[1];
 			break;
+
+			case 0x10:
+			int nb_nodes = len
+			break;
+
 			default:
 			break;
 		}
@@ -220,7 +228,7 @@ int main(int argc, char **argv)
 			goto usage;
 		}
 	}
-
+  chien = malloc(sizeof(chien));
 	srandom(time(NULL));
 
 	if (optind >= argc)
@@ -264,7 +272,7 @@ int main(int argc, char **argv)
 	// if there is some errors, we just quit
 	lwsl_err("Exiting\n");
 	lws_context_destroy(context);
-
+  free(chien);
 	return 0;
 
 usage:
