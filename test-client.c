@@ -86,7 +86,7 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 			case 0x12:
 			//Q On Command, on répond avec le Nickname
 			printf("SUCCESS\n" );
-			sendCommand(wsi,BLUE_ASCII,sizeof(BLUE_ASCII));
+			sendCommand(wsi,CODES_ASCII[1],sizeof(CODES_ASCII[1]));
 			break;
 			case 0x20:
 			//Add Node Message, on récupère l'ID de notre bot
@@ -96,20 +96,20 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 		}
 }
 
-char* chooseColor(char* couleur){
-	if (strcmp(couleur,"blue"))
-		return BLUE_ASCII;
-	if (strcmp(couleur,"yellow"))
-		return YELLOW_ASCII;
-	if (strcmp(couleur,"green"))
-		return GREEN_ASCII;
+int idColor(char* couleur){
 	if (strcmp(couleur,"red"))
-		return RED_ASCII;
+		return 0;
+	if (strcmp(couleur,"blue"))
+		return 1;
+	if (strcmp(couleur,"green"))
+		return 2;
+	if (strcmp(couleur,"yellow"))
+		return 3;
 	if (strcmp(couleur,"cyan"))
-		return CYAN_ASCII;
+		return 4;
 	if (strcmp(couleur,"purple"))
-		return PURPLE_ASCII;
-	return "PROBLEME";
+		return 5;
+	return -1000;
 }
 
 /****************************************************************************************************************************/
