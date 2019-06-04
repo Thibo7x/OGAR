@@ -47,10 +47,10 @@ typedef struct bot {
 bot* chien;
 
 typedef struct rencontre {
-    int ID;
+    unsigned char ID;
     unsigned int coordX;
     unsigned int coordY;
-    char couleur[7];
+    unsigned char couleur[4];
 } rencontre;
 void moveBot(struct lws* wsi,unsigned int coordX,unsigned int coordY);
 

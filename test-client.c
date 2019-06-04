@@ -6,6 +6,7 @@
 #include <syslog.h>
 #include <sys/time.h>
 #include <unistd.h>
+#include <math.h>
 
 
 #include "client.h"
@@ -95,32 +96,43 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 			break;
 
 			case 0x10:
-				while ( (*reader_c != 0) || (*(reader_c+1) != 0) )
-				{
+				do{
 					rencontre *node = malloc(sizeof(node));
 					node->ID = (*reader_c); // ID
 					reader_c += 4;
-					node->coordX = (unsigned int)(*reader_c) + 16*((unsigned int)*(reader_c+1)) + 256*((unsigned int)*(reader_c+2)) + 4096*((unsigned int)*(reader_c+3)); // CoordX
-					reader_c += 4;
-					node->coordY = (unsigned int)(*reader_c) + 16*((unsigned int)*(reader_c+1)) + 256*((unsigned int)*(reader_c+2)) + 4096*((unsigned int)*(reader_c+3)); // CoordY
-					reader_c += 3;
-					int i = 0; // Couleur
-					while (*(reader_c+i) != 00)
+					int i;
+					node->coordX = 0;
+					node->coordX += (unsigned int)(*(reader_c) & 0x0F);
+					node->coordX += (unsigned int)((*(reader_c++) & 0xF0) >> 4)*16;
+					node->coordX += (unsigned int)(*(reader_c) & 0x0F)*256;
+					node->coordX += (unsigned int)((*(reader_c++) & 0xF0) >> 4) *4096;
+					 // CoordX
+					reader_c += 2;
+					node->coordY = 0;
+					node->coordY += (unsigned int)(*(reader_c) & 0x0F);
+					node->coordY += (unsigned int)((*(reader_c++) & 0xF0) >> 4)*16;
+					node->coordY += (unsigned int)(*(reader_c) & 0x0F)*256;
+					node->coordY += (unsigned int)((*(reader_c++) & 0xF0) >> 4) *4096;
+					reader_c += 5;
+					for (i = 0; i < 3; i++) // Couleur
 					{
-						node->couleur[i] = *reader_c;
-						i++;
+						node->couleur[i] = *(reader_c);
+						reader_c += 1;
 					}
-					node->couleur[i] = '0'; // 00 final
+					node->couleur[i] = '\0';
 					i = 0;
-					while (*(reader_c+i) != '0') i++;
+					while (*(reader_c+i) != 0x0) i++;
 					reader_c += (i+1);
-					free(node);
 
-					printf("NODE n°%c", node->ID);
-					printf("CoordX : %u", node->coordX);
-					printf("CoordY : %u", node->coordY);
-					printf("couleur : %s", couleur);
-				}
+
+					printf("NODE n°%x\n", node->ID);
+					printf("CoordX : %u\n", node->coordX);
+					printf("CoordY : %u\n", node->coordY);
+					printf("Couleur :%x", node->couleur[0]);
+					printf("%x", node->couleur[1]);
+					printf("%x\n", node->couleur[2]);
+					free(node);
+				} while ( (*reader_c != 0x0) || (*(reader_c+1) != 0x0) || (*(reader_c+2) != 0x0) || (*(reader_c+3) != 0x0) );
 
 				moveBot(wsi, 0,0);
 			break;
@@ -134,10 +146,12 @@ void moveBot(struct lws* wsi,unsigned int coordX,unsigned int coordY)
 {
 	char buffer[13];
 	buffer[0] = 0x10;
+	//CoordX
   sprintf(buffer+1,"%c",coordX%16);
 	sprintf(buffer+2,"%c",(coordX%256)/16);
 	sprintf(buffer+3,"%c",(coordX%4096)/256);
 	sprintf(buffer+4,"%c",coordX/4096);
+	//CoordY
 	sprintf(buffer+5,"%c",(coordY)%16);
 	sprintf(buffer+6,"%c",(coordY%256)/16);
 	sprintf(buffer+7,"%c",(coordY%4096)/256);
