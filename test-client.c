@@ -90,7 +90,6 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 			break;
 			case 0x20:
 			//Add Node Message, on récupère l'ID de notre bot
-			//MANQUE A ENREGISTRER L'ID DU BOT DANS BOT.ID
 			break;
 			default:
 			break;
@@ -272,6 +271,6 @@ int main(int argc, char **argv)
 	return 0;
 
 usage:
-	fprintf(stderr, "Usage: ogar-client -h -s -p <port> -P <proxy> <server address> \n");
+	fprintf(stderr, "Usage: ogar-client -h -s -p <port> -n <nickname> -P <proxy> <server address> \n");
 	return 1;
 }
