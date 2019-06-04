@@ -85,7 +85,6 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 		switch (rbuf[0]) {
 			case 0x12:
 			//Q On Command, on répond avec le Nickname
-			printf("SUCCESS\n" );
 			sendCommand(wsi,CODES_ASCII[idColor(couleur)],CODES_ASCII_LENGTH[idColor(couleur)]);
 			break;
 			case 0x20:
@@ -97,17 +96,17 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 }
 
 int idColor(char* couleur){
-	if (strcmp(couleur,"red"))
-		return 0;
-	if (strcmp(couleur,"blue"))
+	if (!strcmp(couleur,"red")){
+		return 0;}
+	if (!strcmp(couleur,"blue"))
 		return 1;
-	if (strcmp(couleur,"green"))
+	if (!strcmp(couleur,"green"))
 		return 2;
-	if (strcmp(couleur,"yellow"))
+	if (!strcmp(couleur,"yellow"))
 		return 3;
-	if (strcmp(couleur,"cyan"))
+	if (!strcmp(couleur,"cyan"))
 		return 4;
-	if (strcmp(couleur,"purple"))
+	if (!strcmp(couleur,"purple"))
 		return 5;
 	return -1000;
 }
