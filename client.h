@@ -32,15 +32,6 @@
 #define PURPLE_X_VIEW 400
 #define PURPLE_Y_VIEW 1600
 
-int initiateConnection(struct lws *wsi)
-{
-	static unsigned char bonjour[] = {0xff,0x0,0x0,0x0,0x0}; // 255
-	static unsigned char lets_go[] = {0xfe,0x0d,0x0,0x0,0x0}; // 254
-
-	sendCommand(wsi,bonjour, sizeof(bonjour));
-	sendCommand(wsi,lets_go, sizeof(lets_go));
-}
-
 static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len);
 
 int forceExit;
@@ -71,3 +62,7 @@ struct lws_protocols protocols[] = {
 };
 
 static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len);
+
+typedef struct bot{
+    int ID;
+} bot;

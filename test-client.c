@@ -89,10 +89,12 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 			printf("SUCCESS\n" );
 			sendCommand(wsi,nickname,sizeof(nickname));
 			break;
-
+			case 0x20:
+			//Add Node Message, on récupère l'ID de notre bot
+			bot.ID = rbuf[1];
+			break;
 			default:
 			break;
-
 		}
 }
 
@@ -105,6 +107,7 @@ int initiateConnection(struct lws *wsi)
 
 	sendCommand(wsi,bonjour, sizeof(bonjour));
 	sendCommand(wsi,lets_go, sizeof(lets_go));
+	return 0;
 }
 
 /****************************************************************************************************************************/
@@ -172,7 +175,7 @@ int main(int argc, char **argv)
 
 	struct lws_context_creation_info info;
 	struct lws_client_connect_info i;
-
+	char* couleur;
 	struct lws_context *context;
 	const char *protocol,*temp;
 
@@ -185,7 +188,7 @@ int main(int argc, char **argv)
 	i.origin = "agar.io";
 
 	while (n >= 0) {
-		n = getopt(argc, argv, "hsp:P:");
+		n = getopt(argc, argv, "hsp:P:n:");
 		if (n < 0)
 			continue;
 		switch (n) {
@@ -197,6 +200,10 @@ int main(int argc, char **argv)
 			break;
 		case 'P':
 			info.http_proxy_address = optarg;
+			break;
+		case 'n':
+		  couleur = optarg;
+			printf("%s\n",couleur);
 			break;
 		case 'h':
 			goto usage;
