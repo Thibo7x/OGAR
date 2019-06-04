@@ -81,6 +81,11 @@ int writePacket(struct lws *wsi)
 	return(ret);
 }
 
+unsigned int distance(unsigned int coordX1, unsigned int coordX2, unsigned int coordY1, unsigned int coordY2)
+{
+	return sqrt((coordX2-coordX1)*(coordX2-coordX1)+(coordY2-coordY1)*(coordY2-coordY1));
+}
+
 void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 {
 	unsigned char *reader_c = rbuf+3;
