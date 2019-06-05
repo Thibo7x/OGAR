@@ -1,10 +1,10 @@
 #!/bin/bash
 
-let "max = 10"
+read -r -p 'Nombre de bots: ' max
 let "length = 0"
-let "pas = 1"
+
 
 while [ $length -lt $max ]; do
 	./sock -p 2005 -n yellow 192.168.130.114 &
-	$length += 1
-done  
+	$length = $[$length+1]
+done
