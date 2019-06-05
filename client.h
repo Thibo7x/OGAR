@@ -72,7 +72,7 @@ struct node_view_borders
 	 float left;
 	 float top;
 	 float right;
-	 float bot;
+	 float bottom;
 };
 
 typedef struct node_effect_borders effect;
@@ -81,7 +81,7 @@ struct node_effect_borders
 	 float left;
 	 float top;
 	 float right;
-	 float bot;
+	 float bottom;
 };
 
 void correction(effect* border);

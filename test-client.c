@@ -477,27 +477,33 @@ usage:
 
 //Vérifie si un chien donné est loin/touche/dans un mouton donné. 2 si "dedans" 1 si "touche" 0 si "loin"
 //Pas encore effectif
-// unsigned int touch( bot* dog , effect* sheep_effect , bot* sheep)
+// unsigned int touch(effect* sheep_effect , bot* sheep)
 // {
-// 		unsigned int range = R_ACTION[idColor(dog->nickname)];
-// 		correction(sheep_effect , dog);
+// 		unsigned int range = R_ACTION[dog->color];
+// 		correction(sheep_effect);
 //
 // 		sheep_effect->left -= range;
 // 		sheep_effect->top -= range;
 // 		sheep_effect->right += range;
-// 		sheep_effect->bot += range;
+// 		sheep_effect->bottom += range;
 //
 //
-// 			if( (((dog->X < sheep_effect->right) && dog->Y > sheep_effect->top) || dog->X < sheep_effect->left)/**/ || /**/(((dog->X > sheep_effect->left && dog->Y < sheep_effect->bot) ||  dog->X > sheep_effect->right)))
-// 				{ return 2; }
-// 			if((dog->X > sheep_effect->left && dog->Y > sheep_effect->bot	&& dog->X < sheep_effect->right && dog->Y < sheep_effect->top))
-// 				{ return 0; }
+// 			if( (((dog->coordX < sheep_effect->right) && dog->coordY > sheep_effect->top) || dog->coordX < sheep_effect->left)/**/ || /**/(((dog->coordX > sheep_effect->left && dog->coordY < sheep_effect->bottom) ||  dog->coordX > sheep_effect->right)))
+// 				return 2;
+// 			if((dog->coordX > sheep_effect->left && dog->coordY > sheep_effect->bottom&& dog->coordX < sheep_effect->right && dog->coordY < sheep_effect->top))
+// 				return 0;
 // 			else
-// 				{	return 1; }
-//
-//
-//
+// 				return 1;
 // }
+
+unsigned int action_over_sheep(rencontre *sheep)
+{
+	unsigned int r_action = R_ACTION[dog->color];
+	if (distance(dog->coordX, dog->coordY, sheep->coordX, sheep->coordY) < r_action)
+		return 1;
+	else
+		return 0;
+}
 
 //correction de plage d'effet si on se trouve près du plafond ou près du mur de gauche.
 //Pas encore effectif
