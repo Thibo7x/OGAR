@@ -44,19 +44,23 @@ typedef struct coord {
   int X;
   int Y;
 } coord;
+coord* objectif;
+
+typedef struct coordF {
+  float X;
+  float Y;
+} coordF;
 
 typedef struct bot {
     int ID;
-    unsigned int coordX;
-    unsigned int coordY;
+    coord coord;
     unsigned int color;
 } bot;
 bot* dog;
 
 typedef struct rencontre {
     unsigned char ID;
-    unsigned int coordX;
-    unsigned int coordY;
+    coord coord;
     unsigned char couleur[4];
     struct rencontre *next;
 } rencontre;
@@ -66,8 +70,9 @@ rencontre* rechercherListeChainee(rencontre *firstNode, unsigned char id);
 rencontre* dechiffrageMessage(unsigned char* rbuf);
 void explore_chained_list(rencontre *firstNode);
 void moveBot(struct lws* wsi,unsigned int coordX,unsigned int coordY);
-unsigned int distance(unsigned int coordX1, unsigned int coordX2, unsigned int coordY1, unsigned int coordY2);
+int distance(int coordX1, int coordY1, int coordX2, int coordY2);
 static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len);
+coord circumvention(rencontre *sheep);
 
 
 

@@ -82,7 +82,7 @@ int writePacket(struct lws *wsi)
 }
 
 /****************************************************************************************************************************/
-unsigned int distance(unsigned int coordX1, unsigned int coordX2, unsigned int coordY1, unsigned int coordY2)
+int distance(int coordX1, int coordY1, int coordX2, int coordY2)
 {
 	return sqrt((coordX2-coordX1)*(coordX2-coordX1)+(coordY2-coordY1)*(coordY2-coordY1));
 }
@@ -122,34 +122,34 @@ void explore_chained_list(rencontre *firstNode)
 	{
 		if (!memcmp(viseur->couleur,"\xe6\xf0\xf0",3))
 		{
-			printf("Sheep à une distance de %d", distance(dog->coordX, dog->coordY, viseur->coordX, viseur->coordY));
+			printf("Sheep à une distance de %d", distance(dog->coord.X, dog->coord.Y, viseur->coord.X, viseur->coord.Y));
 		}
 		else if (!memcmp(viseur->couleur,"\x0\x0\xff",3))
 		{
-			printf("Blue à une distance de %d", distance(dog->coordX, dog->coordY, viseur->coordX, viseur->coordY));
+			printf("Blue à une distance de %d", distance(dog->coord.X, dog->coord.Y, viseur->coord.X, viseur->coord.Y));
 		}
 		else if (!memcmp(viseur->couleur,"\x0\xff\x0",3))
 		{
-			printf("Green à une distance de %d", distance(dog->coordX, dog->coordY, viseur->coordX, viseur->coordY));
+			printf("Green à une distance de %d", distance(dog->coord.X, dog->coord.Y, viseur->coord.X, viseur->coord.Y));
 		}
 		else if (!memcmp(viseur->couleur,"\xff\xff\x0",3))
 		{
-			printf("Yellow à une distance de %d", distance(dog->coordX, dog->coordY, viseur->coordX, viseur->coordY));
+			printf("Yellow à une distance de %d", distance(dog->coord.X, dog->coord.Y, viseur->coord.X, viseur->coord.Y));
 		}
 		else if (!memcmp(viseur->couleur,"\xff\x0\xff",3))
 		{
-			printf("Purple à une distance de %d", distance(dog->coordX, dog->coordY, viseur->coordX, viseur->coordY));
+			printf("Purple à une distance de %d", distance(dog->coord.X, dog->coord.Y, viseur->coord.X, viseur->coord.Y));
 		}
 		else if (!memcmp(viseur->couleur,"\x0\xff\xff",3))
 		{
-			printf("Cyan à une distance de %d", distance(dog->coordX, dog->coordY, viseur->coordX, viseur->coordY));
+			printf("Cyan à une distance de %d", distance(dog->coord.X, dog->coord.Y, viseur->coord.X, viseur->coord.Y));
 		}
 		else if (!memcmp(viseur->couleur,"\xff\x0\x0",3))
 		{
-			printf("Red à une distance de %d", distance(dog->coordX, dog->coordY, viseur->coordX, viseur->coordY));
+			printf("Red à une distance de %d", distance(dog->coord.X, dog->coord.Y, viseur->coord.X, viseur->coord.Y));
 		}
 		else {
-			printf("OVNI à une distance de %d", distance(dog->coordX, dog->coordY, viseur->coordX, viseur->coordY));
+			printf("OVNI à une distance de %d", distance(dog->coord.X, dog->coord.Y, viseur->coord.X, viseur->coord.Y));
 		}
 		printf("\n");
 		viseur = viseur->next;
@@ -193,18 +193,18 @@ rencontre* dechiffrageMessage(unsigned char* rbuf)
 		reader_c += 4;
 		int i;
 		// CoordX
-		node->coordX = 0;
-		node->coordX += (unsigned int)(*(reader_c) & 0x0F);
-		node->coordX += (unsigned int)((*(reader_c++) & 0xF0) >> 4)*16;
-		node->coordX += (unsigned int)(*(reader_c) & 0x0F)*256;
-		node->coordX += (unsigned int)((*(reader_c++) & 0xF0) >> 4) *4096;
+		node->coord.X = 0;
+		node->coord.X += (unsigned int)(*(reader_c) & 0x0F);
+		node->coord.X += (unsigned int)((*(reader_c++) & 0xF0) >> 4)*16;
+		node->coord.X += (unsigned int)(*(reader_c) & 0x0F)*256;
+		node->coord.X += (unsigned int)((*(reader_c++) & 0xF0) >> 4) *4096;
 		 // CoordY
 		reader_c += 2;
-		node->coordY = 0;
-		node->coordY += (unsigned int)(*(reader_c) & 0x0F);
-		node->coordY += (unsigned int)((*(reader_c++) & 0xF0) >> 4)*16;
-		node->coordY += (unsigned int)(*(reader_c) & 0x0F)*256;
-		node->coordY += (unsigned int)((*(reader_c++) & 0xF0) >> 4) *4096;
+		node->coord.Y = 0;
+		node->coord.Y += (unsigned int)(*(reader_c) & 0x0F);
+		node->coord.Y += (unsigned int)((*(reader_c++) & 0xF0) >> 4)*16;
+		node->coord.Y += (unsigned int)(*(reader_c) & 0x0F)*256;
+		node->coord.Y += (unsigned int)((*(reader_c++) & 0xF0) >> 4) *4096;
 		reader_c += 5;
 		// Couleur
 		for (i = 0; i < 3; i++)
@@ -220,8 +220,8 @@ rencontre* dechiffrageMessage(unsigned char* rbuf)
 		// Si c'est nous, on modifie chien
 		if (node->ID == dog->ID)
 		{
-			dog->coordX = node->coordX;
-			dog->coordY = node->coordY;
+			dog->coord.X = node->coord.X;
+			dog->coord.Y = node->coord.Y;
 		}
 		else
 		{
@@ -256,8 +256,15 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 
 				if (voisins != NULL)
 				{
-					while
-					moveBot(wsi, 4500,4500);
+					if (voisins->coord.X != dog->coord.X || voisins->coord.Y != dog->coord.Y)
+					{
+						coord co = circumvention(voisins);
+						moveBot(wsi, co.X,co.Y);
+					}
+				}
+				else
+				{
+					moveBot(wsi, 4500, 3000);
 				}
 
 
@@ -297,10 +304,12 @@ void idColor(char* color) {
 	if (!strcmp(color,"red"))
 	{
 		dog->color = 0;
+		printf("RED");
 	}
 	if (!strcmp(color,"blue"))
 	{
 		dog->color = 1;
+		printf("BL");
 	}
 	if (!strcmp(color,"green"))
 	{
@@ -429,7 +438,10 @@ int main(int argc, char **argv)
 			goto usage;
 		}
 	}
-  dog = malloc(sizeof(dog));
+
+	dog = malloc(sizeof(dog));
+	idColor(couleur);
+
 	srandom(time(NULL));
 
 	if (optind >= argc)
@@ -506,42 +518,45 @@ usage:
 unsigned int action_over_sheep(rencontre *sheep)
 {
 	unsigned int r_action = R_ACTION[dog->color];
-	if (distance(dog->coordX, dog->coordY, sheep->coordX, sheep->coordY) < r_action)
+	if (distance(dog->coord.X, dog->coord.Y, sheep->coord.X, sheep->coord.Y) < r_action)
 		return 1;
 	else
 		return 0;
 }
 
-coord direction(unsigned int *coordX1, unsigned int *coordY1, unsigned int *coordX2, unsigned int *coordY2)
+coordF direction(int coordX1, int coordY1, int coordX2, int coordY2)
 {
-	coord dir;
-	dir.X = abs(coordX1 - coordX2) / distance(coordX1, coordY1, coordY1, coordY2);
-	dir.Y = abs(coordY1 - coordY2) / distance(coordX1, coordY1, coordY1, coordY2);
+	coordF dir;
+	dir.X = ((float) (coordX1 - coordX2)) / ((float) distance(coordX1, coordY1, coordX2, coordY2));
+	dir.Y = ((float) ((-1)*coordY1 + coordY2)) / ((float) distance(coordX1, coordY1, coordX2, coordY2));
+	printf("X:%f\n", dir.X);
+	printf("Y:%f\n\n", dir.Y);
 	return dir;
 }
 
-coord reach_point(rencontre *sheep, coord direction)
+coord reach_point(rencontre *sheep, coordF direction)
 {
 	coord reach_point;
-	reach_point.X = sheep->coordX + coord[0]*R_ACTION[dog->color];
-	reach_point.Y = sheep->coordX + coord[1]*R_ACTION[dog->color];
+	reach_point.X = sheep->coord.X + floor((direction.X+ENTITY_SIZE)*(R_ACTION[dog->color]));
+	reach_point.Y = sheep->coord.Y + floor((direction.Y+ENTITY_SIZE)*(R_ACTION[dog->color]));
 	return reach_point;
 }
 
 coord circumvention(rencontre *sheep)
 {
-
-	objectif = reach_point(sheep);
+	coord objectif = reach_point(sheep, direction(sheep->coord.X, sheep->coord.Y, 100, 3000));
+	printf("ObjX: %d", objectif.X);
+	printf("ObjY: %d\n\n", objectif.Y);
 	coord chemin;
-	chemin.X = reach_point.X;
-	if (reach_point.X != dog->coordX)
+	chemin.X = objectif.X;
+	if (objectif.X != dog->coord.X)
 	{
 		// if (action_over_sheep(coord++)) ...
-		chemin.Y = dog->coordY;
+		chemin.Y = dog->coord.Y;
 	}
 	else
 	{
-		chemin.Y = reach_point.Y;
+		chemin.Y = objectif.Y;
 	}
 	return chemin;
 }
