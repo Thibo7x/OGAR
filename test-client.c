@@ -11,7 +11,7 @@
 
 #include "client.h"
 
-// compile with gcc -Wall -g -o sock ./test-client.c -lwebsockets
+// compile with gcc -Wall -g -lm -o sock ./test-client.c -lwebsockets
 
 
 // =====================================================================================================================================
@@ -139,7 +139,7 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 					free(node);
 				} while ( (*reader_c != 0x0) || (*(reader_c+1) != 0x0) || (*(reader_c+2) != 0x0) || (*(reader_c+3) != 0x0) );
 
-				moveBot(wsi, 0,0);
+				moveBot(wsi, 4500,4500);
 			break;
 
 			default:
