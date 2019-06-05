@@ -86,9 +86,80 @@ unsigned int distance(unsigned int coordX1, unsigned int coordX2, unsigned int c
 	return sqrt((coordX2-coordX1)*(coordX2-coordX1)+(coordY2-coordY1)*(coordY2-coordY1));
 }
 
-void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
+void freeListeChainee(rencontre *firstNode)
+{
+	rencontre *viseur;
+	while (firstNode != NULL)
+	{
+		viseur = firstNode;
+		while(viseur->next != NULL)
+		{
+			viseur = viseur->next;
+		}
+		free(viseur);
+	}
+	free(viseur);
+}
+
+rencontre* rechercherListeChainee(rencontre *firstNode, unsigned char id)
+{
+	rencontre *viseur = firstNode;
+	while (viseur->ID != id)
+	{
+		viseur = viseur->next;
+		if (viseur == NULL)
+		{
+			break;
+			return 0;
+		}
+	}
+	return viseur;
+}
+
+/*
+* Cette fonction déchiffre les messages de type 0x10 et retourne une liste chainee des bots autour de nous, ainsi que leur position et leur couleur
+*/
+void dechiffrageMessage(unsigned char* rbuf, rencontre *firstNode)
 {
 	unsigned char *reader_c = rbuf+3;
+	do {
+		rencontre *node = malloc(sizeof(node));
+		node->ID = (*reader_c); // ID
+		reader_c += 4;
+		int i;
+		// CoordX
+		node->coordX = 0;
+		node->coordX += (unsigned int)(*(reader_c) & 0x0F);
+		node->coordX += (unsigned int)((*(reader_c++) & 0xF0) >> 4)*16;
+		node->coordX += (unsigned int)(*(reader_c) & 0x0F)*256;
+		node->coordX += (unsigned int)((*(reader_c++) & 0xF0) >> 4) *4096;
+		 // CoordY
+		reader_c += 2;
+		node->coordY = 0;
+		node->coordY += (unsigned int)(*(reader_c) & 0x0F);
+		node->coordY += (unsigned int)((*(reader_c++) & 0xF0) >> 4)*16;
+		node->coordY += (unsigned int)(*(reader_c) & 0x0F)*256;
+		node->coordY += (unsigned int)((*(reader_c++) & 0xF0) >> 4) *4096;
+		reader_c += 5;
+		// Couleur
+		for (i = 0; i < 3; i++)
+		{
+			node->couleur[i] = *(reader_c);
+			reader_c += 1;
+		}
+		node->couleur[i] = '\0';
+		i = 0;
+		while (*(reader_c+i) != 0x0) i++;
+		reader_c += (i+1);
+
+		// Ajout à la liste chaînée
+		node->next = firstNode;
+		firstNode = node;
+	} while ( (*reader_c != 0x0) || (*(reader_c+1) != 0x0) || (*(reader_c+2) != 0x0) || (*(reader_c+3) != 0x0) ); // Fin du payload
+}
+
+void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
+{
 	rencontre *voisins = NULL;
 		switch (rbuf[0]) {
 			case 0x12:
@@ -102,49 +173,14 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 			break;
 
 			case 0x10:
-				do {
-					rencontre *node = malloc(sizeof(node));
-					node->ID = (*reader_c); // ID
-					reader_c += 4;
-					int i;
-					// CoordX
-					node->coordX = 0;
-					node->coordX += (unsigned int)(*(reader_c) & 0x0F);
-					node->coordX += (unsigned int)((*(reader_c++) & 0xF0) >> 4)*16;
-					node->coordX += (unsigned int)(*(reader_c) & 0x0F)*256;
-					node->coordX += (unsigned int)((*(reader_c++) & 0xF0) >> 4) *4096;
-					 // CoordY
-					reader_c += 2;
-					node->coordY = 0;
-					node->coordY += (unsigned int)(*(reader_c) & 0x0F);
-					node->coordY += (unsigned int)((*(reader_c++) & 0xF0) >> 4)*16;
-					node->coordY += (unsigned int)(*(reader_c) & 0x0F)*256;
-					node->coordY += (unsigned int)((*(reader_c++) & 0xF0) >> 4) *4096;
-					reader_c += 5;
-					// Couleur
-					for (i = 0; i < 3; i++)
-					{
-						node->couleur[i] = *(reader_c);
-						reader_c += 1;
-					}
-					node->couleur[i] = '\0';
-					i = 0;
-					while (*(reader_c+i) != 0x0) i++;
-					reader_c += (i+1);
-
-					// Ajout à la liste chaînée
-					node->next = voisins;
-					voisins = node;
-				} while ( (*reader_c != 0x0) || (*(reader_c+1) != 0x0) || (*(reader_c+2) != 0x0) || (*(reader_c+3) != 0x0) ); // Fin du payload
+				dechiffrageMessage(rbuf, voisins);
 
 				// Fonctions de parcours de liste chainee, de suppression de la liste chainee, etc.
 
-<<<<<<< HEAD
-				moveBot(wsi, 0,0);
-				// FREE LISTE CHAINEE
-=======
+
+				freeListeChainee(voisins);
+
 				moveBot(wsi, 4500,4500);
->>>>>>> 436c07934b470252d75d393abe064ad3bbf681f5
 			break;
 
 			default:
