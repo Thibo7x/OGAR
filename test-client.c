@@ -166,13 +166,15 @@ void explore_chained_list(rencontre *firstNode)
 rencontre* rechercherListeChainee(rencontre *firstNode, unsigned char id)
 {
 	rencontre *viseur = firstNode;
+	if (viseur == NULL)
+		return NULL;
 	while (viseur->ID != id)
 	{
 		viseur = viseur->next;
 		if (viseur == NULL)
 		{
 			break;
-			return 0;
+			return NULL;
 		}
 	}
 	return viseur;
@@ -226,8 +228,11 @@ rencontre* dechiffrageMessage(unsigned char* rbuf)
 		else
 		{
 			// Sinon, ajout à la liste chaînée
-			node->next = firstNode;
-			firstNode = node;
+			if (rechercherListeChainee(firstNode, node->ID) == NULL) // On vérifie s'il n'est pas déjà présent
+			{
+				node->next = firstNode;
+				firstNode = node;
+			}
 		}
 
 	} while ( (*reader_c != 0x0) || (*(reader_c+1) != 0x0) || (*(reader_c+2) != 0x0) || (*(reader_c+3) != 0x0) ); // Fin du payload
@@ -256,11 +261,27 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 
 				if (voisins != NULL)
 				{
-					if (voisins->coord.X != dog->coord.X || voisins->coord.Y != dog->coord.Y)
+					coord co = circumvention(voisins);
+					printf("X:%d\n", voisins->coord.X);
+					printf("Y:%d\n", voisins->coord.Y);
+					printf("X:%d\n", dog->coord.X);
+					printf("Y:%d\n", dog->coord.Y);
+					if (((co.X != dog->coord.X) || (co.Y != dog->coord.Y)) && (dog->mode == 0))
 					{
-						coord co = circumvention(voisins);
-						moveBot(wsi, co.X,co.Y);
+						moveBot(wsi, co.X, co.Y);
 					}
+					else
+					{
+						dog->mode = 1;
+						bring_back_our_sheeps(wsi, voisins);
+						if (dog->coord.X < voisins->coord.X)
+						{
+							dog->mode = 0;
+						}
+					}
+							//dog->mode = 1;
+							//
+							//dog->mode = 0;
 				}
 				else
 				{
@@ -441,6 +462,7 @@ int main(int argc, char **argv)
 
 	dog = malloc(sizeof(dog));
 	idColor(couleur);
+	dog->mode = 0;
 
 	srandom(time(NULL));
 
@@ -493,28 +515,6 @@ usage:
 	return 1;
 }
 
-
-//Vérifie si un chien donné est loin/touche/dans un mouton donné. 2 si "dedans" 1 si "touche" 0 si "loin"
-//Pas encore effectif
-// unsigned int touch(effect* sheep_effect , bot* sheep)
-// {
-// 		unsigned int range = R_ACTION[dog->color];
-// 		correction(sheep_effect);
-//
-// 		sheep_effect->left -= range;
-// 		sheep_effect->top -= range;
-// 		sheep_effect->right += range;
-// 		sheep_effect->bottom += range;
-//
-//
-// 			if( (((dog->coordX < sheep_effect->right) && dog->coordY > sheep_effect->top) || dog->coordX < sheep_effect->left)/**/ || /**/(((dog->coordX > sheep_effect->left && dog->coordY < sheep_effect->bottom) ||  dog->coordX > sheep_effect->right)))
-// 				return 2;
-// 			if((dog->coordX > sheep_effect->left && dog->coordY > sheep_effect->bottom&& dog->coordX < sheep_effect->right && dog->coordY < sheep_effect->top))
-// 				return 0;
-// 			else
-// 				return 1;
-// }
-
 unsigned int action_over_sheep(rencontre *sheep)
 {
 	unsigned int r_action = R_ACTION[dog->color];
@@ -529,24 +529,20 @@ coordF direction(int coordX1, int coordY1, int coordX2, int coordY2)
 	coordF dir;
 	dir.X = ((float) (coordX1 - coordX2)) / ((float) distance(coordX1, coordY1, coordX2, coordY2));
 	dir.Y = ((float) (coordY1 - coordY2)) / ((float) distance(coordX1, coordY1, coordX2, coordY2));
-	printf("X:%f\n", dir.X);
-	printf("Y:%f\n\n", dir.Y);
 	return dir;
 }
 
 coord reach_point(rencontre *sheep, coordF direction)
 {
 	coord reach_point;
-	reach_point.X = sheep->coord.X + floor((direction.X)*(R_ACTION[dog->color] + ENTITY_SIZE));
-	reach_point.Y = sheep->coord.Y + floor((direction.Y)*(R_ACTION[dog->color] + ENTITY_SIZE));
+	reach_point.X = sheep->coord.X + ceil((direction.X)*(R_ACTION[dog->color] + ENTITY_SIZE));
+	reach_point.Y = sheep->coord.Y + ceil((direction.Y)*(R_ACTION[dog->color] + ENTITY_SIZE));
 	return reach_point;
 }
 
 coord circumvention(rencontre *sheep)
 {
 	coord objectif = reach_point(sheep, direction(sheep->coord.X, sheep->coord.Y, 100, 3000));
-	printf("ObjX: %d", objectif.X);
-	printf("ObjY: %d\n\n", objectif.Y);
 	coord chemin;
 	chemin.X = objectif.X;
 	if (objectif.X != dog->coord.X)
@@ -559,6 +555,20 @@ coord circumvention(rencontre *sheep)
 		chemin.Y = objectif.Y;
 	}
 	return chemin;
+}
+
+void bring_back_our_sheeps(struct lws *wsi, rencontre *sheep)
+{
+	// coordF new = direction(sheep->coord.X, sheep->coord.Y, 100, 3000);
+	// new.X = abs(new.X);
+	// new.Y = abs(new.Y);
+	// new.X *= 2000.0;
+	// new.Y *= 2000.0;
+	// new.X += (float) sheep->coord.X;
+	// new.Y += (float) sheep->coord.Y;
+	moveBot(wsi, 100, 3000);
+	// printf("%f\n",new.X);
+	// printf("%f\n",new.Y);
 }
 
 //correction de plage d'effet si on se trouve près du plafond ou près du mur de gauche.

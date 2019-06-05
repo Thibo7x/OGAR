@@ -55,6 +55,7 @@ typedef struct bot {
     int ID;
     coord coord;
     unsigned int color;
+    int mode;
 } bot;
 bot* dog;
 
@@ -73,7 +74,7 @@ void moveBot(struct lws* wsi,unsigned int coordX,unsigned int coordY);
 int distance(int coordX1, int coordY1, int coordX2, int coordY2);
 static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len);
 coord circumvention(rencontre *sheep);
-
+void bring_back_our_sheeps(struct lws *wsi, rencontre *sheep);
 
 
 typedef struct node_view_borders view;
