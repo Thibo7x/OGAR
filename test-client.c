@@ -84,6 +84,7 @@ int writePacket(struct lws *wsi)
 void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 {
 	unsigned char *reader_c = rbuf+3;
+	rencontre *voisins = NULL;
 		switch (rbuf[0]) {
 			case 0x12:
 			//Q On Command, on répond avec le Nickname
@@ -96,17 +97,18 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 			break;
 
 			case 0x10:
-				do{
+				do {
 					rencontre *node = malloc(sizeof(node));
 					node->ID = (*reader_c); // ID
 					reader_c += 4;
 					int i;
+					// CoordX
 					node->coordX = 0;
 					node->coordX += (unsigned int)(*(reader_c) & 0x0F);
 					node->coordX += (unsigned int)((*(reader_c++) & 0xF0) >> 4)*16;
 					node->coordX += (unsigned int)(*(reader_c) & 0x0F)*256;
 					node->coordX += (unsigned int)((*(reader_c++) & 0xF0) >> 4) *4096;
-					 // CoordX
+					 // CoordY
 					reader_c += 2;
 					node->coordY = 0;
 					node->coordY += (unsigned int)(*(reader_c) & 0x0F);
@@ -114,7 +116,8 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 					node->coordY += (unsigned int)(*(reader_c) & 0x0F)*256;
 					node->coordY += (unsigned int)((*(reader_c++) & 0xF0) >> 4) *4096;
 					reader_c += 5;
-					for (i = 0; i < 3; i++) // Couleur
+					// Couleur
+					for (i = 0; i < 3; i++)
 					{
 						node->couleur[i] = *(reader_c);
 						reader_c += 1;
@@ -124,17 +127,15 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 					while (*(reader_c+i) != 0x0) i++;
 					reader_c += (i+1);
 
+					// Ajout à la liste chaînée
+					node->next = voisins;
+					voisins = node;
+				} while ( (*reader_c != 0x0) || (*(reader_c+1) != 0x0) || (*(reader_c+2) != 0x0) || (*(reader_c+3) != 0x0) ); // Fin du payload
 
-					printf("NODE n°%x\n", node->ID);
-					printf("CoordX : %u\n", node->coordX);
-					printf("CoordY : %u\n", node->coordY);
-					printf("Couleur :%x", node->couleur[0]);
-					printf("%x", node->couleur[1]);
-					printf("%x\n", node->couleur[2]);
-					free(node);
-				} while ( (*reader_c != 0x0) || (*(reader_c+1) != 0x0) || (*(reader_c+2) != 0x0) || (*(reader_c+3) != 0x0) );
+				// Fonctions de parcours de liste chainee, de suppression de la liste chainee, etc.
 
 				moveBot(wsi, 0,0);
+				// FREE LISTE CHAINEE
 			break;
 
 			default:
