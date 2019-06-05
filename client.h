@@ -61,3 +61,27 @@ void explore_chained_list(rencontre *firstNode);
 void moveBot(struct lws* wsi,unsigned int coordX,unsigned int coordY);
 unsigned int distance(unsigned int coordX1, unsigned int coordX2, unsigned int coordY1, unsigned int coordY2);
 static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len);
+
+
+
+typedef struct node_view_borders view;
+struct node_view_borders
+{
+	 float left;
+	 float top;
+	 float right;
+	 float bot;
+};
+
+typedef struct node_effect_borders effect;
+struct node_effect_borders
+{
+	 float left;
+	 float top;
+	 float right;
+	 float bot;
+};
+
+void correction(effect* border , bot* dog);
+unsigned int touch( bot* dog , effect* sheep_effect , bot* sheep);
+int idColor(char* couleur);

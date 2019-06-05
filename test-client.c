@@ -463,3 +463,38 @@ usage:
 	fprintf(stderr, "Usage: ogar-client -h -s -p <port> -n <nickname> -P <proxy> <server address> \n");
 	return 1;
 }
+
+//Vérifie si un chien donné est loin/touche/dans un mouton donné. 2 si "dedans" 1 si "touche" 0 si "loin"
+//Pas encore effectif
+unsigned int touch( bot* dog , effect* sheep_effect , bot* sheep)
+{
+		unsigned int range = R_ACTION[idColor(dog->nickname)];
+		correction(sheep_effect , dog);
+
+		sheep_effect->left -= range;
+		sheep_effect->top -= range;
+		sheep_effect->right += range;
+		sheep_effect->bot += range;
+
+
+			if( (((dog->X < sheep_effect->right) && dog->Y > sheep_effect->top) || dog->X < sheep_effect->left)/**/ || /**/(((dog->X > sheep_effect->left && dog->Y < sheep_effect->bot) ||  dog->X > sheep_effect->right)))
+				{ return 2; }
+			if((dog->X > sheep_effect->left && dog->Y > sheep_effect->bot	&& dog->X < sheep_effect->right && dog->Y < sheep_effect->top))
+				{ return 0; }
+			else
+				{	return 1; }
+
+
+
+}
+
+//correction de plage d'effet si on se trouve près du plafond ou près du mur de gauche.
+//Pas encore effectif
+void correction(effect* border , bot* dog)
+{
+		if (border->left < R_ACTION[idColor(dog->nickname)] )
+			{ border->left = R_ACTION[idColor(dog->nickname)] ; }
+
+		if (border->top < R_ACTION[idColor(dog->nickname)] )
+			{ border->top = R_ACTION[idColor(dog->nickname)]  ; }
+}
