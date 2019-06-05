@@ -528,7 +528,7 @@ coordF direction(int coordX1, int coordY1, int coordX2, int coordY2)
 {
 	coordF dir;
 	dir.X = ((float) (coordX1 - coordX2)) / ((float) distance(coordX1, coordY1, coordX2, coordY2));
-	dir.Y = ((float) ((-1)*coordY1 + coordY2)) / ((float) distance(coordX1, coordY1, coordX2, coordY2));
+	dir.Y = ((float) (coordY1 - coordY2)) / ((float) distance(coordX1, coordY1, coordX2, coordY2));
 	printf("X:%f\n", dir.X);
 	printf("Y:%f\n\n", dir.Y);
 	return dir;
@@ -537,8 +537,8 @@ coordF direction(int coordX1, int coordY1, int coordX2, int coordY2)
 coord reach_point(rencontre *sheep, coordF direction)
 {
 	coord reach_point;
-	reach_point.X = sheep->coord.X + floor((direction.X+ENTITY_SIZE)*(R_ACTION[dog->color]));
-	reach_point.Y = sheep->coord.Y + floor((direction.Y+ENTITY_SIZE)*(R_ACTION[dog->color]));
+	reach_point.X = sheep->coord.X + floor((direction.X)*(R_ACTION[dog->color] + ENTITY_SIZE));
+	reach_point.Y = sheep->coord.Y + floor((direction.Y)*(R_ACTION[dog->color] + ENTITY_SIZE));
 	return reach_point;
 }
 
