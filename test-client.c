@@ -520,7 +520,7 @@ coord direction(unsigned int *coordX1, unsigned int *coordY1, unsigned int *coor
 	return dir;
 }
 
-coord reach_point(rencontre *sheep, int *coord)
+coord reach_point(rencontre *sheep, coord direction)
 {
 	coord reach_point;
 	reach_point.X = sheep->coordX + coord[0]*R_ACTION[dog->color];
@@ -530,6 +530,7 @@ coord reach_point(rencontre *sheep, int *coord)
 
 coord circumvention(rencontre *sheep)
 {
+
 	objectif = reach_point(sheep);
 	coord chemin;
 	chemin.X = reach_point.X;
