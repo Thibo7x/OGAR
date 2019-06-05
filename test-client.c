@@ -264,6 +264,12 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 		}
 }
 
+/**
+\brief Send wished pos to server
+\param wsi websocket context
+\param coordX X wished pos
+\param coordY Y wished pos
+****************************************************************************************************************************/
 void moveBot(struct lws* wsi,unsigned int coordX,unsigned int coordY)
 {
 	char buffer[13] = {};
@@ -278,19 +284,21 @@ void moveBot(struct lws* wsi,unsigned int coordX,unsigned int coordY)
 	sendCommand(wsi,(unsigned char *)buffer,sizeof(buffer));
 }
 
-
-int idColor(char* couleur){
-	if (!strcmp(couleur,"red")){
+/**
+\brief Give the ID related to each color (see beginning of client.h file)
+****************************************************************************************************************************/
+int idColor(char* color){
+	if (!strcmp(color,"red")){
 		return 0;}
-	if (!strcmp(couleur,"blue"))
+	if (!strcmp(color,"blue"))
 		return 1;
-	if (!strcmp(couleur,"green"))
+	if (!strcmp(color,"green"))
 		return 2;
-	if (!strcmp(couleur,"yellow"))
+	if (!strcmp(color,"yellow"))
 		return 3;
-	if (!strcmp(couleur,"cyan"))
+	if (!strcmp(color,"cyan"))
 		return 4;
-	if (!strcmp(couleur,"purple"))
+	if (!strcmp(color,"purple"))
 		return 5;
 	return -1000;
 }
