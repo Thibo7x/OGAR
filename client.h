@@ -44,7 +44,7 @@ typedef struct bot {
     unsigned int coordX;
     unsigned int coordY;
 } bot;
-bot* chien;
+bot* dog;
 
 typedef struct rencontre {
     unsigned char ID;
@@ -54,6 +54,10 @@ typedef struct rencontre {
     struct rencontre *next;
 } rencontre;
 
+void freeListeChainee(rencontre *firstNode);
+rencontre* rechercherListeChainee(rencontre *firstNode, unsigned char id);
+rencontre* dechiffrageMessage(unsigned char* rbuf);
+void explore_chained_list(rencontre *firstNode);
 void moveBot(struct lws* wsi,unsigned int coordX,unsigned int coordY);
 unsigned int distance(unsigned int coordX1, unsigned int coordX2, unsigned int coordY1, unsigned int coordY2);
 static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len);
