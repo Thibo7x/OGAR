@@ -40,6 +40,11 @@ struct lws_protocols protocols[] = {
 	}
 };
 
+typedef struct coord {
+  int X;
+  int Y;
+} coord;
+
 typedef struct bot {
     int ID;
     unsigned int coordX;

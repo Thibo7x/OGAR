@@ -254,9 +254,15 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 
 				explore_chained_list(voisins);
 
-				freeListeChainee(voisins);
+				if (voisins != NULL)
+				{
+					while
+					moveBot(wsi, 4500,4500);
+				}
 
-				moveBot(wsi, 4500,4500);
+
+
+				freeListeChainee(voisins);
 			break;
 
 			default:
@@ -475,6 +481,7 @@ usage:
 	return 1;
 }
 
+
 //Vérifie si un chien donné est loin/touche/dans un mouton donné. 2 si "dedans" 1 si "touche" 0 si "loin"
 //Pas encore effectif
 // unsigned int touch(effect* sheep_effect , bot* sheep)
@@ -503,6 +510,39 @@ unsigned int action_over_sheep(rencontre *sheep)
 		return 1;
 	else
 		return 0;
+}
+
+coord direction(unsigned int *coordX1, unsigned int *coordY1, unsigned int *coordX2, unsigned int *coordY2)
+{
+	coord dir;
+	dir.X = abs(coordX1 - coordX2) / distance(coordX1, coordY1, coordY1, coordY2);
+	dir.Y = abs(coordY1 - coordY2) / distance(coordX1, coordY1, coordY1, coordY2);
+	return dir;
+}
+
+coord reach_point(rencontre *sheep, int *coord)
+{
+	coord reach_point;
+	reach_point.X = sheep->coordX + coord[0]*R_ACTION[dog->color];
+	reach_point.Y = sheep->coordX + coord[1]*R_ACTION[dog->color];
+	return reach_point;
+}
+
+coord circumvention(rencontre *sheep)
+{
+	objectif = reach_point(sheep);
+	coord chemin;
+	chemin.X = reach_point.X;
+	if (reach_point.X != dog->coordX)
+	{
+		// if (action_over_sheep(coord++)) ...
+		chemin.Y = dog->coordY;
+	}
+	else
+	{
+		chemin.Y = reach_point.Y;
+	}
+	return chemin;
 }
 
 //correction de plage d'effet si on se trouve près du plafond ou près du mur de gauche.
