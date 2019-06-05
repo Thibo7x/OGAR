@@ -138,13 +138,9 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 				} while ( (*reader_c != 0x0) || (*(reader_c+1) != 0x0) || (*(reader_c+2) != 0x0) || (*(reader_c+3) != 0x0) ); // Fin du payload
 
 				// Fonctions de parcours de liste chainee, de suppression de la liste chainee, etc.
-
-<<<<<<< HEAD
-				moveBot(wsi, 0,0);
 				// FREE LISTE CHAINEE
-=======
 				moveBot(wsi, 4500,4500);
->>>>>>> 436c07934b470252d75d393abe064ad3bbf681f5
+
 			break;
 
 			default:
@@ -154,22 +150,15 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 
 void moveBot(struct lws* wsi,unsigned int coordX,unsigned int coordY)
 {
-	char buffer[13];
+	char buffer[13] = {};
 	buffer[0] = 0x10;
 	//CoordX
-  sprintf(buffer+1,"%c",coordX%16);
-	sprintf(buffer+2,"%c",(coordX%256)/16);
-	sprintf(buffer+3,"%c",(coordX%4096)/256);
-	sprintf(buffer+4,"%c",coordX/4096);
+  sprintf(buffer+1,"%c",coordX%256);
+	sprintf(buffer+2,"%c",((coordX/4096)<<4)+(coordX%4096)/256);
+
 	//CoordY
-	sprintf(buffer+5,"%c",(coordY)%16);
-	sprintf(buffer+6,"%c",(coordY%256)/16);
-	sprintf(buffer+7,"%c",(coordY%4096)/256);
-	sprintf(buffer+8,"%c",coordY/4096);
-	buffer[9] = 0x00;
-	buffer[10] = 0x00;
-	buffer[11] = 0x00;
-	buffer[12] = 0x00;
+	sprintf(buffer+5,"%c",coordY%256);
+	sprintf(buffer+6,"%c",((coordY/4096)<<4)+(coordY%4096)/256);
 	sendCommand(wsi,(unsigned char *)buffer,sizeof(buffer));
 }
 

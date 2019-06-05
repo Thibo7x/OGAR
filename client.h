@@ -51,7 +51,7 @@ typedef struct rencontre {
     unsigned int coordX;
     unsigned int coordY;
     unsigned char couleur[4];
-    rencontre *next;
+    struct rencontre *next;
 } rencontre;
 
 void moveBot(struct lws* wsi,unsigned int coordX,unsigned int coordY);
