@@ -11,7 +11,7 @@
 
 #include "client.h"
 
-// compile with gcc -Wall -g -o sock ./test-client.c -lwebsockets
+// compile with gcc -Wall -g -lm -o sock ./test-client.c -lwebsockets
 
 
 // =====================================================================================================================================
@@ -81,6 +81,11 @@ int writePacket(struct lws *wsi)
 	return(ret);
 }
 
+unsigned int distance(unsigned int coordX1, unsigned int coordX2, unsigned int coordY1, unsigned int coordY2)
+{
+	return sqrt((coordX2-coordX1)*(coordX2-coordX1)+(coordY2-coordY1)*(coordY2-coordY1));
+}
+
 void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 {
 	unsigned char *reader_c = rbuf+3;
@@ -134,8 +139,12 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 
 				// Fonctions de parcours de liste chainee, de suppression de la liste chainee, etc.
 
+<<<<<<< HEAD
 				moveBot(wsi, 0,0);
 				// FREE LISTE CHAINEE
+=======
+				moveBot(wsi, 4500,4500);
+>>>>>>> 436c07934b470252d75d393abe064ad3bbf681f5
 			break;
 
 			default:
