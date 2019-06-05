@@ -240,7 +240,7 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 		switch (rbuf[0]) {
 			case 0x12:
 			//Q On Command, on répond avec le Nickname
-			sendCommand(wsi,CODES_ASCII[idColor(couleur)],CODES_ASCII_LENGTH[idColor(couleur)]);
+			sendCommand(wsi,CODES_ASCII[dog->color],CODES_ASCII_LENGTH[dog->color]);
 			break;
 
 			case 0x20:
@@ -287,20 +287,31 @@ void moveBot(struct lws* wsi,unsigned int coordX,unsigned int coordY)
 /**
 \brief Give the ID related to each color (see beginning of client.h file)
 ****************************************************************************************************************************/
-int idColor(char* color){
-	if (!strcmp(color,"red")){
-		return 0;}
+void idColor(char* color) {
+	if (!strcmp(color,"red"))
+	{
+		dog->color = 0;
+	}
 	if (!strcmp(color,"blue"))
-		return 1;
+	{
+		dog->color = 1;
+	}
 	if (!strcmp(color,"green"))
-		return 2;
+	{
+		dog->color = 2;
+	}
 	if (!strcmp(color,"yellow"))
-		return 3;
+	{
+		dog->color = 3;
+	}
 	if (!strcmp(color,"cyan"))
-		return 4;
+	{
+		dog->color = 4;
+	}
 	if (!strcmp(color,"purple"))
-		return 5;
-	return -1000;
+	{
+		dog->color = 5;
+	}
 }
 
 /****************************************************************************************************************************/
@@ -466,35 +477,34 @@ usage:
 
 //Vérifie si un chien donné est loin/touche/dans un mouton donné. 2 si "dedans" 1 si "touche" 0 si "loin"
 //Pas encore effectif
-unsigned int touch( bot* dog , effect* sheep_effect , bot* sheep)
-{
-		unsigned int range = R_ACTION[idColor(dog->nickname)];
-		correction(sheep_effect , dog);
-
-		sheep_effect->left -= range;
-		sheep_effect->top -= range;
-		sheep_effect->right += range;
-		sheep_effect->bot += range;
-
-
-			if( (((dog->X < sheep_effect->right) && dog->Y > sheep_effect->top) || dog->X < sheep_effect->left)/**/ || /**/(((dog->X > sheep_effect->left && dog->Y < sheep_effect->bot) ||  dog->X > sheep_effect->right)))
-				{ return 2; }
-			if((dog->X > sheep_effect->left && dog->Y > sheep_effect->bot	&& dog->X < sheep_effect->right && dog->Y < sheep_effect->top))
-				{ return 0; }
-			else
-				{	return 1; }
-
-
-
-}
+// unsigned int touch( bot* dog , effect* sheep_effect , bot* sheep)
+// {
+// 		unsigned int range = R_ACTION[idColor(dog->nickname)];
+// 		correction(sheep_effect , dog);
+//
+// 		sheep_effect->left -= range;
+// 		sheep_effect->top -= range;
+// 		sheep_effect->right += range;
+// 		sheep_effect->bot += range;
+//
+//
+// 			if( (((dog->X < sheep_effect->right) && dog->Y > sheep_effect->top) || dog->X < sheep_effect->left)/**/ || /**/(((dog->X > sheep_effect->left && dog->Y < sheep_effect->bot) ||  dog->X > sheep_effect->right)))
+// 				{ return 2; }
+// 			if((dog->X > sheep_effect->left && dog->Y > sheep_effect->bot	&& dog->X < sheep_effect->right && dog->Y < sheep_effect->top))
+// 				{ return 0; }
+// 			else
+// 				{	return 1; }
+//
+//
+//
+// }
 
 //correction de plage d'effet si on se trouve près du plafond ou près du mur de gauche.
 //Pas encore effectif
-void correction(effect* border , bot* dog)
+void correction(effect* border)
 {
-		if (border->left < R_ACTION[idColor(dog->nickname)] )
-			{ border->left = R_ACTION[idColor(dog->nickname)] ; }
-
-		if (border->top < R_ACTION[idColor(dog->nickname)] )
-			{ border->top = R_ACTION[idColor(dog->nickname)]  ; }
+	if (border->left < R_ACTION[dog->color])
+		border->left = R_ACTION[dog->color];
+	if (border->top < R_ACTION[dog->color])
+		border->top = R_ACTION[dog->color];
 }
