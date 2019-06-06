@@ -21,6 +21,7 @@ typedef struct s_packet {
         struct s_packet *next;
 } t_packet;
 
+int iii;
 /// Pointer on the list of packet to be send when socket is writeable
 t_packet *packetList=NULL;
 
@@ -56,6 +57,7 @@ typedef struct bot {
     coord coord;
     unsigned int color;
     int mode;
+    coordF A_directeur;
 } bot;
 bot* dog;
 
@@ -73,6 +75,7 @@ void explore_chained_list(rencontre *firstNode);
 void moveBot(struct lws* wsi,unsigned int coordX,unsigned int coordY);
 int distance(int coordX1, int coordY1, int coordX2, int coordY2);
 static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len);
+coordF direction(int coordX1, int coordY1, int coordX2, int coordY2);
 coord circumvention(rencontre *sheep);
 void bring_back_our_sheeps(struct lws *wsi, rencontre *sheep);
 

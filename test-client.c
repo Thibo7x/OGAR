@@ -242,6 +242,7 @@ rencontre* dechiffrageMessage(unsigned char* rbuf)
 void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 {
 	rencontre *voisins;
+	rencontre *sheep_viseur;
 		switch (rbuf[0]) {
 			case 0x12:
 			//Q On Command, on répond avec le Nickname
@@ -257,27 +258,31 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 				voisins = dechiffrageMessage(rbuf);
 				// Fonctions de parcours de liste chainee, de suppression de la liste chainee, etc.
 
-				explore_chained_list(voisins);
-
-				if (voisins != NULL)
+				//explore_chained_list(voisins);
+				sheep_viseur = voisins;
+				while (sheep_viseur != NULL)
 				{
-					coord co = circumvention(voisins);
-					printf("X:%d\n", voisins->coord.X);
-					printf("Y:%d\n", voisins->coord.Y);
-					printf("X:%d\n", dog->coord.X);
-					printf("Y:%d\n", dog->coord.Y);
-					if (((co.X != dog->coord.X) || (co.Y != dog->coord.Y)) && (dog->mode == 0))
+					if (memcmp(sheep_viseur->couleur,"\xe6\xf0\xf0",3))
+						sheep_viseur = sheep_viseur->next;
+					else
+						break;
+				}
+
+				if (sheep_viseur != NULL)
+				{
+					coord co = circumvention(sheep_viseur);
+					if (((co.X != dog->coord.X) || (co.Y != dog->coord.Y)) && dog->mode == 0)
 					{
 						moveBot(wsi, co.X, co.Y);
 					}
 					else
 					{
-						dog->mode = 1;
-						bring_back_our_sheeps(wsi, voisins);
-						if (dog->coord.X < voisins->coord.X)
+						if (dog->mode == 0)
 						{
-							dog->mode = 0;
+							dog->mode = 1;
+							dog->A_directeur = direction(100, 3000, sheep_viseur->coord.X, sheep_viseur->coord.Y);
 						}
+						bring_back_our_sheeps(wsi, sheep_viseur);
 					}
 							//dog->mode = 1;
 							//
@@ -424,6 +429,7 @@ static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void 
 int main(int argc, char **argv)
 {
 	int n = 0;
+	iii = 0;
 
 	struct lws_context_creation_info info;
 	struct lws_client_connect_info i;
@@ -463,7 +469,6 @@ int main(int argc, char **argv)
 	dog = malloc(sizeof(dog));
 	idColor(couleur);
 	dog->mode = 0;
-
 	srandom(time(NULL));
 
 	if (optind >= argc)
@@ -527,8 +532,8 @@ unsigned int action_over_sheep(rencontre *sheep)
 coordF direction(int coordX1, int coordY1, int coordX2, int coordY2)
 {
 	coordF dir;
-	dir.X = ((float) (coordX1 - coordX2)) / ((float) distance(coordX1, coordY1, coordX2, coordY2));
-	dir.Y = ((float) (coordY1 - coordY2)) / ((float) distance(coordX1, coordY1, coordX2, coordY2));
+	dir.X = ((float) (coordX2 - coordX1)) / ((float) distance(coordX1, coordY1, coordX2, coordY2));
+	dir.Y = ((float) (coordY2 - coordY1)) / ((float) distance(coordX1, coordY1, coordX2, coordY2));
 	return dir;
 }
 
@@ -542,7 +547,9 @@ coord reach_point(rencontre *sheep, coordF direction)
 
 coord circumvention(rencontre *sheep)
 {
-	coord objectif = reach_point(sheep, direction(sheep->coord.X, sheep->coord.Y, 100, 3000));
+	coord objectif = reach_point(sheep, direction(100, 3000, sheep->coord.X, sheep->coord.Y));
+	// printf("%d\n", objectif.X);
+	// printf("%d\n", objectif.Y);
 	coord chemin;
 	chemin.X = objectif.X;
 	if (objectif.X != dog->coord.X)
@@ -550,23 +557,83 @@ coord circumvention(rencontre *sheep)
 		// if (action_over_sheep(coord++)) ...
 		chemin.Y = dog->coord.Y;
 	}
-	else
+	else// moveBot(wsi, sheep->coord.X, sheep->coord.Y);
+	 // if(distance(dog->coord.X,dog->coord.Y,sheep->coord.X,sheep->coord.Y) < ( R_ACTION[dog->color]) ){
+	 //  moveBot(wsi,dog->coord.X,dog->coord.Y);
+		// dog->mode = 0;
+	 // }
 	{
 		chemin.Y = objectif.Y;
 	}
 	return chemin;
 }
 
+
+
 void bring_back_our_sheeps(struct lws *wsi, rencontre *sheep)
 {
-	// coordF new = direction(sheep->coord.X, sheep->coord.Y, 100, 3000);
+
+	if (distance(dog->coord.X, dog->coord.Y, 0, 3000) < 900)
+	{
+		moveBot(wsi,4500,3000);
+		dog->mode = 0;
+	}
+	moveBot(wsi, sheep->coord.X, sheep->coord.Y);
+	iii++;
+	if(distance(dog->coord.X,dog->coord.Y,sheep->coord.X,sheep->coord.Y) < ( R_ACTION[dog->color]) ){
+		moveBot(wsi,dog->coord.X,dog->coord.Y);
+	}
+	if (iii == R_ACTION[dog->color])
+	{
+	 iii = 0;
+	 dog->mode = 0;
+	}
+
+
+	 // moveBot(wsi, sheep->coord.X, sheep->coord.Y);
+	 // if(distance(dog->coord.X,dog->coord.Y,sheep->coord.X,sheep->coord.Y) < ( R_ACTION[dog->color]) ){
+		//  if (abs(sheep->coord.Y - dog->coord.Y) < abs(sheep->coord.X - dog->coord.X))
+		// 	 moveBot(wsi, sheep->coord.X, dog->coord.Y);
+		//  else if (abs(sheep->coord.Y - dog->coord.Y) > abs(sheep->coord.X - dog->coord.X))
+		// 	 moveBot(wsi, dog->coord.X, sheep->coord.Y);
+		//  else
+		// 	 moveBot(wsi,dog->coord.X,dog->coord.Y);
+		//  }
+
+
+	// if (dog->A_directeur.X < 0 && dog->A_directeur.Y < 0);
+	// if (dog->A_directeur.X < 0 && dog->A_directeur.Y > 0);
+	// if (dog->A_directeur.X > 0 && dog->A_directeur.Y < 0)
+	// {
+	// 	if (objectif.Y < ((-1)*dog->A_directeur.Y))
+	// 		moveBot(wsi, dog->coord.X, sheep->coord.Y);
+	// 	else if (objectif.Y > ((-1)*dog->A_directeur.Y))
+	// 		moveBot(wsi, sheep->coord.X, dog->coord.Y);
+	// 	else
+	// 		moveBot(wsi, sheep->coord.X, sheep->coord.Y);
+	// }
+	// if (dog->A_directeur.X > 0 && dog->A_directeur.Y > 0)
+	// {
+	//
+	// }
+
 	// new.X = abs(new.X);
 	// new.Y = abs(new.Y);
 	// new.X *= 2000.0;
 	// new.Y *= 2000.0;
 	// new.X += (float) sheep->coord.X;
 	// new.Y += (float) sheep->coord.Y;
-	moveBot(wsi, 100, 3000);
+
+	//moveBot(wsi, sheep->coord.X, sheep->coord.Y);
+	// if ((dog->coord.Y > (dog->coord.X)*(((float) (sheep->coord.Y - 3000))) / ((float) (sheep->coord.X - 100)) +3000) && dog->coord.Y >= 3000)
+	// {
+	// 	printf("%d\n",(dog->coord.X)*(((float) (sheep->coord.Y - 3000))) / ((float) (sheep->coord.X - 100)) +3000);
+	// 	dog->mode = 0;
+	// }
+	// if(distance(dog->coord.X,dog->coord.Y,sheep->coord.X,sheep->coord.Y) < ( R_ACTION[dog->color]) ){
+	// 	moveBot(wsi,dog->coord.X,dog->coord.Y);
+	// 	}
+
 	// printf("%f\n",new.X);
 	// printf("%f\n",new.Y);
 }
