@@ -170,7 +170,7 @@ int get_rank_with_center_coos(coordF* center,subdivision* map)
 int get_min(int* table , int length_max)
 {
   int min = *(table);
-  for (int rank = 1; rank < length_max; ++rank)
+  for (int rank = 1; ranhk < length_max; ++rank)
   {
     if (min >= *(table+rank))
       min = *(table+rank);
@@ -303,3 +303,41 @@ void test_get_column_line_with_rank(void)
   printf("Rank %d correspond à la colonne %d et la ligne %d\n",rank,proposition->X,proposition->Y);
 }
 /* ----------------tests.c----------------- */
+//Pas mal de fonction a faire a l'intérieur
+// void intel_blue(struct lws *wsi,rencontre *voisins)
+// {
+// 	int counter = 0;
+// 	rencontre *sheepCounter = voisins;
+// 	coord retour;
+// 	while(sheepCounter != NULL && counter < 4) //Mettre le nombre de bots jaunes ici
+// 	{
+// 		//spotting(); Fonction de repérage
+// 		if (!memcmp(sheepCounter->couleur,"\xe6\xf0\xf0",3)) //si c'est une brebis
+// 			counter++;
+// 		sheepCounter = sheepCounter->next;
+// 	}
+// 	if(counter == 4)
+// 	{
+// 		sheepCounter = voisins;
+// 		moveBot(wsi,4500,3000);
+// 		if(distance(dog->coord.X,dog->coord.Y,4500,3000) <= 150)
+// 			moveBot(wsi,dog->coord.X,dog->coord.Y);
+// 		while(counter != 0)
+// 		{
+// 			while(!memcmp(sheepCounter->couleur,"\xe6\xf0\xf0",3))
+// 			{
+// 				sheepCounter = sheepCounter->next;
+// 			}
+// 			counter--;
+// 			//turn_to_indicate(sheepCounter->coord.X,sheepCounter->coord.Y);
+// 			//Equation du cercle : (x-4500)²+(y-3000)² = 150²
+// 			//Tourne autour du cercle pour être aligné au mouton à indiquer
+// 			retour.X = dog->coord.X;
+// 			retour.Y = dog->coord.Y;
+// 			moveBot(wsi,4500,3000);
+// 			if(distance(dog->coord.X,dog->coord.Y,4500,3000) <= 90)
+// 				moveBot(wsi,retour.X,retour.Y);
+// 		}
+// 	}
+//
+// }
