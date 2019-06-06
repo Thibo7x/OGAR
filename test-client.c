@@ -290,6 +290,7 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 				}
 				else
 				{
+					dog->mode = 0;
 					moveBot(wsi, 4500, 3000);
 				}
 
@@ -573,20 +574,22 @@ coord circumvention(rencontre *sheep)
 void bring_back_our_sheeps(struct lws *wsi, rencontre *sheep)
 {
 
-	if (distance(dog->coord.X, dog->coord.Y, 0, 3000) < 900)
+	if (distance(dog->coord.X, dog->coord.Y, 0, 3000) <= 900)
 	{
 		moveBot(wsi,4500,3000);
-		dog->mode = 0;
 	}
-	moveBot(wsi, sheep->coord.X, sheep->coord.Y);
-	iii++;
-	if(distance(dog->coord.X,dog->coord.Y,sheep->coord.X,sheep->coord.Y) < ( R_ACTION[dog->color]) ){
-		moveBot(wsi,dog->coord.X,dog->coord.Y);
-	}
-	if (iii == R_ACTION[dog->color])
+	else
 	{
-	 iii = 0;
-	 dog->mode = 0;
+		moveBot(wsi, sheep->coord.X, sheep->coord.Y);
+		iii++;
+		if(distance(dog->coord.X,dog->coord.Y,sheep->coord.X,sheep->coord.Y) < ( R_ACTION[dog->color]) ){
+			moveBot(wsi,dog->coord.X,dog->coord.Y);
+		}
+		if (iii == R_ACTION[dog->color])
+		{
+		 iii = 0;
+		 dog->mode = 0;
+		}
 	}
 
 
