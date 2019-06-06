@@ -4,7 +4,7 @@ EXEC=sock
 
 all: $(EXEC)
 
-init: test-client.o mapFunctions.o bot_yellow.o chainedListFunctions.o
+sock: test-client.o mapFunctions.o bot_yellow.o chainedListFunctions.o
 	$(CC) -o $@ $^ $(FLAGS)
 
 test-client.o: test-client.c client.h
