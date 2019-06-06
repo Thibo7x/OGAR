@@ -10,6 +10,10 @@
 
 
 #include "client.h"
+#include "bot_yellow.h"
+#include "chainedListFunctions.h"
+#include "entities.h"
+#include "mapFunctions.h"
 
 // compile with gcc -Wall -g -lm -o sock ./test-client.c -lwebsockets
 
@@ -81,164 +85,6 @@ int writePacket(struct lws *wsi)
 	return(ret);
 }
 
-/****************************************************************************************************************************/
-int distance(int coordX1, int coordY1, int coordX2, int coordY2)
-{
-	return sqrt((coordX2-coordX1)*(coordX2-coordX1)+(coordY2-coordY1)*(coordY2-coordY1));
-}
-
-/**
-\brief Delete a chained list
-\param firstNode beginning of the chained list
-****************************************************************************************************************************/
-void freeListeChainee(rencontre *firstNode)
-{
-	rencontre *viseur;
-	rencontre *viseur_back;
-	if (firstNode != NULL)
-	{
-		while (firstNode->next != NULL)
-		{
-			viseur = firstNode;
-			viseur_back = firstNode;
-			while (viseur->next != NULL) viseur = viseur->next;
-			while (viseur_back->next != viseur) viseur_back = viseur_back->next;
-			free(viseur);
-			viseur_back->next = NULL;
-		}
-	}
-	free(firstNode);
-}
-
-/**
-\brief Explore the chained list
-\param firstNode beginning of the chained list
-\return nothing (show in stdout)
-****************************************************************************************************************************/
-void explore_chained_list(rencontre *firstNode)
-{
-	rencontre *viseur = firstNode;
-	while (viseur != NULL)
-	{
-		if (!memcmp(viseur->couleur,"\xe6\xf0\xf0",3))
-		{
-			printf("Sheep à une distance de %d", distance(dog->coord.X, dog->coord.Y, viseur->coord.X, viseur->coord.Y));
-		}
-		else if (!memcmp(viseur->couleur,"\x0\x0\xff",3))
-		{
-			printf("Blue à une distance de %d", distance(dog->coord.X, dog->coord.Y, viseur->coord.X, viseur->coord.Y));
-		}
-		else if (!memcmp(viseur->couleur,"\x0\xff\x0",3))
-		{
-			printf("Green à une distance de %d", distance(dog->coord.X, dog->coord.Y, viseur->coord.X, viseur->coord.Y));
-		}
-		else if (!memcmp(viseur->couleur,"\xff\xff\x0",3))
-		{
-			printf("Yellow à une distance de %d", distance(dog->coord.X, dog->coord.Y, viseur->coord.X, viseur->coord.Y));
-		}
-		else if (!memcmp(viseur->couleur,"\xff\x0\xff",3))
-		{
-			printf("Purple à une distance de %d", distance(dog->coord.X, dog->coord.Y, viseur->coord.X, viseur->coord.Y));
-		}
-		else if (!memcmp(viseur->couleur,"\x0\xff\xff",3))
-		{
-			printf("Cyan à une distance de %d", distance(dog->coord.X, dog->coord.Y, viseur->coord.X, viseur->coord.Y));
-		}
-		else if (!memcmp(viseur->couleur,"\xff\x0\x0",3))
-		{
-			printf("Red à une distance de %d", distance(dog->coord.X, dog->coord.Y, viseur->coord.X, viseur->coord.Y));
-		}
-		else {
-			printf("OVNI à une distance de %d", distance(dog->coord.X, dog->coord.Y, viseur->coord.X, viseur->coord.Y));
-		}
-		printf("\n");
-		viseur = viseur->next;
-	}
-	printf("\n");
-}
-
-/**
-\brief Search a neighbour from its ID field on a chained list
-\param firstNode beginning of the chained list
-\param id Searched ID
-\return pointer to neighbour
-****************************************************************************************************************************/
-rencontre* rechercherListeChainee(rencontre *firstNode, unsigned char id)
-{
-	rencontre *viseur = firstNode;
-	if (viseur == NULL)
-		return NULL;
-	while (viseur->ID != id)
-	{
-		viseur = viseur->next;
-		if (viseur == NULL)
-		{
-			break;
-			return NULL;
-		}
-	}
-	return viseur;
-}
-
-/**
-\brief Decrypt 0x10 messages from server
-\param rbuf payload
-\return pointer to neighbour chained list with position and colour of each neighbour
-****************************************************************************************************************************/
-rencontre* dechiffrageMessage(unsigned char* rbuf)
-{
-	rencontre *firstNode = NULL;
-	unsigned char *reader_c = rbuf+3;
-	do {
-		rencontre *node = malloc(sizeof(node));
-		node->ID = (*reader_c); // ID
-		reader_c += 4;
-		int i;
-		// CoordX
-		node->coord.X = 0;
-		node->coord.X += (unsigned int)(*(reader_c) & 0x0F);
-		node->coord.X += (unsigned int)((*(reader_c++) & 0xF0) >> 4)*16;
-		node->coord.X += (unsigned int)(*(reader_c) & 0x0F)*256;
-		node->coord.X += (unsigned int)((*(reader_c++) & 0xF0) >> 4) *4096;
-		 // CoordY
-		reader_c += 2;
-		node->coord.Y = 0;
-		node->coord.Y += (unsigned int)(*(reader_c) & 0x0F);
-		node->coord.Y += (unsigned int)((*(reader_c++) & 0xF0) >> 4)*16;
-		node->coord.Y += (unsigned int)(*(reader_c) & 0x0F)*256;
-		node->coord.Y += (unsigned int)((*(reader_c++) & 0xF0) >> 4) *4096;
-		reader_c += 5;
-		// Couleur
-		for (i = 0; i < 3; i++)
-		{
-			node->couleur[i] = *(reader_c);
-			reader_c += 1;
-		}
-		node->couleur[i] = '\0';
-		i = 0;
-		while (*(reader_c+i) != 0x0) i++;
-		reader_c += (i+1);
-
-		// Si c'est nous, on modifie chien
-		if (node->ID == dog->ID)
-		{
-			dog->coord.X = node->coord.X;
-			dog->coord.Y = node->coord.Y;
-		}
-		else
-		{
-			// Sinon, ajout à la liste chaînée
-			if (rechercherListeChainee(firstNode, node->ID) == NULL) // On vérifie s'il n'est pas déjà présent
-			{
-				node->next = firstNode;
-				firstNode = node;
-			}
-		}
-
-	} while ( (*reader_c != 0x0) || (*(reader_c+1) != 0x0) || (*(reader_c+2) != 0x0) || (*(reader_c+3) != 0x0) ); // Fin du payload
-	return firstNode;
-}
-
 void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 {
 	rencontre *voisins;
@@ -280,9 +126,9 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 						if (dog->mode == 0)
 						{
 							dog->mode = 1;
-							dog->A_directeur = direction(100, 3000, sheep_viseur->coord.X, sheep_viseur->coord.Y);
 						}
-						bring_back_our_sheeps(wsi, sheep_viseur);
+						coord go = bring_back_our_sheeps(sheep_viseur);
+						moveBot(wsi, go.X, go.Y);
 					}
 							//dog->mode = 1;
 							//
@@ -331,12 +177,10 @@ void idColor(char* color) {
 	if (!strcmp(color,"red"))
 	{
 		dog->color = 0;
-		printf("RED");
 	}
 	if (!strcmp(color,"blue"))
 	{
 		dog->color = 1;
-		printf("BL");
 	}
 	if (!strcmp(color,"green"))
 	{
@@ -501,6 +345,10 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
+	dog->R_action = R_ACTION[dog->color];
+	dog->view.X = X_VIEW[dog->color];
+	dog->view.Y = Y_VIEW[dog->color];
+
 	i.context = context;
 
 	if (lws_client_connect_via_info(&i)); // just to prevent warning !!
@@ -519,134 +367,4 @@ int main(int argc, char **argv)
 usage:
 	fprintf(stderr, "Usage: ogar-client -h -s -p <port> -n <nickname> -P <proxy> <server address> \n");
 	return 1;
-}
-
-unsigned int action_over_sheep(rencontre *sheep)
-{
-	unsigned int r_action = R_ACTION[dog->color];
-	if (distance(dog->coord.X, dog->coord.Y, sheep->coord.X, sheep->coord.Y) < r_action)
-		return 1;
-	else
-		return 0;
-}
-
-coordF direction(int coordX1, int coordY1, int coordX2, int coordY2)
-{
-	coordF dir;
-	dir.X = ((float) (coordX2 - coordX1)) / ((float) distance(coordX1, coordY1, coordX2, coordY2));
-	dir.Y = ((float) (coordY2 - coordY1)) / ((float) distance(coordX1, coordY1, coordX2, coordY2));
-	return dir;
-}
-
-coord reach_point(rencontre *sheep, coordF direction)
-{
-	coord reach_point;
-	reach_point.X = sheep->coord.X + ceil((direction.X)*(R_ACTION[dog->color] + ENTITY_SIZE));
-	reach_point.Y = sheep->coord.Y + ceil((direction.Y)*(R_ACTION[dog->color] + ENTITY_SIZE));
-	return reach_point;
-}
-
-coord circumvention(rencontre *sheep)
-{
-	coord objectif = reach_point(sheep, direction(100, 3000, sheep->coord.X, sheep->coord.Y));
-	// printf("%d\n", objectif.X);
-	// printf("%d\n", objectif.Y);
-	coord chemin;
-	chemin.X = objectif.X;
-	if (objectif.X != dog->coord.X)
-	{
-		// if (action_over_sheep(coord++)) ...
-		chemin.Y = dog->coord.Y;
-	}
-	else// moveBot(wsi, sheep->coord.X, sheep->coord.Y);
-	 // if(distance(dog->coord.X,dog->coord.Y,sheep->coord.X,sheep->coord.Y) < ( R_ACTION[dog->color]) ){
-	 //  moveBot(wsi,dog->coord.X,dog->coord.Y);
-		// dog->mode = 0;
-	 // }
-	{
-		chemin.Y = objectif.Y;
-	}
-	return chemin;
-}
-
-
-
-void bring_back_our_sheeps(struct lws *wsi, rencontre *sheep)
-{
-
-	if (distance(dog->coord.X, dog->coord.Y, 0, 3000) <= 900)
-	{
-		moveBot(wsi,4500,3000);
-	}
-	else
-	{
-		moveBot(wsi, sheep->coord.X, sheep->coord.Y);
-		iii++;
-		if(distance(dog->coord.X,dog->coord.Y,sheep->coord.X,sheep->coord.Y) < ( R_ACTION[dog->color]) ){
-			moveBot(wsi,dog->coord.X,dog->coord.Y);
-		}
-		if (iii == R_ACTION[dog->color])
-		{
-		 iii = 0;
-		 dog->mode = 0;
-		}
-	}
-
-
-	 // moveBot(wsi, sheep->coord.X, sheep->coord.Y);
-	 // if(distance(dog->coord.X,dog->coord.Y,sheep->coord.X,sheep->coord.Y) < ( R_ACTION[dog->color]) ){
-		//  if (abs(sheep->coord.Y - dog->coord.Y) < abs(sheep->coord.X - dog->coord.X))
-		// 	 moveBot(wsi, sheep->coord.X, dog->coord.Y);
-		//  else if (abs(sheep->coord.Y - dog->coord.Y) > abs(sheep->coord.X - dog->coord.X))
-		// 	 moveBot(wsi, dog->coord.X, sheep->coord.Y);
-		//  else
-		// 	 moveBot(wsi,dog->coord.X,dog->coord.Y);
-		//  }
-
-
-	// if (dog->A_directeur.X < 0 && dog->A_directeur.Y < 0);
-	// if (dog->A_directeur.X < 0 && dog->A_directeur.Y > 0);
-	// if (dog->A_directeur.X > 0 && dog->A_directeur.Y < 0)
-	// {
-	// 	if (objectif.Y < ((-1)*dog->A_directeur.Y))
-	// 		moveBot(wsi, dog->coord.X, sheep->coord.Y);
-	// 	else if (objectif.Y > ((-1)*dog->A_directeur.Y))
-	// 		moveBot(wsi, sheep->coord.X, dog->coord.Y);
-	// 	else
-	// 		moveBot(wsi, sheep->coord.X, sheep->coord.Y);
-	// }
-	// if (dog->A_directeur.X > 0 && dog->A_directeur.Y > 0)
-	// {
-	//
-	// }
-
-	// new.X = abs(new.X);
-	// new.Y = abs(new.Y);
-	// new.X *= 2000.0;
-	// new.Y *= 2000.0;
-	// new.X += (float) sheep->coord.X;
-	// new.Y += (float) sheep->coord.Y;
-
-	//moveBot(wsi, sheep->coord.X, sheep->coord.Y);
-	// if ((dog->coord.Y > (dog->coord.X)*(((float) (sheep->coord.Y - 3000))) / ((float) (sheep->coord.X - 100)) +3000) && dog->coord.Y >= 3000)
-	// {
-	// 	printf("%d\n",(dog->coord.X)*(((float) (sheep->coord.Y - 3000))) / ((float) (sheep->coord.X - 100)) +3000);
-	// 	dog->mode = 0;
-	// }
-	// if(distance(dog->coord.X,dog->coord.Y,sheep->coord.X,sheep->coord.Y) < ( R_ACTION[dog->color]) ){
-	// 	moveBot(wsi,dog->coord.X,dog->coord.Y);
-	// 	}
-
-	// printf("%f\n",new.X);
-	// printf("%f\n",new.Y);
-}
-
-//correction de plage d'effet si on se trouve près du plafond ou près du mur de gauche.
-//Pas encore effectif
-void correction(effect* border)
-{
-	if (border->left < R_ACTION[dog->color])
-		border->left = R_ACTION[dog->color];
-	if (border->top < R_ACTION[dog->color])
-		border->top = R_ACTION[dog->color];
 }
