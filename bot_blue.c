@@ -40,11 +40,14 @@ void split(subdivision* map);
 void get_center(coordF* center,subdivision* map,int column , int line);
 int get_rank_with_column_line(int column , int line , subdivision* map);
 int get_rank_with_center_coos(coordF* center,subdivision* map);
+int get_rank_with_every_coos(coordF* position,subdivision* map);
 void get_column_line_with_rank(int rank,subdivision* map,coord* proposition);
+int get_min(int* table , int rank_max);
 //tests
 void test_split(void);
 void test_get_center(void);
 void test_get_rank_with_center_coos(void);
+void test_get_rank_with_every_coos(void);
 void test_get_min(void);
 void test_get_column_line_with_rank(void);
 /* ----------------.h----------------- */
@@ -122,8 +125,8 @@ int get_rank_with_center_coos(coordF* center,subdivision* map)
   int rank = get_rank_with_column_line(column_out,line_out,map);
   return rank;
 }
-//obtenir le rang d'une case à partir de ses coordonées , à finir, à tester
-/*int get_rank_with_every_coos(coordF* coord,subdivision* map)
+//obtenir le rang d'une case à partir de ses coordonées , à finir, à tester , à faire évoluer
+int get_rank_with_every_coos(coordF* position,subdivision* map)
 {
   coordF* proposition;
   proposition = malloc(sizeof(coordF));
@@ -147,15 +150,15 @@ int get_rank_with_center_coos(coordF* center,subdivision* map)
 //on enregistre l'ensemble des distances du point donné par rapport aux différents centres
   for(int rank = 1; rank <= rank_max; ++rank)
     {
-      get_column_line_with_rank(rank);
-      get_center(proposition,map,rank_properties->X,rank_properties->Y);
-      *(distance_table+rank-1) = distance((int)proposition->X,(int)proposition->Y,(int)coord->X,(int)coord->Y);
+      get_column_line_with_rank(rank,map,rank_properties);
+			get_center(proposition,map,rank_properties->X,rank_properties->Y);
+      *(distance_table+rank-1) = distance((int)proposition->X,(int)proposition->Y,(int)position->X,(int)position->Y);
     }
 
-  minimum = get_min(proposition,rank_max);
+  minimum = get_min(distance_table,rank_max);
   for(int rank = 1; rank <= rank_max; ++rank)
     {
-      if (distance_table(rank-1) == minimum)
+      if (distance_table[rank-1] == minimum)
         {
           *(rank_propose+depth) = rank;
           depth++;
@@ -165,12 +168,12 @@ int get_rank_with_center_coos(coordF* center,subdivision* map)
   free(proposition);
   free (distance_table);
   return rank_propose[0];
-}*/
+}
 //obtenir la valeur min d'un tableau
-int get_min(int* table , int length_max)
+int get_min(int* table , int rank_max)
 {
   int min = *(table);
-  for (int rank = 1; ranhk < length_max; ++rank)
+  for (int rank = 1; rank <= rank_max; ++rank)
   {
     if (min >= *(table+rank))
       min = *(table+rank);
@@ -178,22 +181,29 @@ int get_min(int* table , int length_max)
 return min;
 }
 
-//à terminer , fonction de test déjà faites
+//permet d'obtenir la colonne et la ligne en fonction du numéro de la case
 void get_column_line_with_rank(int rank,subdivision* map,coord* proposition)
 {
   split(map);
-  proposition->X = rank%map->column;
-  proposition->Y = (rank/map->column)+1;
+	if (rank > map->column*map->line)
+	{
+			perror("Out of range , rank too high");
+	}
+	else
+		{
+			proposition->X = rank%map->column;
+  		proposition->Y = (rank/map->column)+1;
 
-  if (proposition->X == 0)
-    proposition->X = map->column;
-  if (proposition->Y == map->line+1 || proposition->Y == 0)
-    proposition->Y = map->line;
+  		if (proposition->X == 0)
+    		proposition->X = map->column;
+  		if (rank%map->column == 0)
+    		proposition->Y -= 1;
+		}
 }
 /* ----------------tests.c----------------- */
 int main(int argc,char* argv[])
 {
-  test_get_column_line_with_rank();
+  test_get_rank_with_every_coos();
   return 1;
 }
 
@@ -259,20 +269,30 @@ void test_get_rank_with_center_coos(void)
   free(map);
 }
 
-void test_get_rank_with_every_cooos(void)
+void test_get_rank_with_every_coos(void)
 {
   coordF* center;
   center = malloc(sizeof(coordF));
   subdivision* map;
   map = malloc(sizeof(subdivision));
+	coord* axes;
+	axes = malloc(sizeof(coord));
 
-  int column;
-  int line;
-  printf("Quelle colonne ? Quelle ligne ?\n");
-  scanf("%d %d",&column,&line);
+	split(map);
+	int buffer;
+	int rank_max = map->column*map->line;
 
-  get_center(center,map,column,line);
 
+	for (int rank = 1 ; rank <= rank_max ; ++rank )
+  	{
+			get_column_line_with_rank(rank , map , axes);
+			get_center(center,map,axes->X,axes->Y);
+			buffer = get_rank_with_every_coos(center,map);
+			printf("Pour la case %d on obtient la case %d.\n",rank,buffer);
+		}
+		free(center);
+		free(map);
+		free(axes);
 }
 
 void test_get_min(void)
@@ -295,13 +315,16 @@ void test_get_column_line_with_rank(void)
 
   split(map);
   int rank;
-
-  printf("Quelle rank ?\n");
-  scanf("%d",&rank);
-
-  get_column_line_with_rank(rank,map,proposition);
-  printf("Rank %d correspond à la colonne %d et la ligne %d\n",rank,proposition->X,proposition->Y);
+	int rank_max = map->column*map->line;
+  //printf("Quelle rank ?\n");
+  //scanf("%d",&rank);
+	for ( rank = 1 ; rank <= rank_max+1 ; ++rank)
+	{
+		get_column_line_with_rank(rank,map,proposition);
+		printf("Rank %d correspond à la colonne %d et la ligne %d\n",rank,proposition->X,proposition->Y);
+	}
 }
+
 /* ----------------tests.c----------------- */
 //Pas mal de fonction a faire a l'intérieur
 // void intel_blue(struct lws *wsi,rencontre *voisins)
