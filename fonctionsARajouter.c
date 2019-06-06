@@ -5,14 +5,14 @@ void turn_to_indicate(rencontre *sheep)
 	coordF direction = direction(dog->coord.X,dog->coord.Y,sheep->coord.X,sheep->coord.Y)
 	coord reach_point;
 	//Coordonnées du point à atteindre pour être aligné avec la brebis
-	reach_point.X = 4500 + ceil((direction.X)*150);
-	reach_point.Y = 3000 + ceil((direction.Y)*150);
+	reach_point.X = MAP_SIZE_X/2 + ceil((direction.X)*150);
+	reach_point.Y = MAP_SIZE_Y/2 + ceil((direction.Y)*150);
 	while(dog->coord.X != reach_point.X && dog->coord.Y != reach_point.Y)
 	{
 		for(angle = 0; angle < 2*M_PI; angle += 0.01)
 			{
 				//Equation du cercle : (x-4500)²+(y-3000)² = 150²
-				moveBot(150*cos(angle) + 4500, 150*sin(angle)+3000);
+				moveBot((unsigned int)(150*cos(angle) + MAP_SIZE_X/2), (unsigned int)(150*sin(angle)+MAP_SIZE_Y/2));
 		  }
 	}
 }
@@ -34,8 +34,8 @@ void intel_blue(struct lws *wsi,rencontre *voisins)
 	if(counter == 4)
 	{
 		sheepCounter = voisins;
-		moveBot(wsi,4500,3000);
-		if(distance(dog->coord.X,dog->coord.Y,4500,3000) <= 150)
+		moveBot(wsi,MAP_SIZE_X/2,MAP_SIZE_Y/2);
+		if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) <= 150)
 			moveBot(wsi,dog->coord.X,dog->coord.Y);
 		while(counter != 0)
 		{
@@ -44,12 +44,12 @@ void intel_blue(struct lws *wsi,rencontre *voisins)
 				sheepCounter = sheepCounter->next;
 			}
 			counter--;
-			//turn_to_indicate(sheepCounter->coord);
+			turn_to_indicate(sheepCounter->coord);
 			//Tourne autour du cercle pour être aligné au mouton à indiquer
 			retour.X = dog->coord.X;
 			retour.Y = dog->coord.Y;
-			moveBot(wsi,4500,3000);
-			if(distance(dog->coord.X,dog->coord.Y,4500,3000) <= 90)
+			moveBot(wsi,MAP_SIZE_X/2,MAP_SIZE_Y/2);
+			if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) <= 90)
 				moveBot(wsi,retour.X,retour.Y);
 		}
 	}
@@ -75,4 +75,36 @@ unsigned char* get_size(struct lws *wsi,unsigned char* rbuf)
 			}
 			break;
 	return taille;
+}
+
+coord borderCorrection(coord reach_point)
+//A tester, permet à un chien de déplacer un mouton se trouvant proche d'une bordure
+{
+	coord objectif;
+	if(dog->coord.X > MAP_SIZE_X-R_ACTION[dog->color])
+	{
+		objectif.X = MAP_SIZE_X;
+		objectif.Y = reach_point.Y;
+	}
+	else if(dog->coord.X < R_ACTION[dog->color])
+	{
+		objectif.X = 0;
+		objectif.Y = reach_point.Y;
+	}
+	else if(dog->coord.Y > MAP_SIZE_Y-R_ACTION[dog->color])
+	{
+		objectif.X = reach_point.X;
+		objectif.Y = MAP_SIZE_Y;
+	}
+	else if(dog->coord.Y < R_ACTION[dog->color])
+	{
+		objectif.X = reach_point.X;
+		objectif.Y = 0;
+	}
+	else
+	{
+		objectif.X = reach_point.X;
+		objectif.Y = reach_point.Y;
+	}
+	return
 }
