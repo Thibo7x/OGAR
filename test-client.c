@@ -89,6 +89,8 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 {
 	rencontre *voisins;
 	rencontre *sheep_viseur;
+	unsigned char taille[6];
+	int firstBorderInfoMessage = 1;
 		switch (rbuf[0]) {
 			case 0x12:
 			//Q On Command, on répond avec le Nickname
@@ -98,6 +100,20 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 			case 0x20:
 			//Add Node Message, on récupère l'ID de notre bot
 			dog->ID = rbuf[1];
+			break;
+
+			case 0x64:
+			if(firstBorderInfoMessage)
+			{
+				firstBorderInfoMessage = 0;
+				taille[0] = rbuf[22];
+				taille[1] = rbuf[23];
+				taille[2] = rbuf[24];
+				taille[3] = rbuf[30];
+				taille[4] = rbuf[31];
+				taille[5] = rbuf[32];
+				//Voir comment traduire ces infos en taille
+			}
 			break;
 
 			case 0x10:
