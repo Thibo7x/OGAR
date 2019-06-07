@@ -14,7 +14,7 @@ static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void 
 void idColor(char* couleur);
 void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len);
 int forceExit;
-
+int firstBorderInfoMessage;
 typedef struct s_packet {
         unsigned char buf[MAXLEN+LWS_PRE];
         unsigned int len;

@@ -3,8 +3,6 @@
 
 #include "entities.h"
 #include "mapFunctions.h"
-#define MAP_SIZE_X 9000.0
-#define MAP_SIZE_Y 6000.0
 int iii;
 
 coord intel_yellow(rencontre *voisins);

@@ -3,7 +3,8 @@
 
 #include "entities.h"
 #include "global.h"
-
+double MAP_SIZE_X;
+double MAP_SIZE_Y;
 typedef struct node_view_borders view;
 struct node_view_borders
 {

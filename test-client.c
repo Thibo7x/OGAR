@@ -88,8 +88,7 @@ int writePacket(struct lws *wsi)
 void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 {
 	rencontre *voisins;
-	unsigned char taille[6];
-	int firstBorderInfoMessage = 1;
+
 		switch (rbuf[0]) {
 			case 0x12:
 			//Q On Command, on répond avec le Nickname
@@ -101,17 +100,12 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 			dog->ID = rbuf[1];
 			break;
 
-			case 0x64:
+			case 0x40:
 			if(firstBorderInfoMessage)
 			{
 				firstBorderInfoMessage = 0;
-				taille[0] = rbuf[22];
-				taille[1] = rbuf[23];
-				taille[2] = rbuf[24];
-				taille[3] = rbuf[30];
-				taille[4] = rbuf[31];
-				taille[5] = rbuf[32];
-				//Voir comment traduire ces infos en taille
+				MAP_SIZE_X = *((double *)(rbuf+17));
+			  MAP_SIZE_Y = *((double *)(rbuf+25));
 			}
 			break;
 
@@ -256,7 +250,7 @@ int main(int argc, char **argv)
 {
 	int n = 0;
 	iii = 0;
-
+	firstBorderInfoMessage = 1;
 	struct lws_context_creation_info info;
 	struct lws_client_connect_info i;
 	struct lws_context *context;
@@ -349,4 +343,3 @@ usage:
 	fprintf(stderr, "Usage: ogar-client -h -s -p <port> -n <nickname> -P <proxy> <server address> \n");
 	return 1;
 }
-
