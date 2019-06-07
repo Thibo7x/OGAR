@@ -3,7 +3,9 @@
 
 #include "entities.h"
 #include "mapFunctions.h"
+
 int iii;
+int enclos;
 
 coord intel_yellow(rencontre *voisins);
 unsigned int action_over_sheep(rencontre *sheep);

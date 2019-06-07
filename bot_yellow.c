@@ -114,6 +114,15 @@ coord bring_back_our_sheeps(rencontre *sheep)
 	coord ret;
 	if (distance(dog->coord.X, dog->coord.Y, 0, MAP_SIZE_Y/2) <= MAP_SIZE_X/10)
 	{
+		enclos = 1;
+	}
+	if (distance(dog->coord.X, dog->coord.Y, 0, MAP_SIZE_Y/2) >= MAP_SIZE_X/8)
+	{
+		enclos = 0;
+	}
+
+	if (enclos)
+	{
 		ret.X = MAP_SIZE_X/2;
 		ret.Y = MAP_SIZE_Y/2;
 	}
