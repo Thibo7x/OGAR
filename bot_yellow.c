@@ -162,17 +162,16 @@ coord bring_back_our_sheeps(rencontre *sheep)
 
 int has_lower_ID(rencontre* voisins)
 //Teste si parmis les chiens jaunes groupés au centre, le chien à l'ID le plus bas
-//A tester
 {
 	int has_lower_ID = 1;
 	rencontre* yellow_tester = voisins;
-	if(dog->coord.X != MAP_SIZE_X/2 || dog->coord.Y != MAP_SIZE_Y/2)
-		has_lower_ID = 0;
+	if((dog->coord.X != MAP_SIZE_X/2) || (dog->coord.Y != MAP_SIZE_Y/2) || (yellow_tester == NULL))
+		return 0;
 	while(yellow_tester->next != NULL && has_lower_ID == 1)
 	{
 		if(!memcmp(yellow_tester->couleur,"\xff\x0\xff",3))
 		{
-			if (yellow_tester->ID < dog->ID) {
+			if ((unsigned int)yellow_tester->ID < (unsigned int)dog->ID) {
 				has_lower_ID = 0;
 			}
 			else
@@ -182,7 +181,7 @@ int has_lower_ID(rencontre* voisins)
 	return has_lower_ID;
 }
 
-coord follow_blue_dog(rencontre* voisins)
+coord follow_blue_dog(rsuivi_bleu = 1;encontre* voisins)
 //Renvoie les coordonnées à suivre pour atteindre la brebis indiquée par le chien bleu
 //A tester
 {
@@ -191,7 +190,8 @@ coord follow_blue_dog(rencontre* voisins)
 	coord reach_point;
 	if(has_lower_ID(voisins))
 	{
-		while ((blue_radar != NULL) || (!memcmp(blue_radar->couleur,"\x0\xff\x0",3)))
+		printf("id le plus bas\n");
+		while ((blue_radar->next != NULL) || (!memcmp(blue_radar->couleur,"\x0\xff\x0",3)))
 		{
 			blue_radar = blue_radar->next;
 		}
@@ -201,6 +201,11 @@ coord follow_blue_dog(rencontre* voisins)
 			reach_point.X = ceil((sheep_direction.X)*(min(MAP_SIZE_X,MAP_SIZE_Y)));
 			reach_point.Y = ceil((sheep_direction.Y)*(min(MAP_SIZE_X,MAP_SIZE_Y)));
 		}
+	}
+	else
+	{
+		reach_point.X = MAP_SIZE_X/2;
+		reach_point.Y = MAP_SIZE_Y/2;
 	}
 	return reach_point;
 }
