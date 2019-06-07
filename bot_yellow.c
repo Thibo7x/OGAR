@@ -14,16 +14,28 @@ coord intel_yellow(rencontre *voisins)
 	obj.Y = 0;
 
 	sheep_viseur = voisins;
+
 	while (sheep_viseur != NULL)
 	{
 		if (memcmp(sheep_viseur->couleur,"\xe6\xf0\xf0",3))
 			sheep_viseur = sheep_viseur->next;
 		else
+		{
+			ID_suivi = sheep_viseur->ID;
 			break;
+		}
 	}
 
 	if (sheep_viseur != NULL)
 	{
+		if (ID_suivi)
+		{
+			sheep_viseur = voisins;
+			while (sheep_viseur->ID != ID_suivi)
+			{
+				sheep_viseur = sheep_viseur->next;
+			}
+		}
 		coord co = circumvention(sheep_viseur);
 		int radius = (int) ceil(distance(co.X, co.Y, dog->coord.X, dog->coord.Y));
 		if ((radius > 2) && dog->mode == 0)

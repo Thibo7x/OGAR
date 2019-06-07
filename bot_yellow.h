@@ -6,6 +6,7 @@
 
 int iii;
 int enclos;
+unsigned char ID_suivi;
 
 coord intel_yellow(rencontre *voisins);
 unsigned int action_over_sheep(rencontre *sheep);
