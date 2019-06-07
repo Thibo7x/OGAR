@@ -7,13 +7,15 @@
 int iii;
 int enclos;
 unsigned char ID_suivi;
+coord coord_blue_dog;
 
+rencontre *find_voisin_by_color(unsigned char* color, rencontre* voisins);
 coord intel_yellow(rencontre *voisins);
 unsigned int action_over_sheep(rencontre *sheep);
 coord borderCorrection(coord reach_point);
 coord circumvention(rencontre *sheep);
 coord bring_back_our_sheeps(rencontre *sheep);
 int has_lower_ID(rencontre* voisins);
-coord follow_blue_dog(rencontre* voisins);
+coord follow_blue_dog(rencontre* voisins, rencontre* blue_radar);
 
 #endif
