@@ -1,9 +1,55 @@
 #include "bot_yellow.h"
 #include "entities.h"
 #include "mapFunctions.h"
-#include <string.h>
+#include <stdio.h>
 #include <math.h>
+#include <string.h>
 #define min(a,b) (a<=b?a:b)
+
+coord intel_yellow(rencontre *voisins)
+{
+	rencontre *sheep_viseur = voisins;
+	coord obj;
+	obj.X = 0;
+	obj.Y = 0;
+
+	sheep_viseur = voisins;
+	while (sheep_viseur != NULL)
+	{
+		if (memcmp(sheep_viseur->couleur,"\xe6\xf0\xf0",3))
+			sheep_viseur = sheep_viseur->next;
+		else
+			break;
+	}
+
+	if (sheep_viseur != NULL)
+	{
+		coord co = circumvention(sheep_viseur);
+		int radius = (int) ceil(distance(co.X, co.Y, dog->coord.X, dog->coord.Y));
+		if ((radius > 2) && dog->mode == 0)
+		{
+			obj.X = co.X;
+			obj.Y = co.Y;
+		}
+		else
+		{
+			if (dog->mode == 0)
+			{
+				dog->mode = 1;
+			}
+			coord go = bring_back_our_sheeps(sheep_viseur);
+			obj.X = go.X;
+			obj.Y = go.Y;
+		}
+	}
+	else
+	{
+		dog->mode = 0;
+		obj.X = 4500;
+		obj.Y = 3000;
+	}
+	return obj;
+}
 
 unsigned int action_over_sheep(rencontre *sheep)
 {
@@ -19,23 +65,23 @@ coord borderCorrection(coord reach_point)
 	coord objectif;
 	if(dog->coord.X > MAP_SIZE_X-dog->R_action)
 	{
-		objectif.X = MAP_SIZE_X-51;
+		objectif.X = MAP_SIZE_X;
 		objectif.Y = reach_point.Y;
 	}
 	else if(dog->coord.X < dog->R_action)
 	{
-		objectif.X = 51;
+		objectif.X = 0;
 		objectif.Y = reach_point.Y;
 	}
 	else if(dog->coord.Y > MAP_SIZE_Y-dog->R_action)
 	{
 		objectif.X = reach_point.X;
-		objectif.Y = MAP_SIZE_Y-51;
+		objectif.Y = MAP_SIZE_Y;
 	}
 	else if(dog->coord.Y < dog->R_action)
 	{
 		objectif.X = reach_point.X;
-		objectif.Y = 51;
+		objectif.Y = 0;
 	}
 	else
 	{
@@ -49,20 +95,14 @@ coord borderCorrection(coord reach_point)
 coord circumvention(rencontre *sheep)
 {
 	coord objectif = borderCorrection(reach_point(sheep->coord, direction(100, MAP_SIZE_Y/2, sheep->coord.X, sheep->coord.Y)));
-	// printf("%d\n", objectif.X);
-	// printf("%d\n", objectif.Y);
+	int radiusX = (int)distance(objectif.X, dog->coord.Y, dog->coord.X, dog->coord.Y);
 	coord chemin;
 	chemin.X = objectif.X;
-	if (objectif.X != dog->coord.X)
+	if (radiusX > 2)
 	{
-		// if (action_over_sheep(coord++)) ...
 		chemin.Y = dog->coord.Y;
 	}
-	else// moveBot(wsi, sheep->coord.X, sheep->coord.Y);
-	 // if(distance(dog->coord.X,dog->coord.Y,sheep->coord.X,sheep->coord.Y) < ( R_ACTION[dog->color]) ){
-	 //  moveBot(wsi,dog->coord.X,dog->coord.Y);
-		// dog->mode = 0;
-	 // }
+	else
 	{
 		chemin.Y = objectif.Y;
 	}
