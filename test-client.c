@@ -88,7 +88,6 @@ int writePacket(struct lws *wsi)
 void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 {
 	rencontre *voisins;
-	rencontre *sheep_viseur;
 	unsigned char taille[6];
 	int firstBorderInfoMessage = 1;
 		switch (rbuf[0]) {
@@ -121,42 +120,8 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 				// Fonctions de parcours de liste chainee, de suppression de la liste chainee, etc.
 
 				//explore_chained_list(voisins);
-				sheep_viseur = voisins;
-				while (sheep_viseur != NULL)
-				{
-					if (memcmp(sheep_viseur->couleur,"\xe6\xf0\xf0",3))
-						sheep_viseur = sheep_viseur->next;
-					else
-						break;
-				}
-
-				if (sheep_viseur != NULL)
-				{
-					coord co = circumvention(sheep_viseur);
-					if (((co.X != dog->coord.X) || (co.Y != dog->coord.Y)) && dog->mode == 0)
-					{
-						moveBot(wsi, co.X, co.Y);
-					}
-					else
-					{
-						if (dog->mode == 0)
-						{
-							dog->mode = 1;
-						}
-						coord go = bring_back_our_sheeps(sheep_viseur);
-						moveBot(wsi, go.X, go.Y);
-					}
-							//dog->mode = 1;
-							//
-							//dog->mode = 0;
-				}
-				else
-				{
-					dog->mode = 0;
-					moveBot(wsi, 4500, 3000);
-				}
-
-
+				coord temp = intel_yellow(voisins);
+				moveBot(wsi, temp.X, temp.Y);
 
 				freeListeChainee(voisins);
 			break;
@@ -384,3 +349,4 @@ usage:
 	fprintf(stderr, "Usage: ogar-client -h -s -p <port> -n <nickname> -P <proxy> <server address> \n");
 	return 1;
 }
+
