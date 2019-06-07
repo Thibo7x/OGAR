@@ -13,5 +13,7 @@ unsigned int action_over_sheep(rencontre *sheep);
 coord borderCorrection(coord reach_point);
 coord circumvention(rencontre *sheep);
 coord bring_back_our_sheeps(rencontre *sheep);
+int has_lower_ID(rencontre* voisins);
+coord follow_blue_dog(rencontre* voisins);
 
 #endif

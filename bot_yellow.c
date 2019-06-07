@@ -57,8 +57,9 @@ coord intel_yellow(rencontre *voisins)
 	else
 	{
 		dog->mode = 0;
-		obj.X = 4500;
-		obj.Y = 3000;
+		coord go = follow_blue_dog(voisins);
+		obj.X = go.X;
+		obj.Y = go.Y;
 	}
 	return obj;
 }
@@ -181,7 +182,7 @@ int has_lower_ID(rencontre* voisins)
 	return has_lower_ID;
 }
 
-coord follow_blue_dog(rsuivi_bleu = 1;encontre* voisins)
+coord follow_blue_dog(rencontre* voisins)
 //Renvoie les coordonnées à suivre pour atteindre la brebis indiquée par le chien bleu
 //A tester
 {
