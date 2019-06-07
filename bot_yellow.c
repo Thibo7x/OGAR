@@ -176,9 +176,9 @@ coord follow_blue_dog(rencontre* voisins)
 		}
 		if(blue_radar != NULL)
 		{
-			direction = direction(dog->coord.X,dog->coord.Y,blue_radar->coord.X,blue_radar->coord.Y);
-			reach_point.X = ceil((direction.X)*(min(MAP_SIZE_X,MAP_SIZE_Y)));
-			reach_point.Y = ceil((direction.Y)*(min(MAP_SIZE_X,MAP_SIZE_Y)));
+			sheep_direction = direction(dog->coord.X,dog->coord.Y,blue_radar->coord.X,blue_radar->coord.Y);
+			reach_point.X = ceil((sheep_direction.X)*(min(MAP_SIZE_X,MAP_SIZE_Y)));
+			reach_point.Y = ceil((sheep_direction.Y)*(min(MAP_SIZE_X,MAP_SIZE_Y)));
 		}
 	}
 	return reach_point;
