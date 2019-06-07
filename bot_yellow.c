@@ -1,6 +1,9 @@
 #include "bot_yellow.h"
 #include "entities.h"
 #include "mapFunctions.h"
+#include <string.h>
+#include <math.h>
+#define min(a,b) (a<=b?a:b)
 
 unsigned int action_over_sheep(rencontre *sheep)
 {
@@ -45,7 +48,7 @@ coord borderCorrection(coord reach_point)
 
 coord circumvention(rencontre *sheep)
 {
-	coord objectif = borderCorrection(reach_point(sheep->coord, direction(100, 3000, sheep->coord.X, sheep->coord.Y)));
+	coord objectif = borderCorrection(reach_point(sheep->coord, direction(100, MAP_SIZE_Y/2, sheep->coord.X, sheep->coord.Y)));
 	// printf("%d\n", objectif.X);
 	// printf("%d\n", objectif.Y);
 	coord chemin;
@@ -69,10 +72,10 @@ coord circumvention(rencontre *sheep)
 coord bring_back_our_sheeps(rencontre *sheep)
 {
 	coord ret;
-	if (distance(dog->coord.X, dog->coord.Y, 0, 3000) <= 900)
+	if (distance(dog->coord.X, dog->coord.Y, 0, MAP_SIZE_Y/2) <= MAP_SIZE_X/10)
 	{
-		ret.X = 4500;
-		ret.Y = 3000;
+		ret.X = MAP_SIZE_X/2;
+		ret.Y = MAP_SIZE_Y/2;
 	}
 	else
 	{
@@ -94,4 +97,49 @@ coord bring_back_our_sheeps(rencontre *sheep)
 		}
 	}
 	return ret;
+}
+
+int has_lower_ID(rencontre* voisins)
+//Teste si parmis les chiens jaunes groupés au centre, le chien à l'ID le plus bas
+//A tester
+{
+	int has_lower_ID = 1;
+	rencontre* yellow_tester = voisins;
+	if(dog->coord.X != MAP_SIZE_X/2 || dog->coord.Y != MAP_SIZE_Y/2)
+		has_lower_ID = 0;
+	while(yellow_tester->next != NULL && has_lower_ID == 1)
+	{
+		if(!memcmp(yellow_tester->couleur,"\xff\x0\xff",3))
+		{
+			if (yellow_tester->ID < dog->ID) {
+				has_lower_ID = 0;
+			}
+			else
+				yellow_tester = yellow_tester->next;
+		}
+	}
+	return has_lower_ID;
+}
+
+coord follow_blue_dog(rencontre* voisins)
+//Renvoie les coordonnées à suivre pour atteindre la brebis indiquée par le chien bleu
+//A tester
+{
+	rencontre* blue_radar = voisins;
+	coordF sheep_direction;
+	coord reach_point;
+	if(has_lower_ID(voisins))
+	{
+		while ((blue_radar != NULL) || (!memcmp(blue_radar->couleur,"\x0\xff\x0",3)))
+		{
+			blue_radar = blue_radar->next;
+		}
+		if(blue_radar != NULL)
+		{
+			direction = direction(dog->coord.X,dog->coord.Y,blue_radar->coord.X,blue_radar->coord.Y);
+			reach_point.X = ceil((direction.X)*(min(MAP_SIZE_X,MAP_SIZE_Y)));
+			reach_point.Y = ceil((direction.Y)*(min(MAP_SIZE_X,MAP_SIZE_Y)));
+		}
+	}
+	return reach_point;
 }

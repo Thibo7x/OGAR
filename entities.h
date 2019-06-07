@@ -15,7 +15,7 @@ typedef struct coordF {
 } coordF;
 
 typedef struct bot {
-    int ID;
+    unsigned char ID;
     coord coord;
     unsigned int color;
     int mode;

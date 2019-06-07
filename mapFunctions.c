@@ -23,12 +23,12 @@ coord reach_point(coord sheep, coordF direction)
 	return reach_point;
 }
 
-//correction de plage d'effet si on se trouve près du plafond ou près du mur de gauche.
-//Pas encore effectif
-void correction(effect* border)
-{
-	if (border->left < dog->R_action)
-		border->left = dog->R_action;
-	if (border->top < dog->R_action)
-		border->top = dog->R_action;
-}
+// //correction de plage d'effet si on se trouve près du plafond ou près du mur de gauche.
+// //Pas encore effectif
+// void correction(effect* border)
+// {
+// 	if (border->left < dog->R_action)
+// 		border->left = dog->R_action;
+// 	if (border->top < dog->R_action)
+// 		border->top = dog->R_action;
+// }
