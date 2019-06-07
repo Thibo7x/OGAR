@@ -6,61 +6,100 @@
 #include <string.h>
 #define min(a,b) (a<=b?a:b)
 
+//CHOSE A FAIRE POUR AMELIORER LE BOT JAUNE MEME S'IL EST DEJA SUPER FORT
+//- Focus d'un mouton
+//- Empêcher qu'il rentre dans l'enclos
+//- Fixer follow_blue_dog pour les distances > à 3000
+//- Fixer borderCorrection pour que ça fonctionne vraiment
+
+rencontre *find_voisin_by_color(unsigned char* color, rencontre* voisins)
+{
+	rencontre *target = voisins;
+	while (target != NULL)
+	{
+		if (memcmp(target->couleur,color,3))
+			target = target->next;
+		else
+			break;
+	}
+
+	return target;
+}
+
 coord intel_yellow(rencontre *voisins)
 {
+	printf("MODE : %d\n",dog->mode );
 	rencontre *sheep_viseur = voisins;
+	rencontre *blue_viseur = voisins;
 	coord obj;
+	int radius;
 	obj.X = 0;
 	obj.Y = 0;
 
-	sheep_viseur = voisins;
+	sheep_viseur = find_voisin_by_color((unsigned char *)"\xe6\xf0\xf0", voisins);
+	blue_viseur = find_voisin_by_color((unsigned char *)"\x0\x0\xff",voisins);
 
-	while (sheep_viseur != NULL)
-	{
-		if (memcmp(sheep_viseur->couleur,"\xe6\xf0\xf0",3))
-			sheep_viseur = sheep_viseur->next;
-		else
-		{
-			ID_suivi = sheep_viseur->ID;
-			break;
-		}
-	}
+	switch (dog->mode) {
 
-	if (sheep_viseur != NULL)
-	{
-		if (ID_suivi)
-		{
-			sheep_viseur = voisins;
-			while (sheep_viseur->ID != ID_suivi)
+		case 0:
+			// Ordre
+			obj.X = MAP_SIZE_X/2;
+			obj.Y = MAP_SIZE_Y/2;
+
+			// Sorties
+			if(sheep_viseur != NULL && distance(dog->coord.X, dog->coord.Y, 0, MAP_SIZE_Y/2) > (MAP_SIZE_X/10+dog->view.X))
+				dog->mode = 2;
+			if((blue_viseur != NULL) && (dog->coord.X == MAP_SIZE_X/2) && (dog->coord.Y == MAP_SIZE_Y/2))
 			{
-				sheep_viseur = sheep_viseur->next;
+				coord_blue_dog = follow_blue_dog(voisins, blue_viseur);
+				dog->mode = 3;
 			}
-		}
-		coord co = circumvention(sheep_viseur);
-		int radius = (int) ceil(distance(co.X, co.Y, dog->coord.X, dog->coord.Y));
-		if ((radius > 2) && dog->mode == 0)
-		{
-			obj.X = co.X;
-			obj.Y = co.Y;
-		}
-		else
-		{
-			if (dog->mode == 0)
+		break;
+
+		case 1:
+			// Ordre
+			// ID_suivi = sheep_viseur->ID;
+			obj = bring_back_our_sheeps(sheep_viseur);
+			iii++;
+
+			// Sorties
+			if (distance(dog->coord.X, dog->coord.Y, 0, MAP_SIZE_Y/2) <= MAP_SIZE_X/10)
+			{
+				dog->mode = 0;
+			}
+
+			if (iii == dog->R_action/2)
+			{
+				iii = 0;
+				dog->mode = 2;
+			}
+		break;
+
+		case 2:
+			//Ordre
+			obj = circumvention(sheep_viseur);
+
+			//Sorties
+			radius = (int) ceil(distance(obj.X, obj.Y, dog->coord.X, dog->coord.Y));
+			if (radius <= 2) // Il pousse le mouton s'il est bien positionné
 			{
 				dog->mode = 1;
 			}
-			coord go = bring_back_our_sheeps(sheep_viseur);
-			obj.X = go.X;
-			obj.Y = go.Y;
-		}
-	}
-	else
-	{
+		break;
+
+		case 3:
+			//Ordre
+			  obj = coord_blue_dog;
+			//Sorties
+				if(sheep_viseur != NULL)
+					dog->mode = 2;
+		break;
+
+		default:
 		dog->mode = 0;
-		coord go = follow_blue_dog(voisins);
-		obj.X = go.X;
-		obj.Y = go.Y;
+		break;
 	}
+
 	return obj;
 }
 
@@ -125,38 +164,15 @@ coord circumvention(rencontre *sheep)
 coord bring_back_our_sheeps(rencontre *sheep)
 {
 	coord ret;
-	if (distance(dog->coord.X, dog->coord.Y, 0, MAP_SIZE_Y/2) <= MAP_SIZE_X/10)
+	if(distance(dog->coord.X,dog->coord.Y,sheep->coord.X,sheep->coord.Y) < ( dog->R_action) )
 	{
-		enclos = 1;
-	}
-	if (distance(dog->coord.X, dog->coord.Y, 0, MAP_SIZE_Y/2) >= MAP_SIZE_X/8)
-	{
-		enclos = 0;
-	}
-
-	if (enclos)
-	{
-		ret.X = MAP_SIZE_X/2;
-		ret.Y = MAP_SIZE_Y/2;
+		ret.X = dog->coord.X;
+		ret.Y = dog->coord.Y;
 	}
 	else
 	{
-		iii++;
-		if(distance(dog->coord.X,dog->coord.Y,sheep->coord.X,sheep->coord.Y) < ( dog->R_action) )
-		{
-			ret.X = dog->coord.X;
-			ret.Y = dog->coord.Y;
-		}
-		else
-		{
-			ret.X = sheep->coord.X;
-			ret.Y = sheep->coord.Y;
-		}
-		if (iii == dog->R_action)
-		{
-		 iii = 0;
-		 dog->mode = 0;
-		}
+		ret.X = sheep->coord.X;
+		ret.Y = sheep->coord.Y;
 	}
 	return ret;
 }
@@ -166,7 +182,7 @@ int has_lower_ID(rencontre* voisins)
 {
 	int has_lower_ID = 1;
 	rencontre* yellow_tester = voisins;
-	if((dog->coord.X != MAP_SIZE_X/2) || (dog->coord.Y != MAP_SIZE_Y/2) || (yellow_tester == NULL))
+	if(yellow_tester == NULL)
 		return 0;
 	while(yellow_tester->next != NULL && has_lower_ID == 1)
 	{
@@ -182,31 +198,22 @@ int has_lower_ID(rencontre* voisins)
 	return has_lower_ID;
 }
 
-coord follow_blue_dog(rencontre* voisins)
+coord follow_blue_dog(rencontre* voisins, rencontre* blue_radar)
 //Renvoie les coordonnées à suivre pour atteindre la brebis indiquée par le chien bleu
-//A tester
 {
-	rencontre* blue_radar = voisins;
 	coordF sheep_direction;
 	coord reach_point;
 	if(has_lower_ID(voisins))
 	{
-		printf("id le plus bas\n");
-		while ((blue_radar->next != NULL) || (!memcmp(blue_radar->couleur,"\x0\xff\x0",3)))
-		{
-			blue_radar = blue_radar->next;
-		}
-		if(blue_radar != NULL)
-		{
-			sheep_direction = direction(dog->coord.X,dog->coord.Y,blue_radar->coord.X,blue_radar->coord.Y);
-			reach_point.X = ceil((sheep_direction.X)*(min(MAP_SIZE_X,MAP_SIZE_Y)));
-			reach_point.Y = ceil((sheep_direction.Y)*(min(MAP_SIZE_X,MAP_SIZE_Y)));
-		}
+		sheep_direction = direction(dog->coord.X,dog->coord.Y,blue_radar->coord.X,blue_radar->coord.Y);
+		reach_point.X = blue_radar->coord.X + ceil((sheep_direction.X)*((int)(min(MAP_SIZE_X/2, MAP_SIZE_Y)/2)));
+		reach_point.Y = blue_radar->coord.Y + ceil((sheep_direction.Y)*((int)(min(MAP_SIZE_X/2, MAP_SIZE_Y)/2)));
 	}
 	else
 	{
 		reach_point.X = MAP_SIZE_X/2;
 		reach_point.Y = MAP_SIZE_Y/2;
+		dog->mode = 0;
 	}
 	return reach_point;
 }
