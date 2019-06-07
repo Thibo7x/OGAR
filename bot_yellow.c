@@ -16,23 +16,23 @@ coord borderCorrection(coord reach_point)
 	coord objectif;
 	if(dog->coord.X > MAP_SIZE_X-dog->R_action)
 	{
-		objectif.X = MAP_SIZE_X;
+		objectif.X = MAP_SIZE_X-51;
 		objectif.Y = reach_point.Y;
 	}
 	else if(dog->coord.X < dog->R_action)
 	{
-		objectif.X = 0;
+		objectif.X = 51;
 		objectif.Y = reach_point.Y;
 	}
 	else if(dog->coord.Y > MAP_SIZE_Y-dog->R_action)
 	{
 		objectif.X = reach_point.X;
-		objectif.Y = MAP_SIZE_Y;
+		objectif.Y = MAP_SIZE_Y-51;
 	}
 	else if(dog->coord.Y < dog->R_action)
 	{
 		objectif.X = reach_point.X;
-		objectif.Y = 0;
+		objectif.Y = 51;
 	}
 	else
 	{
