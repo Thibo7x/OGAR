@@ -1,6 +1,7 @@
 #include "bot_blue.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 //obtenir les dimensions
 void split(subdivision* map)
@@ -236,6 +237,34 @@ void generate_new_base(subdivision* map,int* order)
     {
       rank = generate_reversed_c_way_from_bottom((map->column-1),2,rank,map->column,order);
     }
+}
+
+void save_our_sheeps(rencontre *voisins)
+{
+  rencontre *pointer = voisins;
+  if (pointer != NULL)
+  {
+    while (pointer != NULL)
+    {
+      if (rechercherListeChainee(saved_sheeps, pointer->ID) == NULL) // Pas trouvé dans saved_sheeps
+      {
+        // On l'ajoute
+        rencontre *sheep = malloc(sizeof(sheep));
+
+        // Remplissage des caractéristiques
+        sheep->ID = pointer->ID;
+        sheep->coord = pointer->coord;
+        memcpy(sheep->couleur, pointer->couleur, 4*sizeof(unsigned char));
+
+        // Adresse
+        sheep->next = voisins;
+        voisins = sheep;
+
+      }
+      pointer = pointer->next;
+    }
+  }
+
 }
 
 /* ----------------main----------------- */

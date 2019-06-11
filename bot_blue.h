@@ -3,8 +3,11 @@
 
 #include "entities.h"
 #include "mapFunctions.h"
+#include "chainedListFunctions.h"
 /* ------------New Things------------- */
 int old_rank;
+
+rencontre *saved_sheeps;
 
 typedef struct rectangle_subdivision subdivision;
 struct rectangle_subdivision
