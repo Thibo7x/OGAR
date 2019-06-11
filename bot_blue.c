@@ -246,7 +246,7 @@ void save_our_sheeps(rencontre *voisins)
   {
     while (pointer != NULL)
     {
-      if (rechercherListeChainee(saved_sheeps, pointer->ID) == NULL) // Pas trouvé dans saved_sheeps
+      if ((rechercherListeChainee(saved_sheeps, pointer->ID) == NULL) && (!memcmp(pointer->couleur,"\xe6\xf0\xf0",3))) // Pas trouvé dans saved_sheeps
       {
         // On l'ajoute
         rencontre *sheep = malloc(sizeof(sheep));
