@@ -1,3 +1,6 @@
+#ifndef BOTBLUE
+#define BOTBLUE
+
 #include "entities.h"
 #include "mapFunctions.h"
 /* ------------New Things------------- */
@@ -24,8 +27,6 @@ void array_safe_roll(int* table,int min,int max,int range);
 int generate_reversed_c_way_from_bottom(int column , int line ,int rank,int biggest_column,int* order);
 void generate_new_base(subdivision* map,int* order);
 //work in progress
-coord* spotting(int rank);
-coord* give_direction();
 //tests
 void test_split(void);
 void test_get_center(void);
@@ -35,3 +36,6 @@ void test_get_min(void);
 void test_get_axes_with_rank(void);
 void test_generate_reversed_c_way_from_top(void);
 /* ----------------.h----------------- */
+coord intel_blue(rencontre *voisins);
+
+#endif

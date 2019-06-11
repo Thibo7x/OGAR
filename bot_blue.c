@@ -1,5 +1,6 @@
 #include "bot_blue.h"
-
+#include <stdlib.h>
+#include <stdio.h>
 
 //obtenir les dimensions
 void split(subdivision* map)
@@ -238,53 +239,55 @@ void generate_new_base(subdivision* map,int* order)
 }
 
 /* ----------------main----------------- */
-int main(int argc,char* argv[])
+coord intel_blue(rencontre *voisins)
 {
-
-	return 1;
+  coord AAA;
+  AAA.X = 0;
+  AAA.Y = 0;
+  return AAA;
 }
 /* ----------------main----------------- */
 //rallier le centre d'un carreau en fonction du numéro de case donné , à finir , à tester
-void join_center(int rank,coordF* center)
-{
-  coordF* proposition;
-  proposition = malloc(sizeof(coordF));
-
-  subdivision* map;
-  map = malloc(sizeof(subdivision));
-
-  int rank = get_rank_with_any_coos(proposition,map);
-
-  free(map);
-  free(proposition);
-}
-
-//à faire , à tester , à penser
-int join_the_way(int rank,subdivision* map)
-{
-
-  return 1;
-}
-
-//renvoie 1 si les coordonnées sont à - de 3 de distance de la target
-int checkpoint(coord* point,coordF* target)
-{
-  int radius = distance(point->X,point->Y,(int)(target->X),(int)(target->Y));
-  if (radius < 3)
-    return 1;
-  else
-    return 0;
-}
-
-structchelou* spotting(int rank)
-{
-  structchelou* struct_to_return;
-  struct_to_return = malloc(sizeof(structchelou));
-  while(0)
-  {}
-  //
-  return struct_to_return;
-}
+// void join_center(int rank,coordF* center)
+// {
+//   coordF* proposition;
+//   proposition = malloc(sizeof(coordF));
+//
+//   subdivision* map;
+//   map = malloc(sizeof(subdivision));
+//
+//   int rank = get_rank_with_any_coos(proposition,map);
+//
+//   free(map);
+//   free(proposition);
+// }
+//
+// //à faire , à tester , à penser
+// int join_the_way(int rank,subdivision* map)
+// {
+//
+//   return 1;
+// }
+//
+// //renvoie 1 si les coordonnées sont à - de 3 de distance de la target
+// int checkpoint(coord* point,coordF* target)
+// {
+//   int radius = distance(point->X,point->Y,(int)(target->X),(int)(target->Y));
+//   if (radius < 3)
+//     return 1;
+//   else
+//     return 0;
+// }
+//
+// structchelou* spotting(int rank)
+// {
+//   structchelou* struct_to_return;
+//   struct_to_return = malloc(sizeof(structchelou));
+//   while(0)
+//   {}
+//   //
+//   return struct_to_return;
+// }
 //IN : rank OUT : coordonées
 
 /* ----------Work in progress----------- */
