@@ -1,56 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <getopt.h>
-#include <string.h>
-#include <signal.h>
-#include <syslog.h>
-#include <sys/time.h>
-#include <unistd.h>
-#include <math.h>
-
-int distance(int coordX1, int coordY1, int coordX2, int coordY2);
-int distance(int coordX1, int coordY1, int coordX2, int coordY2)
-{
-	return sqrt((coordX2-coordX1)*(coordX2-coordX1)+(coordY2-coordY1)*(coordY2-coordY1));
-}
-typedef struct coord {
-  int X;
-  int Y;
-} coord;
-
-typedef struct coordF {
-  float X;
-  float Y;
-} coordF;
-/* ----------------.h----------------- */
-#define MAP_SIZE_X 9000.0
-#define MAP_SIZE_Y 6000.0
+#include "bot_blue.h"
 
 
-typedef struct rectangle_subdivision subdivision;
-struct rectangle_subdivision
-{
-  float long_length ;
-  int column ;
-  float large_length ;
-  int line;
-};
-
-void split(subdivision* map);
-void get_center(coordF* center,subdivision* map,int column , int line);
-int get_rank_with_column_line(int column , int line , subdivision* map);
-int get_rank_with_center_coos(coordF* center,subdivision* map);
-int get_rank_with_every_coos(coordF* position,subdivision* map);
-void get_column_line_with_rank(int rank,subdivision* map,coord* proposition);
-int get_min(int* table , int rank_max);
-//tests
-void test_split(void);
-void test_get_center(void);
-void test_get_rank_with_center_coos(void);
-void test_get_rank_with_every_coos(void);
-void test_get_min(void);
-void test_get_column_line_with_rank(void);
-/* ----------------.h----------------- */
 //obtenir les dimensions
 void split(subdivision* map)
 {
@@ -99,6 +49,7 @@ void get_center(coordF* center,subdivision* map,int column , int line)
   else
     perror("Out of grill");
 }
+
 //obtenir le rang d'une case à partir des coordonées de son centre
 int get_rank_with_center_coos(coordF* center,subdivision* map)
 {
@@ -125,8 +76,9 @@ int get_rank_with_center_coos(coordF* center,subdivision* map)
   int rank = get_rank_with_column_line(column_out,line_out,map);
   return rank;
 }
+
 //obtenir le rang d'une case à partir de ses coordonées , à finir, à tester , à faire évoluer
-int get_rank_with_every_coos(coordF* position,subdivision* map)
+int get_rank_with_any_coos(coordF* position,subdivision* map)
 {
   coordF* proposition;
   proposition = malloc(sizeof(coordF));
@@ -150,7 +102,7 @@ int get_rank_with_every_coos(coordF* position,subdivision* map)
 //on enregistre l'ensemble des distances du point donné par rapport aux différents centres
   for(int rank = 1; rank <= rank_max; ++rank)
     {
-      get_column_line_with_rank(rank,map,rank_properties);
+      get_axes_with_rank(rank,map,rank_properties);
 			get_center(proposition,map,rank_properties->X,rank_properties->Y);
       *(distance_table+rank-1) = distance((int)proposition->X,(int)proposition->Y,(int)position->X,(int)position->Y);
     }
@@ -169,6 +121,7 @@ int get_rank_with_every_coos(coordF* position,subdivision* map)
   free (distance_table);
   return rank_propose[0];
 }
+
 //obtenir la valeur min d'un tableau
 int get_min(int* table , int rank_max)
 {
@@ -182,7 +135,7 @@ return min;
 }
 
 //permet d'obtenir la colonne et la ligne en fonction du numéro de la case
-void get_column_line_with_rank(int rank,subdivision* map,coord* proposition)
+void get_axes_with_rank(int rank,subdivision* map,coord* proposition)
 {
   split(map);
 	if (rank > map->column*map->line)
@@ -200,133 +153,165 @@ void get_column_line_with_rank(int rank,subdivision* map,coord* proposition)
     		proposition->Y -= 1;
 		}
 }
-/* ----------------tests.c----------------- */
+
+//prend un tableau , la 1ere case (tout en haut à gauche) ainsi que les "dimensions" (nb colonne , nb ligne) du quadrillage
+//puis rempli le tableau des ID de cases successif correspondant à un chemin en C à l'envers
+int generate_reversed_c_way_from_top(int column , int line ,int rank,int* order)
+{
+  int rank_min = rank;
+	for(int x = 0 ; x < column ; x++)
+		{
+			*(order+rank+1) = (*(order+rank))+1;
+			rank++;
+		}
+		int rank_save = rank;
+
+	for(int y = rank ; y < rank_save+line-1 ; y++)
+		{
+			*(order+rank+1) = *(order+rank)+column;
+			rank++;
+		}
+		rank_save = rank;
+
+	for(int x = column ; x > 1 ; x--)
+		{
+			*(order+rank+1) = *(order+rank)-1;
+			rank++;
+		}
+    array_safe_roll(order,rank_min-1,rank,2);
+	return rank;
+}
+
+//prend en entrée un tableau , et décale toutes les valeurs compris entre les indices min et max-rannge ,puis complète le tableau en recopiant la dernière valeur manipulé.
+void array_safe_roll(int* table,int min,int max,int range)
+{
+	for (int rank = min; rank <= max ; ++rank)
+		{
+      if (rank <= max-range+1)
+      {
+        table[rank] = table[rank+range];
+      }
+
+      if (rank > max-range && rank <= max)
+      {
+        table[rank] = table[max-range];
+      }
+    }
+}
+
+//prend un tableau , la 1ere case (tout en bas à gauche) ainsi que les "dimensions" (nb colonne , nb ligne) du quadrillage
+//puis complète le tableau des ID de cases successif correspondant à un chemin en C à l'envers
+int generate_reversed_c_way_from_bottom(int column , int line ,int rank,int biggest_column,int* order)
+{
+  *(order+rank-1) = *(order+rank-1)-biggest_column;//reprend la dernière valeur actuel pour déterminer le nouveau point de départ
+	for(int x = 0 ; x < column-1 ; x++)
+		{
+			*(order+rank) = (*(order+rank-1))+1;
+			rank++;
+		}
+		int rank_save = rank;
+
+	for(int y = rank ; y < rank_save+line-1 ; y++)
+		{
+			*(order+rank) = *(order+rank-1)-column;
+			rank++;
+		}
+		rank_save = rank;
+
+	for(int x = column ; x > 1 ; x--)
+		{
+			*(order+rank) = *(order+rank-1)-1;
+			rank++;
+		}
+  return rank;
+}
+
+//générer l'ordre de parcours
+void generate_new_base(subdivision* map,int* order)
+{
+  split(map);
+  int rank = generate_reversed_c_way_from_top(map->column,map->line,1,order);
+  while (*(order+(map->column*map->line)-1) == 0)
+    {
+      rank = generate_reversed_c_way_from_bottom((map->column-1),2,rank,map->column,order);
+    }
+}
+
+/* ----------------main----------------- */
 int main(int argc,char* argv[])
 {
-  test_get_rank_with_every_coos();
+
+	return 1;
+}
+/* ----------------main----------------- */
+//rallier le centre d'un carreau en fonction du numéro de case donné , à finir , à tester
+void join_center(int rank,coordF* center)
+{
+  coordF* proposition;
+  proposition = malloc(sizeof(coordF));
+
+  subdivision* map;
+  map = malloc(sizeof(subdivision));
+
+  int rank = get_rank_with_any_coos(proposition,map);
+
+  free(map);
+  free(proposition);
+}
+
+//à faire , à tester , à penser
+int join_the_way(int rank,subdivision* map)
+{
+
   return 1;
 }
 
-void test_split(void)
+//renvoie 1 si les coordonnées sont à - de 3 de distance de la target
+int checkpoint(coord* point,coordF* target)
 {
-  subdivision* map;
-	map = malloc(sizeof(subdivision));
-
-  split(map);
-  printf("longueur : %f (%d de long)\nlargeur : %f (%d de large)\n",map->long_length,map->column,map->large_length,map->line);
-
-free(map);
-}
-
-void test_get_center(void)
-{
-//Peut permettre de tester get_rank_with_column_line
-  coordF* center;
-  center = malloc(sizeof(coordF));
-  subdivision* map;
-	map = malloc(sizeof(subdivision));
-
-  int column;
-  int line;
-  printf("Quelle colonne ? Quelle ligne ?\n");
-  scanf("%d %d",&column,&line);
-
-  int rank = get_rank_with_column_line(column,line,map);
-  int rank_max = map->column*map->line;
-  get_center(center,map,column,line);
-
-  if (rank == 1)
-    printf("Coordoonées du centre du 1er carrée en : (%f,%f)\n",center->X,center->Y);
-  else if (rank > 1 && rank <= rank_max )
-    printf("Coordoonées du centre du %d-ème carrée en  : (%f,%f)\n",rank,center->X,center->Y);
+  int radius = distance(point->X,point->Y,(int)(target->X),(int)(target->Y));
+  if (radius < 3)
+    return 1;
   else
-    printf("Hors grille , c'est le %d-ème carrée\n",rank);
-
-  free(center);
-  free(map);
+    return 0;
 }
 
-void test_get_rank_with_center_coos(void)
+structchelou* spotting(int rank)
 {
-  coordF* center;
-  center = malloc(sizeof(coordF));
-  subdivision* map;
-  map = malloc(sizeof(subdivision));
-
-  int column;
-  int line;
-  printf("Quelle colonne ? Quelle ligne ?\n");
-  scanf("%d %d",&column,&line);
-
-  get_center(center,map,column,line);
-
-  int rank_with_column = get_rank_with_column_line(column,line,map);
-  int rank_with_coos = get_rank_with_center_coos(center,map);
-  printf("Le centre de coordonnées :%fx%f correspond à la %d-ème case\n",center->X,center->Y,rank_with_coos);
-  printf("Alors que avec les colonnes/lignes on obtien %d-ème case\n",rank_with_column);
-
-  free(center);
-  free(map);
+  structchelou* struct_to_return;
+  struct_to_return = malloc(sizeof(structchelou));
+  while(0)
+  {}
+  //
+  return struct_to_return;
 }
+//IN : rank OUT : coordonées
 
-void test_get_rank_with_every_coos(void)
+/* ----------Work in progress----------- */
+
+
+/*void turn_to_indicate(rencontre *sheep)
+//Tourne le chien autour du cercle jusqu'à ce qu'il soit aligné avec la brebis à indiquer
 {
-  coordF* center;
-  center = malloc(sizeof(coordF));
-  subdivision* map;
-  map = malloc(sizeof(subdivision));
-	coord* axes;
-	axes = malloc(sizeof(coord));
+	double angle;
+	coordF direction = direction(dog->coord.X,dog->coord.Y,sheep->coord.X,sheep->coord.Y)
+	coord reach_point;
+	//Coordonnées du point à atteindre pour être aligné avec la brebis
+	reach_point.X = MAP_SIZE_X/2 + ceil((direction.X)*150);void turn_to_indicate(rencontre *sheep)
 
-	split(map);
-	int buffer;
-	int rank_max = map->column*map->line;
-
-
-	for (int rank = 1 ; rank <= rank_max ; ++rank )
-  	{
-			get_column_line_with_rank(rank , map , axes);
-			get_center(center,map,axes->X,axes->Y);
-			buffer = get_rank_with_every_coos(center,map);
-			printf("Pour la case %d on obtient la case %d.\n",rank,buffer);
-		}
-		free(center);
-		free(map);
-		free(axes);
-}
-
-void test_get_min(void)
-{
-  int tableau[20]={};
-  for (int depth = 0 ; depth < 10 ; ++depth)
-  {
-    tableau[depth] = 19-depth;
-  }
-  int min = get_min(tableau,20);
-  printf("Le minimum est : %d\n",min);
-}
-
-void test_get_column_line_with_rank(void)
-{
-  coord* proposition;
-  proposition = malloc(sizeof(coord));
-  subdivision* map;
-  map = malloc(sizeof(subdivision));
-
-  split(map);
-  int rank;
-	int rank_max = map->column*map->line;
-  //printf("Quelle rank ?\n");
-  //scanf("%d",&rank);
-	for ( rank = 1 ; rank <= rank_max+1 ; ++rank)
+	reach_point.Y = MAP_SIZE_Y/2 + ceil((direction.Y)*150);
+	while(dog->coord.X != reach_point.X && dog->coord.Y != reach_point.Y)
 	{
-		get_column_line_with_rank(rank,map,proposition);
-		printf("Rank %d correspond à la colonne %d et la ligne %d\n",rank,proposition->X,proposition->Y);
+		for(angle = 0; angle < 2*M_PI; angle += 0.01)
+			{
+				//Equation du cercle : (x-4500)²+(y-3000)² = 150²
+				moveBot((unsigned int)(150*cos(angle) + MAP_SIZE_X/2), (unsigned int)(150*sin(angle)+MAP_SIZE_Y/2));
+		  }
 	}
 }
 
-/* ----------------tests.c----------------- */
-//Pas mal de fonction a faire a l'intérieur
+*/
+// //Pas mal de fonction a faire a l'intérieur
 // void intel_blue(struct lws *wsi,rencontre *voisins)
 // {
 // 	int counter = 0;
@@ -342,8 +327,8 @@ void test_get_column_line_with_rank(void)
 // 	if(counter == 4)
 // 	{
 // 		sheepCounter = voisins;
-// 		moveBot(wsi,4500,3000);
-// 		if(distance(dog->coord.X,dog->coord.Y,4500,3000) <= 150)
+// 		moveBot(wsi,MAP_SIZE_X/2,MAP_SIZE_Y/2);
+// 		if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) <= 150)
 // 			moveBot(wsi,dog->coord.X,dog->coord.Y);
 // 		while(counter != 0)
 // 		{
@@ -352,13 +337,13 @@ void test_get_column_line_with_rank(void)
 // 				sheepCounter = sheepCounter->next;
 // 			}
 // 			counter--;
-// 			//turn_to_indicate(sheepCounter->coord.X,sheepCounter->coord.Y);
-// 			//Equation du cercle : (x-4500)²+(y-3000)² = 150²
+// 			//Enlever mouton de la liste chaînée
+// 			turn_to_indicate(sheepCounter->coord);
 // 			//Tourne autour du cercle pour être aligné au mouton à indiquer
 // 			retour.X = dog->coord.X;
 // 			retour.Y = dog->coord.Y;
-// 			moveBot(wsi,4500,3000);
-// 			if(distance(dog->coord.X,dog->coord.Y,4500,3000) <= 90)
+// 			moveBot(wsi,MAP_SIZE_X/2,MAP_SIZE_Y/2);
+// 			if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) <= 90)
 // 				moveBot(wsi,retour.X,retour.Y);
 // 		}
 // 	}
