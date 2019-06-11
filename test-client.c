@@ -116,7 +116,7 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 
 				//explore_chained_list(voisins);
 				coord pos;
-				switch (dog->Color)
+				switch (dog->color)
 				{
 					case 0:
 					// RED
@@ -150,7 +150,7 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 					break;
 				}
 
-				moveBot(wsi, temp.X, temp.Y);
+				moveBot(wsi, pos.X, pos.Y);
 
 				freeListeChainee(voisins);
 			break;

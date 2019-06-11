@@ -3,9 +3,11 @@
 
 #include "entities.h"
 #include "mapFunctions.h"
-int distance(int coordX1, int coordY1, int coordX2, int coordY2);
+#include "chainedListFunctions.h"
 /* ------------New Things------------- */
 int old_rank;
+
+rencontre *saved_sheeps;
 
 typedef struct rectangle_subdivision subdivision;
 struct rectangle_subdivision
@@ -40,5 +42,6 @@ void test_get_axes_with_rank(void);
 void test_generate_reversed_c_way_from_top(void);
 /* ----------------.h----------------- */
 coord intel_blue(rencontre *voisins);
+void save_our_sheeps(rencontre *voisins);
 
 #endif
