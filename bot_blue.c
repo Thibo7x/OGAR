@@ -97,10 +97,10 @@ int get_rank_with_any_coos(coordF* position,subdivision* map)
 
   int minimum;
   int depth = 0;
-//cas critique : si on appel la fonction lorsque le point se trouve pile entre 2 cases ou entre 4 cases
+  //cas critique : si on appel la fonction lorsque le point se trouve pile entre 2 cases ou entre 4 cases
   int rank_propose[4] = {rank_max,rank_max,rank_max,rank_max};
 
-//on enregistre l'ensemble des distances du point donné par rapport aux différents centres
+  //on enregistre l'ensemble des distances du point donné par rapport aux différents centres
   for(int rank = 1; rank <= rank_max; ++rank)
     {
       get_axes_with_rank(rank,map,rank_properties);
@@ -132,7 +132,7 @@ int get_min(int* table , int rank_max)
     if (min >= *(table+rank))
       min = *(table+rank);
   }
-return min;
+  return min;
 }
 
 //permet d'obtenir la colonne et la ligne en fonction du numéro de la case
@@ -244,6 +244,8 @@ coord intel_blue(rencontre *voisins)
   coord AAA;
   AAA.X = 0;
   AAA.Y = 0;
+
+
   return AAA;
 }
 /* ----------------main----------------- */
@@ -261,34 +263,15 @@ coord intel_blue(rencontre *voisins)
 //   free(map);
 //   free(proposition);
 // }
-//
-// //à faire , à tester , à penser
-// int join_the_way(int rank,subdivision* map)
-// {
-//
-//   return 1;
-// }
-//
-// //renvoie 1 si les coordonnées sont à - de 3 de distance de la target
-// int checkpoint(coord* point,coordF* target)
-// {
-//   int radius = distance(point->X,point->Y,(int)(target->X),(int)(target->Y));
-//   if (radius < 3)
-//     return 1;
-//   else
-//     return 0;
-// }
-//
-// structchelou* spotting(int rank)
-// {
-//   structchelou* struct_to_return;
-//   struct_to_return = malloc(sizeof(structchelou));
-//   while(0)
-//   {}
-//   //
-//   return struct_to_return;
-// }
-//IN : rank OUT : coordonées
+//renvoie 1 si les coordonnées sont à - de 3 de distance de la target
+int checkpoint(coord point,coordF target)
+{
+  int radius = distance(point->X,point->Y,(int)(target->X),(int)(target->Y));
+  if (radius < 3)
+    return 1;
+  else
+    return 0;
+}
 
 /* ----------Work in progress----------- */
 

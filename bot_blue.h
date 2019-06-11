@@ -3,6 +3,7 @@
 
 #include "entities.h"
 #include "mapFunctions.h"
+int distance(int coordX1, int coordY1, int coordX2, int coordY2);
 /* ------------New Things------------- */
 int old_rank;
 
@@ -26,7 +27,9 @@ int generate_reversed_c_way_from_top(int column , int line ,int rank,int* order)
 void array_safe_roll(int* table,int min,int max,int range);
 int generate_reversed_c_way_from_bottom(int column , int line ,int rank,int biggest_column,int* order);
 void generate_new_base(subdivision* map,int* order);
+int checkpoint(coord point,coordF target);
 //work in progress
+
 //tests
 void test_split(void);
 void test_get_center(void);
