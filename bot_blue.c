@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
+#include <math.h>
+#include "mapFunctions.h"
+# define M_PI 3.14159265358979323846
 //obtenir les dimensions
 void split(void)
 {
@@ -299,27 +301,45 @@ int checkpoint(coord point,coordF target)
 /* ----------Work in progress----------- */
 
 
-/*void turn_to_indicate(rencontre *sheep)
+coord turn_to_indicate(rencontre *sheep)
 //Tourne le chien autour du cercle jusqu'à ce qu'il soit aligné avec la brebis à indiquer
 {
-	double angle;
-	coordF direction = direction(dog->coord.X,dog->coord.Y,sheep->coord.X,sheep->coord.Y)
-	coord reach_point;
-	//Coordonnées du point à atteindre pour être aligné avec la brebis
-	reach_point.X = MAP_SIZE_X/2 + ceil((direction.X)*150);void turn_to_indicate(rencontre *sheep)
-
-	reach_point.Y = MAP_SIZE_Y/2 + ceil((direction.Y)*150);
-	while(dog->coord.X != reach_point.X && dog->coord.Y != reach_point.Y)
-	{
-		for(angle = 0; angle < 2*M_PI; angle += 0.01)
-			{
-				//Equation du cercle : (x-4500)²+(y-3000)² = 150²
-				moveBot((unsigned int)(150*cos(angle) + MAP_SIZE_X/2), (unsigned int)(150*sin(angle)+MAP_SIZE_Y/2));
-		  }
-	}
+  coord obj;
+  if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) > 215)
+  {
+    if ((sheep->coord.X < MAP_SIZE_X/2) && (sheep->coord.Y < MAP_SIZE_Y/2))
+    {
+      obj.X = MAP_SIZE_X/2 - 150;
+      obj.Y = MAP_SIZE_Y/2 - 150;
+      return obj;
+    }
+    if ((sheep->coord.X < MAP_SIZE_X/2) && (sheep->coord.Y > MAP_SIZE_Y/2))
+    {
+      obj.X = MAP_SIZE_X/2 - 150;
+      obj.Y = MAP_SIZE_Y/2 + 150;
+      return obj;
+    }
+    if ((sheep->coord.X > MAP_SIZE_X/2) && (sheep->coord.Y < MAP_SIZE_Y/2))
+    {
+      obj.X = MAP_SIZE_X/2 + 150;
+      obj.Y = MAP_SIZE_Y/2 - 150;
+      return obj;
+    }
+    if ((sheep->coord.X > MAP_SIZE_X/2) && (sheep->coord.Y > MAP_SIZE_Y/2))
+    {
+      obj.X = MAP_SIZE_X/2 + 150;
+      obj.Y = MAP_SIZE_Y/2 + 150;
+      return obj;
+    }
+  }
+  coordF sheep_direction = direction(MAP_SIZE_X/2,MAP_SIZE_Y/2,sheep->coord.X,sheep->coord.Y);
+  coord reach_point;
+  reach_point.X = MAP_SIZE_X/2 + ceil((sheep_direction.X)*150);
+	reach_point.Y = MAP_SIZE_Y/2 + ceil((sheep_direction.Y)*150);
+  return reach_point;
 }
 
-*/
+
 // //Pas mal de fonction a faire a l'intérieur
 // void intel_blue(struct lws *wsi,rencontre *voisins)
 // {

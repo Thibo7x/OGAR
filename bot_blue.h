@@ -28,6 +28,7 @@ int generate_reversed_c_way_from_bottom(int column , int line ,int rank,int bigg
 void generate_new_base(int* order);
 void save_our_sheeps(rencontre *voisins);
 int checkpoint(coord point,coordF target);
+coord turn_to_indicate(rencontre *sheep);
 //work in progress
 
 //tests
