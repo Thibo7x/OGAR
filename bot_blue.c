@@ -269,12 +269,75 @@ void save_our_sheeps(rencontre *voisins)
 /* ----------------main----------------- */
 coord intel_blue(rencontre *voisins)
 {
-  // Mise à jour de saved_sheeps
-  save_our_sheeps(voisins);
-  coord AAA;
-  AAA.X = 0;
-  AAA.Y = 0;
-  return AAA;
+  coord obj;
+
+  switch (dog->mode) {
+    case 1:
+    //Ordre
+      obj = spotting();
+    //Sortie
+      if(count_sheep() >= 4)
+      dog->mode = 2;
+    break;
+
+    case 2:
+    //Ordre
+      obj.X = dog->coord.X;
+      if(dog->coord.Y > MAP_SIZE_Y - 150)
+        obj.Y = MAP_SIZE_Y - 150;
+        if(dog->coord.Y > MAP_SIZE_Y + 150)
+        obj.Y = MAP_SIZE_Y + 150;
+    //Sortie
+      if((dog->coord.Y == MAP_SIZE_Y/2 - 150) || (dog->coord.Y == MAP_SIZE_Y/2 + 150))
+        dog->mode = 3;
+    break;
+
+    case 3:
+    //Ordre
+      obj.X = turn_to_indicate(voisins).X;
+      obj.Y = dog->coord.Y;
+    //Sortie
+      if(dog->coord.X == obj.X)
+        dog->mode = 4;
+    break;
+
+    case 4:
+    //Ordre
+      obj.X = dog->coord.X;
+      obj.Y = turn_to_indicate(voisins).Y;
+    //Sortie
+      if(dog->coord.Y == obj.Y)
+      dog->mode = 5;
+    break;
+
+    case 5:
+    //Ordre
+      obj.X = MAP_SIZE_X/2;
+      obj.Y = MAP_SIZE_Y/2;
+    //Sortie
+      if((count_sheep() < 4) && distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 90)
+      {
+        dog->mode = 2;
+        sheep_indicated++;
+      }
+      if(count_sheep() == 4)
+      {
+        dog->mode = 1;
+        sheep_indicated = 0;
+      }
+    break;
+
+    case 6:
+    //Ordre
+    //Sortie
+    break;
+
+    default:
+    break;
+
+    return obj;
+  }
+
 }
 /* ----------------main----------------- */
 //rallier le centre d'un carreau en fonction du numéro de case donné , à finir , à tester
@@ -302,79 +365,11 @@ int checkpoint(coord point,coordF target)
 
 
 coord turn_to_indicate(rencontre *sheep)
-//Tourne le chien autour du cercle jusqu'à ce qu'il soit aligné avec la brebis à indiquer
+//Indique les coordonnées à atteindre pour indiquer le mouton
 {
-  coord obj;
-  if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) > 215)
-  {
-    if ((sheep->coord.X < MAP_SIZE_X/2) && (sheep->coord.Y < MAP_SIZE_Y/2))
-    {
-      obj.X = MAP_SIZE_X/2 - 150;
-      obj.Y = MAP_SIZE_Y/2 - 150;
-      return obj;
-    }
-    if ((sheep->coord.X < MAP_SIZE_X/2) && (sheep->coord.Y > MAP_SIZE_Y/2))
-    {
-      obj.X = MAP_SIZE_X/2 - 150;
-      obj.Y = MAP_SIZE_Y/2 + 150;
-      return obj;
-    }
-    if ((sheep->coord.X > MAP_SIZE_X/2) && (sheep->coord.Y < MAP_SIZE_Y/2))
-    {
-      obj.X = MAP_SIZE_X/2 + 150;
-      obj.Y = MAP_SIZE_Y/2 - 150;
-      return obj;
-    }
-    if ((sheep->coord.X > MAP_SIZE_X/2) && (sheep->coord.Y > MAP_SIZE_Y/2))
-    {
-      obj.X = MAP_SIZE_X/2 + 150;
-      obj.Y = MAP_SIZE_Y/2 + 150;
-      return obj;
-    }
-  }
   coordF sheep_direction = direction(MAP_SIZE_X/2,MAP_SIZE_Y/2,sheep->coord.X,sheep->coord.Y);
   coord reach_point;
   reach_point.X = MAP_SIZE_X/2 + ceil((sheep_direction.X)*150);
 	reach_point.Y = MAP_SIZE_Y/2 + ceil((sheep_direction.Y)*150);
   return reach_point;
 }
-
-
-// //Pas mal de fonction a faire a l'intérieur
-// void intel_blue(struct lws *wsi,rencontre *voisins)
-// {
-// 	int counter = 0;
-// 	rencontre *sheepCounter = voisins;
-// 	coord retour;
-// 	while(sheepCounter != NULL && counter < 4) //Mettre le nombre de bots jaunes ici
-// 	{
-// 		//spotting(); Fonction de repérage
-// 		if (!memcmp(sheepCounter->couleur,"\xe6\xf0\xf0",3)) //si c'est une brebis
-// 			counter++;
-// 		sheepCounter = sheepCounter->next;
-// 	}
-// 	if(counter == 4)
-// 	{
-// 		sheepCounter = voisins;
-// 		moveBot(wsi,MAP_SIZE_X/2,MAP_SIZE_Y/2);
-// 		if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) <= 150)
-// 			moveBot(wsi,dog->coord.X,dog->coord.Y);
-// 		while(counter != 0)
-// 		{
-// 			while(!memcmp(sheepCounter->couleur,"\xe6\xf0\xf0",3))
-// 			{
-// 				sheepCounter = sheepCounter->next;
-// 			}
-// 			counter--;
-// 			//Enlever mouton de la liste chaînée
-// 			turn_to_indicate(sheepCounter->coord);
-// 			//Tourne autour du cercle pour être aligné au mouton à indiquer
-// 			retour.X = dog->coord.X;
-// 			retour.Y = dog->coord.Y;
-// 			moveBot(wsi,MAP_SIZE_X/2,MAP_SIZE_Y/2);
-// 			if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) <= 90)
-// 				moveBot(wsi,retour.X,retour.Y);
-// 		}
-// 	}
-//
-// }
