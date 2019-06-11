@@ -11,6 +11,7 @@
 
 #include "client.h"
 #include "bot_yellow.h"
+#include "bot_blue.h"
 #include "chainedListFunctions.h"
 #include "entities.h"
 #include "mapFunctions.h"
@@ -114,7 +115,41 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 				// Fonctions de parcours de liste chainee, de suppression de la liste chainee, etc.
 
 				//explore_chained_list(voisins);
-				coord temp = intel_yellow(voisins);
+				coord pos;
+				switch (dog->Color)
+				{
+					case 0:
+					// RED
+						pos.X = 0;
+						pos.Y = 0;
+					break;
+					case 1:
+						pos = intel_blue(voisins);
+					break;
+					case 2:
+					// GREEN
+						pos.X = 0;
+						pos.Y = 0;
+					break;
+					case 3:
+						pos = intel_yellow(voisins);
+					break;
+					case 4:
+					// CYAN
+						pos.X = 0;
+						pos.Y = 0;
+					break;
+					case 5:
+					// PRUPLE
+						pos.X = 0;
+						pos.Y = 0;
+					break;
+					default:
+						pos.X = 0;
+						pos.Y = 0;
+					break;
+				}
+
 				moveBot(wsi, temp.X, temp.Y);
 
 				freeListeChainee(voisins);
