@@ -4,56 +4,58 @@
 #include <string.h>
 
 //obtenir les dimensions
-void split(subdivision* map)
+void split(void)
 {
+  map.long_length = 0.0;
+  map.column = 0;
+  map.large_length = 0.0;
+  map.line = 0;
   //On étudie sur un demi terrain , pour s'assurer de ne jamais avoir un bandeau centré sur le milieu du terrain
   float long_max = MAP_SIZE_X;
   float large_max = MAP_SIZE_Y/2;
   float number = 1.0;
-  map->long_length = 0.0;
-  map->large_length = 0.0;
+
   //on cherche à avoir le minimum de carrées , d'une taille max de 2000
 
-  while ((large_max/number > 2000.0 || long_max/number > 2000.0) || (map->long_length == 0.0 || map->large_length == 0.0))
+  while ((large_max/number > 2000.0 || long_max/number > 2000.0) || (map.long_length == 0.0 || map.large_length == 0.0))
   {
-    if (large_max/number < 2000 && map->large_length == 0.0)
+    if (large_max/number < 2000 && map.large_length == 0.0)
       {
-        map->large_length = large_max/number;
-        map->line = 2*(int)number;
+        map.large_length = large_max/number;
+        map.line = 2*(int)number;
       }
-    else if (long_max/number < 2000.0 && map->long_length == 0.0)
+    else if (long_max/number < 2000.0 && map.long_length == 0.0)
       {
-        map->long_length = long_max/number;
-        map->column = (int)number;
+        map.long_length = long_max/number;
+        map.column = (int)number;
       }
     number++;
   }
 }
 //obtenir le rank de la case en fonction de sa colonne/ligne
-int get_rank_with_column_line(int column , int line , subdivision* map)
+int get_rank_with_column_line(int column , int line)
 {
-  split(map);
-  int rank = (line-1)*map->column + column;
+  int rank = (line-1)*map.column + column;
 
   return rank;
 }
 
 //obtenir le centre d'un rectangle en fonction de sa position sur le cadrillage
-void get_center(coordF* center,subdivision* map,int column , int line)
+void get_center(coordF* center, int column , int line)
 {
-  int rank = get_rank_with_column_line(column,line,map);
-  int rank_max = map->column*map->line;
+  int rank = get_rank_with_column_line(column,line);
+  int rank_max = map.column*map.line;
   if (1 <= rank && rank <= rank_max)
     {
-      center->X = ((float)(column-1)*map->long_length)+map->long_length/2.0;
-      center->Y = ((float)(line-1)*map->large_length)+map->large_length/2.0;
+      center->X = ((float)(column-1)*map.long_length)+map.long_length/2.0;
+      center->Y = ((float)(line-1)*map.large_length)+map.large_length/2.0;
     }
   else
     perror("Out of grill");
 }
 
 //obtenir le rang d'une case à partir des coordonées de son centre
-int get_rank_with_center_coos(coordF* center,subdivision* map)
+int get_rank_with_center_coos(coordF* center)
 {
   coordF* proposition;
   proposition = malloc(sizeof(coordF));
@@ -62,11 +64,11 @@ int get_rank_with_center_coos(coordF* center,subdivision* map)
   int line_out = 0;
 
 
-      for (int line = 1 ; line <= map->line ; ++line)
+      for (int line = 1 ; line <= map.line ; ++line)
       {
-        for (int column = 1 ; column <= map->column ; ++column)
+        for (int column = 1 ; column <= map.column ; ++column)
         {
-          get_center(proposition,map,column,line);
+          get_center(proposition,column,line);
           if (proposition->Y == center->Y)
             column_out = column;
           if (proposition->X == center->X)
@@ -75,12 +77,12 @@ int get_rank_with_center_coos(coordF* center,subdivision* map)
       }
 
   free(proposition);
-  int rank = get_rank_with_column_line(column_out,line_out,map);
+  int rank = get_rank_with_column_line(column_out,line_out);
   return rank;
 }
 
 //obtenir le rang d'une case à partir de ses coordonées , à finir, à tester , à faire évoluer
-int get_rank_with_any_coos(coordF* position,subdivision* map)
+int get_rank_with_any_coos(coordF* position)
 {
   coordF* proposition;
   proposition = malloc(sizeof(coordF));
@@ -88,10 +90,7 @@ int get_rank_with_any_coos(coordF* position,subdivision* map)
   coord* rank_properties;
   rank_properties = malloc(sizeof(coord));
 
-  split(map);
-
-
-  int rank_max = map->column*map->line;
+  int rank_max = map.column*map.line;
 
   int* distance_table;
   distance_table = malloc(rank_max*sizeof(int));
@@ -104,8 +103,8 @@ int get_rank_with_any_coos(coordF* position,subdivision* map)
   //on enregistre l'ensemble des distances du point donné par rapport aux différents centres
   for(int rank = 1; rank <= rank_max; ++rank)
     {
-      get_axes_with_rank(rank,map,rank_properties);
-			get_center(proposition,map,rank_properties->X,rank_properties->Y);
+      get_axes_with_rank(rank,rank_properties);
+			get_center(proposition,rank_properties->X,rank_properties->Y);
       *(distance_table+rank-1) = distance((int)proposition->X,(int)proposition->Y,(int)position->X,(int)position->Y);
     }
 
@@ -137,21 +136,20 @@ int get_min(int* table , int rank_max)
 }
 
 //permet d'obtenir la colonne et la ligne en fonction du numéro de la case
-void get_axes_with_rank(int rank,subdivision* map,coord* proposition)
+void get_axes_with_rank(int rank,coord* proposition)
 {
-  split(map);
-	if (rank > map->column*map->line)
+	if (rank > map.column*map.line)
 	{
 			perror("Out of range , rank too high");
 	}
 	else
 		{
-			proposition->X = rank%map->column;
-  		proposition->Y = (rank/map->column)+1;
+			proposition->X = rank%map.column;
+  		proposition->Y = (rank/map.column)+1;
 
   		if (proposition->X == 0)
-    		proposition->X = map->column;
-  		if (rank%map->column == 0)
+    		proposition->X = map.column;
+  		if (rank%map.column == 0)
     		proposition->Y -= 1;
 		}
 }
@@ -229,13 +227,12 @@ int generate_reversed_c_way_from_bottom(int column , int line ,int rank,int bigg
 }
 
 //générer l'ordre de parcours
-void generate_new_base(subdivision* map,int* order)
+void generate_new_base(int* order)
 {
-  split(map);
-  int rank = generate_reversed_c_way_from_top(map->column,map->line,1,order);
-  while (*(order+(map->column*map->line)-1) == 0)
+  int rank = generate_reversed_c_way_from_top(map.column,map.line,1,order);
+  while (*(order+(map.column*map.line)-1) == 0)
     {
-      rank = generate_reversed_c_way_from_bottom((map->column-1),2,rank,map->column,order);
+      rank = generate_reversed_c_way_from_bottom((map.column-1),2,rank,map.column,order);
     }
 }
 
@@ -284,10 +281,7 @@ coord intel_blue(rencontre *voisins)
 //   coordF* proposition;
 //   proposition = malloc(sizeof(coordF));
 //
-//   subdivision* map;
-//   map = malloc(sizeof(subdivision));
-//
-//   int rank = get_rank_with_any_coos(proposition,map);
+//   int rank = get_rank_with_any_coos(proposition);
 //
 //   free(map);
 //   free(proposition);
@@ -295,7 +289,7 @@ coord intel_blue(rencontre *voisins)
 //renvoie 1 si les coordonnées sont à - de 3 de distance de la target
 int checkpoint(coord point,coordF target)
 {
-  int radius = distance(point->X,point->Y,(int)(target->X),(int)(target->Y));
+  int radius = distance(point.X,point.Y,(int)(target.X),(int)(target.Y));
   if (radius < 3)
     return 1;
   else
