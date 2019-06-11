@@ -266,6 +266,13 @@ void save_our_sheeps(rencontre *voisins)
 
 }
 
+int count_sheeps()
+{
+  int i;
+  i = count_voisins(saved_sheeps);
+  return i;
+}
+
 /* ----------------main----------------- */
 coord intel_blue(rencontre *voisins)
 {
@@ -276,7 +283,7 @@ coord intel_blue(rencontre *voisins)
     //Ordre
       obj = spotting();
     //Sortie
-      if(count_sheep() >= 4)
+      if(count_sheeps() >= 4)
       dog->mode = 2;
     break;
 
@@ -315,12 +322,12 @@ coord intel_blue(rencontre *voisins)
       obj.X = MAP_SIZE_X/2;
       obj.Y = MAP_SIZE_Y/2;
     //Sortie
-      if((count_sheep() < 4) && distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 90)
+      if((count_sheeps() < 4) && distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 90)
       {
         dog->mode = 2;
         sheep_indicated++;
       }
-      if(count_sheep() == 4)
+      if(count_sheeps() == 4)
       {
         dog->mode = 1;
         sheep_indicated = 0;

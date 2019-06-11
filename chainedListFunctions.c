@@ -97,6 +97,18 @@ rencontre* rechercherListeChainee(rencontre *firstNode, unsigned char id)
 	return viseur;
 }
 
+int count_voisins(rencontre *firstNode)
+{
+	rencontre *viseur = firstNode;
+	int i = 0;
+	while (viseur != NULL)
+	{
+		i++;
+		viseur = viseur->next;
+	}
+	return i;
+}
+
 /**
 \brief Decrypt 0x10 messages from server
 \param rbuf payload

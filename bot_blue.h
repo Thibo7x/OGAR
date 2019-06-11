@@ -43,6 +43,7 @@ void test_generate_reversed_c_way_from_top(void);
 int old_rank;
 subdivision map;
 rencontre *saved_sheeps;
+int count_sheeps();
 /* ----------------.h----------------- */
 coord intel_blue(rencontre *voisins);
 
