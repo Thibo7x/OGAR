@@ -4,33 +4,267 @@
 #include <math.h>
 #include <stdlib.h>
 
+#define MAP_SIZE_X 10800
+#define MAP_SIZE_Y 10800
+
+void split(void)
+{
+  map.long_length = 0.0;
+  map.column = 0;
+  map.large_length = 0.0;
+  map.line = 0;
+  //On étudie sur un demi terrain , pour s'assurer de ne jamais avoir un bandeau centré sur le milieu du terrain
+  float long_max = MAP_SIZE_X;
+  float large_max = MAP_SIZE_Y/2;
+  float number = 1.0;
+
+  //on cherche à avoir le minimum de carrées , d'une taille max de 2000
+
+  while ((large_max/number > 2000.0 || long_max/number > 2000.0) || (map.long_length == 0.0 || map.large_length == 0.0))
+  {
+    if (large_max/number < 2000.0 && map.large_length == 0.0)
+      {
+        map.large_length = large_max/number;
+        map.line = 2*(int)number;
+      }
+    else if (long_max/number < 2000.0 && map.long_length == 0.0)
+      {
+        map.long_length = long_max/number;
+        map.column = (int)number;
+      }
+    number++;
+  }
+}
+
+int get_rank_with_axes(int column , int line)
+{
+  int rank = (line-1)*map.column + column;
+  return rank;
+}
+
+void get_center(coordF* center, int column , int line)
+{
+  int rank = get_rank_with_axes(column,line);
+  int rank_max = map.column*map.line;
+  if (1 <= rank && rank <= rank_max)
+    {
+      center->X = ((float)(column-1)*map.long_length)+map.long_length/2.0;
+      center->Y = ((float)(line-1)*map.large_length)+map.large_length/2.0;
+    }
+  else
+    perror("Out of grill");
+}
+
+int get_rank_with_center_coos(coordF* center)
+{
+  coordF* proposition;
+  proposition = malloc(sizeof(coordF));
+
+  int column_out = 0;
+  int line_out = 0;
+
+      for (int line = 1 ; line <= map.line ; ++line)
+      {
+        for (int column = 1 ; column <= map.column ; ++column)
+        {
+          get_center(proposition,column,line);
+          if (proposition->X == center->X)
+            column_out = column;
+          if (proposition->Y == center->Y)
+            line_out = line;
+        }
+      }
+
+  int rank = get_rank_with_axes(column_out,line_out);
+  free(proposition);
+  return rank;
+}
+
+void get_axes_with_rank(int rank,coord* proposition)
+{
+
+  if (rank > map.column*map.line)
+	{
+			perror("Out of range , rank too high");
+	}
+	else
+		{
+			proposition->X = rank%map.column;
+  		proposition->Y = (rank/map.column)+1;
+
+  		if (proposition->X == 0)
+    		proposition->X = map.column;
+  		if (rank%map.column == 0)
+    		proposition->Y -= 1;
+		}
+}
+
+int get_rank_with_any_coos(coordF position)
+{
+  coordF* proposition;
+  proposition = malloc(sizeof(coordF));
+
+  coord* rank_properties;
+  rank_properties = malloc(sizeof(coord));
+
+  int rank_max = map.column*map.line;
+
+  int* distance_table;
+  distance_table = malloc(rank_max*sizeof(int));
+
+  int minimum;
+  int depth = 0;
+  //cas critique : si on appel la fonction lorsque le point se trouve pile entre 2 cases ou entre 4 cases
+  int rank_propose[4] = {rank_max,rank_max,rank_max,rank_max};
+
+  //on enregistre l'ensemble des distances du point donné par rapport aux différents centres
+  for(int rank = 1; rank <= rank_max; ++rank)
+    {
+      get_axes_with_rank(rank,rank_properties);
+			get_center(proposition,rank_properties->X,rank_properties->Y);
+      *(distance_table+rank-1) = distance((int)proposition->X,(int)proposition->Y,(int)position.X,(int)position.Y);
+    }
+
+  minimum = get_min(distance_table,rank_max);
+  for(int rank = 1; rank <= rank_max; ++rank)
+    {
+      if (distance_table[rank-1] == minimum)
+        {
+          *(rank_propose+depth) = rank;
+          depth++;
+        }
+    }
+  free(rank_properties);
+  free(proposition);
+  free (distance_table);
+  return rank_propose[0];
+}
+
+int get_min(int* table , int rank_max)
+{
+  int min = *(table);
+  for (int rank = 1; rank <= rank_max; ++rank)
+  {
+    if (min >= *(table+rank))
+      min = *(table+rank);
+  }
+  return min;
+}
+
+int distance(int coordX1, int coordY1, int coordX2, int coordY2)
+{
+	return sqrt((coordX2-coordX1)*(coordX2-coordX1)+(coordY2-coordY1)*(coordY2-coordY1));
+}
+
+int generate_reversed_c_way_from_top(int column , int line ,int rank,int* order)
+{
+  int rank_min = rank;
+	for(int x = 0 ; x < column ; x++)
+		{
+			order[rank+1] = (order[rank])+1;
+			rank++;
+      printf("value de order[%d] = %d\n",rank,order[rank]);
+		}
+		int rank_save = rank;
+
+	for(int y = rank ; y < rank_save+line-1 ; y++)
+		{
+			order[rank+1] = order[rank]+column;
+			rank++;
+      printf("value de order[%d] = %d\n",rank,order[rank]);
+		}
+		rank_save = rank;
+
+	for(int x = column ; x > 1 ; x--)
+		{
+			order[rank+1] = order[rank]-1;
+			rank++;
+      printf("value de order[%d] = %d\n",rank,order[rank]);
+		}
+    array_safe_roll(order,rank_min-1,rank,2);
+	return rank;
+}
+
+//prend en entrée un tableau , et décale toutes les valeurs compris entre les indices min et max-rannge ,puis complète le tableau en recopiant la dernière valeur manipulé.
+void array_safe_roll(int* table,int min,int max,int range)
+{
+	for (int rank = min; rank <= max ; ++rank)
+		{
+      if (rank <= max-range+1)
+      {
+        table[rank] = table[rank+range];
+      }
+
+      if (rank > max-range && rank <= max)
+      {
+        table[rank] = table[max-range];
+      }
+    }
+}
+
+//prend un tableau , la 1ere case (tout en bas à gauche) ainsi que les "dimensions" (nb colonne , nb ligne) du quadrillage
+//puis complète le tableau des ID de cases successif correspondant à un chemin en C à l'envers
+int generate_reversed_c_way_from_bottom(int column , int line ,int rank,int* order)
+{
+  //reprend la dernière valeur actuel pour déterminer le nouveau point de départ
+  order[rank-1] = order[rank-1]-map.column;
+	for(int x = 0 ; x < column-1 ; x++)
+		{
+			order[rank] = (order[rank-1])+1;
+      rank++;
+      printf("value de order[%d] = %d\n",rank,order[rank]);
+		}
+  int rank_save = rank;
+
+	for(int y = rank ; y < rank_save+line-1 ; y++)
+		{
+			order[rank] = order[rank-1]-map.column;
+      rank++;
+      printf("value de order[%d] = %d\n",rank,order[rank]);
+		}
+      rank_save = rank;
+	for(int x = column ; x >= 1 ; x--)
+		{
+			order[rank] = order[rank-1]-1;
+      rank++;
+      printf("value de order[%d] = %d\n",rank,order[rank]);
+		}
+    rank_save = rank;
+    printf("value de rank_save = %d\n",rank_save);
+  return rank;
+}
+
+void generate_new_base(int* order)
+{
+  int rank = generate_reversed_c_way_from_top(map.column,map.line,1,order);
+  printf("\t\t----\t\t\n");
+  while (order[(map.column*map.line)-1] == 0)
+    {
+      rank = generate_reversed_c_way_from_bottom((map.column-1),2,rank,order);
+      printf("\t\t----\t\t\n");
+    }
+}
+
 // void test_split(void)
 // {
-//   subdivision* map;
-// 	map = malloc(sizeof(subdivision));
-//
-//   split(map);
-//   printf("longueur : %f (%d de long)\nlargeur : %f (%d de large)\n",map->long_length,map->column,map->large_length,map->line);
-//
-//   free(map);
+//   split();
+//   printf("longueur : %f (%d de long)\nlargeur : %f (%d de large)\n",map.long_length,map.column,map.large_length,map.line);
 // }
 //
-// //Peut permettre de tester get_rank_with_column_line
+//Peut permettre de tester get_rank_with_axes
 // void test_get_center(void)
 // {
 //   coordF* center;
 //   center = malloc(sizeof(coordF));
-//   subdivision* map;
-// 	map = malloc(sizeof(subdivision));
 //
 //   int column;
 //   int line;
 //   printf("Quelle colonne ? Quelle ligne ?\n");
 //   scanf("%d %d",&column,&line);
 //
-//   int rank = get_rank_with_column_line(column,line,map);
-//   int rank_max = map->column*map->line;
-//   get_center(center,map,column,line);
+//   int rank = get_rank_with_axes(column,line);
+//   int rank_max = map.column*map.line;
+//   get_center(center,column,line);
 //
 //   if (rank == 1)
 //     printf("Coordoonées du centre du 1er carrée en : (%f,%f)\n",center->X,center->Y);
@@ -40,55 +274,48 @@
 //     printf("Hors grille , c'est le %d-ème carrée\n",rank);
 //
 //   free(center);
-//   free(map);
 // }
 //
 // void test_get_rank_with_center_coos(void)
 // {
 //   coordF* center;
 //   center = malloc(sizeof(coordF));
-//   subdivision* map;
-//   map = malloc(sizeof(subdivision));
+//   split();
 //
 //   int column;
 //   int line;
 //   printf("Quelle colonne ? Quelle ligne ?\n");
 //   scanf("%d %d",&column,&line);
 //
-//   get_center(center,map,column,line);
+//   get_center(center,column,line);
 //
-//   int rank_with_column = get_rank_with_column_line(column,line,map);
-//   int rank_with_coos = get_rank_with_center_coos(center,map);
+//   int rank_with_column = get_rank_with_axes(column,line);
+//   int rank_with_coos = get_rank_with_center_coos(center);
 //   printf("Le centre de coordonnées :%fx%f correspond à la %d-ème case\n",center->X,center->Y,rank_with_coos);
 //   printf("Alors que avec les colonnes/lignes on obtien %d-ème case\n",rank_with_column);
 //
 //   free(center);
-//   free(map);
 // }
 //
 // void test_get_rank_with_any_coos(void)
 // {
 //   coordF* center;
 //   center = malloc(sizeof(coordF));
-//   subdivision* map;
-//   map = malloc(sizeof(subdivision));
 // 	coord* axes;
 // 	axes = malloc(sizeof(coord));
 //
-// 	split(map);
 // 	int buffer;
-// 	int rank_max = map->column*map->line;
+// 	int rank_max = map.column*map.line;
 //
 //
 // 	for (int rank = 1 ; rank <= rank_max ; ++rank )
 //   	{
-// 			get_column_line_with_rank(rank , map , axes);
-// 			get_center(center,map,axes->X,axes->Y);
-// 			buffer = get_rank_with_any_coos(center,map);
+// 			get_axes_with_rank(rank,axes);
+// 			get_center(center,axes->X,axes->Y);
+// 			buffer = get_rank_with_any_coos(*center);
 // 			printf("Pour la case %d on obtient la case %d.\n",rank,buffer);
 // 		}
 // 		free(center);
-// 		free(map);
 // 		free(axes);
 // }
 //
@@ -107,19 +334,17 @@
 // {
 //   coord* proposition;
 //   proposition = malloc(sizeof(coord));
-//   subdivision* map;
-//   map = malloc(sizeof(subdivision));
 //
-//   split(map);
 //   int rank;
-// 	int rank_max = map->column*map->line;
+// 	int rank_max = map.column*map.line;
 //   //printf("Quelle rank ?\n");
 //   //scanf("%d",&rank);
 // 	for ( rank = 1 ; rank <= rank_max+1 ; ++rank)
 // 	{
-// 		get_column_line_with_rank(rank,map,proposition);
+// 		get_axes_with_rank(rank,proposition);
 // 		printf("Rank %d correspond à la colonne %d et la ligne %d\n",rank,proposition->X,proposition->Y);
 // 	}
+//   free(proposition);
 // }
 //
 // void test_generate_reversed_c_way_from_top(void)
@@ -145,28 +370,19 @@
 //   return 1;
 // }
 //
-// void test_generate_new_base(void)
-// {
-//   subdivision* map;
-//   map = malloc(sizeof(subdivision));
-//
-//   int* table;
-//   table = malloc(31*sizeof(int));
-//   *(table) = 0;
-//
-//   split(map);
-//
-//   int rank_max = generate_reversed_c_way_from_top(5,4,1,table);
-//
-//   int rank_max =  generate_reversed_c_way_from_bottom(4,2,rank_max,map->column,table);
-//
-//   for (int depth = 0 ; depth < 32 ; ++depth)
-//     {
-//       printf("Valeur du tableau[%d] = %d\n",depth ,*(table+depth));
-//     }
-//   free(map);
-//   free(table);
-// }
+void test_generate_new_base(void)
+{
+  int* table;
+  table = malloc(36*sizeof(int));
+  table[0] = 1;
+
+  generate_new_base(table);
+  for (int depth = 0 ; depth < 37 ; ++depth)
+    {
+      printf("Valeur du tableau[%d] = %d\n",depth ,table[depth]);
+    }
+  free(table);
+}
 //void test_checkpoint(void)
 // {
 //   coord point;
@@ -186,5 +402,7 @@
 
 int main(int argc,char* argv[])
 {
+  split();
+  test_generate_new_base();
   return 1;
 }
