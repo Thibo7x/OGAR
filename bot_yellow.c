@@ -1,6 +1,7 @@
 #include "bot_yellow.h"
 #include "entities.h"
 #include "mapFunctions.h"
+#include "chainedListFunctions.h"
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
@@ -55,7 +56,7 @@ coord intel_yellow(rencontre *voisins)
 
 		case 1:
 			// Ordre
-			obj = bring_back_our_sheeps(sheep_viseur);
+			obj = bring_back_our_sheeps(rechercherListeChainee(sheep_viseur, ID_suivi));
 			iii++;
 
 			// Sorties
@@ -73,6 +74,8 @@ coord intel_yellow(rencontre *voisins)
 
 		case 2:
 			//Ordre
+			if (ID_suivi != sheep_viseur->ID) // MAJ ID_suivi
+				ID_suivi = sheep_viseur->ID;
 			obj = circumvention(sheep_viseur);
 
 			//Sorties
