@@ -270,6 +270,8 @@ void save_our_sheeps(rencontre *voisins)
 /* ----------------main----------------- */
 coord intel_blue(rencontre *voisins)
 {
+  // Mise à jour de saved_sheeps
+  save_our_sheeps(voisins);
   coord AAA;
   AAA.X = 0;
   AAA.Y = 0;

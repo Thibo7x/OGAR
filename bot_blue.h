@@ -40,5 +40,6 @@ void test_get_axes_with_rank(void);
 void test_generate_reversed_c_way_from_top(void);
 /* ----------------.h----------------- */
 coord intel_blue(rencontre *voisins);
+void save_our_sheeps(rencontre *voisins);
 
 #endif
