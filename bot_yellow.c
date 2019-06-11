@@ -154,7 +154,7 @@ coord circumvention(rencontre *sheep)
 	{
 		chemin.X = dog->coord.X;
 		chemin.Y = dog->coord.Y;
-	}s
+	}
 	return chemin;
 }
 
