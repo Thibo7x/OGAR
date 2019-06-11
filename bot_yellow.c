@@ -111,6 +111,7 @@ unsigned int action_over_sheep(rencontre *sheep)
 
 coord circumvention(rencontre *sheep)
 {
+	int decalage = 0;
 	coord objectif = reach_point(sheep->coord, direction(100, MAP_SIZE_Y/2, sheep->coord.X, sheep->coord.Y));
 	int radiusX = (int)distance(objectif.X, dog->coord.Y, dog->coord.X, dog->coord.Y);
 	coord chemin;
@@ -129,23 +130,31 @@ coord circumvention(rencontre *sheep)
 	{
 		chemin.X = MAP_SIZE_X;
 		chemin.Y = sheep->coord.Y;
+		decalage = 1;
 	}
 	if(chemin.X < dog->R_action)
 	{
 		chemin.X = 0;
 		chemin.Y = sheep->coord.Y;
+		decalage = 1;
 	}
 	if(chemin.Y > MAP_SIZE_Y-dog->R_action)
 	{
 		chemin.X = sheep->coord.X;
 		chemin.Y = MAP_SIZE_Y;
+		decalage = 1;
 	}
 	if(chemin.Y < dog->R_action)
 	{
 		chemin.X = sheep->coord.X;
 		chemin.Y = 0;
+		decalage = 1;
 	}
-
+	if(decalage && distance(dog->coord.X,dog->coord.Y,sheep->coord.X,sheep->coord.Y) >= dog->R_action)
+	{
+		chemin.X = dog->coord.X;
+		chemin.Y = dog->coord.Y;
+	}
 	return chemin;
 }
 
