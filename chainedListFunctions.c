@@ -97,6 +97,21 @@ rencontre* rechercherListeChainee(rencontre *firstNode, unsigned char id)
 	return viseur;
 }
 
+void deleteChainedList(rencontre *firstNode, unsigned char id)
+{
+	rencontre *deletedElem = rechercherListeChainee(firstNode, id);
+	rencontre *precedent_deletedElem = rechercherListeChainee(firstNode->next, id);
+	if (precedent_deletedElem != NULL) // deletedElem est le 1er de la liste
+	{
+		firstNode = deletedElem->next;
+	}
+	else
+	{
+		precedent_deletedElem->next = deletedElem->next;
+	}
+	free(deletedElem);
+}
+
 int count_voisins(rencontre *firstNode)
 {
 	rencontre *viseur = firstNode;
