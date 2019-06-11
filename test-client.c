@@ -140,7 +140,7 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 						pos.Y = 0;
 					break;
 					case 5:
-					// PRUPLE
+					// PURPLE
 						pos.X = 0;
 						pos.Y = 0;
 					break;

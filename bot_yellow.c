@@ -8,7 +8,6 @@
 
 //CHOSE A FAIRE POUR AMELIORER LE BOT JAUNE MEME S'IL EST DEJA SUPER FORT
 //- Focus d'un mouton
-//- Fixer borderCorrection pour que ça fonctionne vraiment
 
 rencontre *find_voisin_by_color(unsigned char* color, rencontre* voisins)
 {
@@ -56,7 +55,6 @@ coord intel_yellow(rencontre *voisins)
 
 		case 1:
 			// Ordre
-			// ID_suivi = sheep_viseur->ID;
 			obj = bring_back_our_sheeps(sheep_viseur);
 			iii++;
 
