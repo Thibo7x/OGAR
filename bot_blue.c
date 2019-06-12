@@ -276,6 +276,7 @@ int count_sheeps()
 /* ----------------main----------------- */
 coord intel_blue(rencontre *voisins)
 {
+  save_our_sheeps(voisins); // MAJ sheeps around
   coord obj;
 
   switch (dog->mode) {
@@ -298,7 +299,6 @@ coord intel_blue(rencontre *voisins)
       if((dog->coord.Y == MAP_SIZE_Y/2 - 150) || (dog->coord.Y == MAP_SIZE_Y/2 + 150))
         dog->mode = 3;
     break;
-
     case 3:
     //Ordre
       obj.X = turn_to_indicate(voisins).X;
