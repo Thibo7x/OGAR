@@ -55,10 +55,29 @@ void show_map(int lines, int columns)
   }
 }
 
+void reverse_map(int lines, int columns)
+{
+  int tmp, i, j;
+  if (lines == 0 || columns == 0)
+  {
+    return;
+  }
+  for (i = 1; i < (lines-1)/2; i++)
+  {
+    for (j = 0; j < columns-1; j++)
+    {
+      tmp = map[i][j];
+      map[i][j] = map[lines-1-i][j];
+      map[lines-1-i][j] = tmp;
+    }
+  }
+  //reverse_map(lines-2,columns-1);
+}
+
 int main()
 {
-  int lines = (int) ceil( (float)(MAP_SIZE_Y/2) / 2000.0) * 2;
-  int columns = (int) ceil( (float)(MAP_SIZE_X/2) / 2000.0) * 2; // 600 = R_VUE[yellow]
+  int lines = (int) ceil( (float)(MAP_SIZE_Y/2) / 2000.0) * 4;
+  int columns = (int) ceil( (float)(MAP_SIZE_X/2) / 2000.0) * 4; // 600 = R_VUE[yellow]
 
   printf("L : %d * C : %d\n",lines,columns);
 // 1  2  3  4
@@ -91,12 +110,12 @@ int main()
   //map = malloc(lines*columns);
 
   create_map(lines, columns);
+  reverse_map(lines, columns);
   show_map(lines, columns);
 
   return 0;
 //map[lines][columns]
 }
-
 
 
 // get_square_center(id)
