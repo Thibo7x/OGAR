@@ -54,6 +54,7 @@ void show_map(int lines, int columns)
   }
 }
 
+<<<<<<< HEAD
 int get_id_actual_square(lines, columns)
 {
   int i,j;
@@ -92,6 +93,31 @@ int main()
   dog->coord.Y = 3200;
   int lines = (int) ceil( (float)(MAP_SIZE_Y/2) / 2000.0) * 2;
   int columns = (int) ceil( (float)(MAP_SIZE_X/2) / 2000.0) * 2; // 600 = R_VUE[yellow]
+=======
+void reverse_map(int lines, int columns)
+{
+  int tmp, i, j;
+  if (lines == 0 || columns == 0)
+  {
+    return;
+  }
+  for (i = 1; i < (lines-1)/2; i++)
+  {
+    for (j = 0; j < columns-1; j++)
+    {
+      tmp = map[i][j];
+      map[i][j] = map[lines-1-i][j];
+      map[lines-1-i][j] = tmp;
+    }
+  }
+  //reverse_map(lines-2,columns-1);
+}
+
+int main()
+{
+  int lines = (int) ceil( (float)(MAP_SIZE_Y/2) / 2000.0) * 4;
+  int columns = (int) ceil( (float)(MAP_SIZE_X/2) / 2000.0) * 4; // 600 = R_VUE[yellow]
+>>>>>>> ba70f700e1073351aa00aacc25f8b16a5ca4a803
 
   printf("L : %d * C : %d\n",lines,columns);
 // 1  2  3  4
@@ -124,6 +150,7 @@ int main()
   //map = malloc(lines*columns);
 
   create_map(lines, columns);
+  reverse_map(lines, columns);
   show_map(lines, columns);
 
   printf("ID: %d\n",get_id_actual_square(lines, columns));
@@ -131,3 +158,13 @@ int main()
   return 0;
 //map[lines][columns]
 }
+<<<<<<< HEAD
+=======
+
+
+// get_square_center(id)
+// {
+//   coord obj;
+//   obj.X = MAP_SIZE_X /
+// }
+>>>>>>> ba70f700e1073351aa00aacc25f8b16a5ca4a803
