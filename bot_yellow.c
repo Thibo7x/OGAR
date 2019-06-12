@@ -18,7 +18,6 @@ coord intel_yellow(rencontre *voisins)
 
 	sheep_viseur = find_voisin_by_color((unsigned char *)"\xe6\xf0\xf0", voisins);
 	blue_viseur = find_voisin_by_color((unsigned char *)"\x0\x0\xff",voisins);
-
 	switch (dog->mode) {
 
 		case 0:
@@ -70,12 +69,20 @@ coord intel_yellow(rencontre *voisins)
 
 		case 3:
 			//Ordre
-			  obj = coord_blue_dog;
+			 blue_direction = follow_blue_dog(voisins,blue_viseur);
+			 obj = blue_direction;
 			//Sorties
-				if(sheep_viseur != NULL)
-					dog->mode = 2;
+			if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) >= 200)
+				dog->mode = 4;
 		break;
 
+		case 4:
+			//Ordre
+			obj = blue_direction;
+			//Sorties
+			if(sheep_viseur != NULL)
+				dog->mode = 2;
+		break;
 		default:
 		dog->mode = 0;
 		break;
@@ -183,25 +190,55 @@ coord follow_blue_dog(rencontre* voisins, rencontre* blue_radar)
 {
 	coordF sheep_direction;
 	coord reach_point;
-	if(has_lower_ID(voisins))
-	{
-		sheep_direction = direction(dog->coord.X,dog->coord.Y,blue_radar->coord.X,blue_radar->coord.Y);
-		reach_point.X = blue_radar->coord.X + ceil((sheep_direction.X)*((int)(min(MAP_SIZE_X, MAP_SIZE_Y))));
-		reach_point.Y = blue_radar->coord.Y + ceil((sheep_direction.Y)*((int)(min(MAP_SIZE_X, MAP_SIZE_Y))));
-		if (reach_point.X>MAP_SIZE_X)
-			reach_point.X = MAP_SIZE_X;
-		if (reach_point.X<0)
-			reach_point.X = 0;
-		if (reach_point.Y>MAP_SIZE_Y)
-			reach_point.Y = MAP_SIZE_Y;
-		if (reach_point.Y<0)
-			reach_point.Y = 0;
-	}
-	else
+	if(!has_lower_ID(voisins))
 	{
 		reach_point.X = MAP_SIZE_X/2;
 		reach_point.Y = MAP_SIZE_Y/2;
 		dog->mode = 0;
 	}
+	else
+	{
+		if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 200)
+		{
+			reach_point = blue_radar->coord;
+		}
+		if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) >= 200)
+		{
+			sheep_direction = direction(MAP_SIZE_X/2,MAP_SIZE_Y/2,blue_radar->coord.X,blue_radar->coord.Y);
+			reach_point.X = MAP_SIZE_X/2 + ceil((sheep_direction.X)*((int)(min(MAP_SIZE_X, MAP_SIZE_Y))));
+			reach_point.Y = MAP_SIZE_Y/2 + ceil((sheep_direction.Y)*((int)(min(MAP_SIZE_X, MAP_SIZE_Y))));
+			if (reach_point.X>MAP_SIZE_X)
+				reach_point.X = MAP_SIZE_X;
+			if (reach_point.X<0)
+				reach_point.X = 0;
+			if (reach_point.Y>MAP_SIZE_Y)
+				reach_point.Y = MAP_SIZE_Y;
+			if (reach_point.Y<0)
+				reach_point.Y = 0;
+		}
+	}
 	return reach_point;
 }
+	// coordF sheep_direction;
+	// coord reach_point;
+	// if(has_lower_ID(voisins))
+	// {
+	// sheep_direction = direction(dog->coord.X,dog->coord.Y,blue_radar->coord.X,blue_radar->coord.Y);
+	// reach_point.X = blue_radar->coord.X + ceil((sheep_direction.X)*((int)(min(MAP_SIZE_X, MAP_SIZE_Y))));
+	// reach_point.Y = blue_radar->coord.Y + ceil((sheep_direction.Y)*((int)(min(MAP_SIZE_X, MAP_SIZE_Y))));
+	// 	if (reach_point.X>MAP_SIZE_X)
+	// 		reach_point.X = MAP_SIZE_X;
+	// 	if (reach_point.X<0)
+	// 		reach_point.X = 0;
+	// 	if (reach_point.Y>MAP_SIZE_Y)
+	// 		reach_point.Y = MAP_SIZE_Y;
+	// 	if (reach_point.Y<0)
+	// 		reach_point.Y = 0;
+	// }
+	// else
+	// {
+	// 	reach_point.X = MAP_SIZE_X/2;
+	// 	reach_point.Y = MAP_SIZE_Y/2;
+	// 	dog->mode = 0;
+	// }
+	// return reach_point;
