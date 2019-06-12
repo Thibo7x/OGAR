@@ -27,6 +27,7 @@ void save_our_sheeps(rencontre *voisins);
 int checkpoint(coord point,coordF target);
 coord turn_to_indicate(rencontre *sheep);
 coord spotting();
+int first_rank(void);
 //work in progress
 
 //tests
