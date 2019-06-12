@@ -296,10 +296,10 @@ int count_sheeps()
 coord intel_blue(rencontre *voisins)
 {
   save_our_sheeps(voisins); // MAJ sheeps around
-  coord obj, backup;
+  coord obj;
 
   switch (dog->mode) {
-    case 1:
+    case 0:
     //Ordre
       //obj = spotting();
     //Sortie
@@ -349,7 +349,7 @@ coord intel_blue(rencontre *voisins)
       }
       if(count_sheeps() == 0)
       {
-        dog->mode = 1;
+        dog->mode = 0;
       }
     break;
 
