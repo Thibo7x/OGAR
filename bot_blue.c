@@ -4,7 +4,6 @@
 #include <string.h>
 #include <math.h>
 #include "mapFunctions.h"
-# define M_PI 3.14159265358979323846
 //obtenir les dimensions
 void split(void)
 {
@@ -240,6 +239,9 @@ void array_safe_roll(int* table,int min,int max,int range)
 //     }
 // }
 
+
+
+
 void save_our_sheeps(rencontre *voisins)
 {
   rencontre *pointer = voisins;
@@ -317,7 +319,7 @@ coord intel_blue(rencontre *voisins)
     break;
     case 3:
     //Ordre
-      obj.X = turn_to_indicate(voisins).X;
+      obj.X = turn_to_indicate(saved_sheeps).X;
       obj.Y = dog->coord.Y;
     //Sortie
       if(dog->coord.X == obj.X)
@@ -327,7 +329,7 @@ coord intel_blue(rencontre *voisins)
     case 4:
     //Ordre
       obj.X = dog->coord.X;
-      obj.Y = turn_to_indicate(voisins).Y;
+      obj.Y = turn_to_indicate(saved_sheeps).Y;
     //Sortie
       if(dog->coord.Y == obj.Y)
       dog->mode = 5;
@@ -341,7 +343,7 @@ coord intel_blue(rencontre *voisins)
     //Sortie
       if((count_sheeps() > 0) && distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 90)
       {
-        //deleteChainedList(saved_sheeps,indicated_sheep_ID);
+        deleteChainedList(saved_sheeps,saved_sheeps->ID);
         //Reculer pour éviter d'indiquer le mouton à 2 chiens jaunes
         obj = backup;
         if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) >= 145)
