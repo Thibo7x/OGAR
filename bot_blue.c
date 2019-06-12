@@ -158,6 +158,7 @@ void get_axes_with_rank(int rank,coord* proposition)
 		}
 }
 
+//genère un chemin , un grand C exterieur partant du haut, puis des petits c les uns au dessus des autres. isOk;
 void generate_new_base(int* order)
 {
     int rank_max = map.column*map.line;
@@ -228,8 +229,36 @@ coord spotting()
   free(order);
   return centre;
 }
+/* ---------------------------------*/
+coord final_spotting(int rank)
+{
+  coord target;
+  //attention , les tableau commencent à l'indice 0 , rank commence à l'indice 1.
+  target.X = 0;
+  target.Y = 0;
+  
+  return target;
+}
 
+void test_final_spotting(void)
+{
+    split();
+    int max_rank = map.column*map.line;
+    int* table;
+    table = malloc(max_rank*sizeof(int));
 
+    generate_new_base(table);
+
+    coord target = final_spotting(rank);
+
+    for (int save_rank = 1 ; save_rank <= max_rank ; ++save_rank)
+    {
+      print("Coordonnées : (%d,%d) , Rank : %d",target.X,target.Y,save_rank);
+    }
+
+}
+
+/* ---------------------------------*/
 void save_our_sheeps(rencontre *voisins)
 {
   rencontre *pointer = voisins;

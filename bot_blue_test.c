@@ -156,11 +156,7 @@ int get_min(int* table , int rank_max)
   return min;
 }
 
-//nouvel algo pour generate new_base :
-/// 1 seul for  , qui fera toute la taille de la map
-/// 1 if pour séparer le cas descent , du cas monte
-//// 1 if avec un % pour simuler les répetitions du même motif
-
+//genère un chemin , un grand C exterieur partant du haut, puis des petits c les uns au dessus des autres. isOk;
 void generate_new_base(int* order)
 {
     int rank_max = map.column*map.line;
