@@ -108,7 +108,7 @@ int get_rank_with_any_coos(coordF position)
     {
       get_axes_with_rank(rank,rank_properties);
 			get_center(proposition,rank_properties->X,rank_properties->Y);
-      *(distance_table+rank-1) = distance((int)proposition->X,(int)proposition->Y,(int)position.X,(int)position.Y);
+      distance_table[rank-1] = distance((unsigned int)proposition->X,(unsigned int)proposition->Y,(unsigned int)position.X,(unsigned int)position.Y);
     }
 
   minimum = get_min(distance_table,rank_max);
@@ -116,7 +116,7 @@ int get_rank_with_any_coos(coordF position)
     {
       if (distance_table[rank-1] == minimum)
         {
-          *(rank_propose+depth) = rank;
+          rank_propose[depth] = rank;
           depth++;
         }
     }
@@ -130,11 +130,11 @@ int get_rank_with_any_coos(coordF position)
 //obtenir la valeur min d'un tableau , is Ok
 int get_min(int* table , int rank_max)
 {
-  int min = *(table);
-  for (int rank = 1; rank <= rank_max; ++rank)
+  int min = table[0];
+  for (int rank = 1; rank < rank_max; ++rank)
   {
-    if (min >= *(table+rank))
-      min = *(table+rank);
+    if (min >= table[rank])
+      min = table[rank];
   }
   return min;
 }

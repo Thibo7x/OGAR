@@ -4,8 +4,8 @@
 #include <math.h>
 #include <stdlib.h>
 
-#define MAP_SIZE_X 10800
-#define MAP_SIZE_Y 10800
+#define MAP_SIZE_X 9000
+#define MAP_SIZE_Y 6000
 
 int distance(int coordX1, int coordY1, int coordX2, int coordY2)
 {
@@ -127,15 +127,17 @@ int get_rank_with_any_coos(coordF position)
     {
       get_axes_with_rank(rank,rank_properties);
 			get_center(proposition,rank_properties->X,rank_properties->Y);
-      *(distance_table+rank-1) = distance((int)proposition->X,(int)proposition->Y,(int)position.X,(int)position.Y);
+      distance_table[rank-1] = distance((unsigned int)proposition->X,(unsigned int)proposition->Y,(unsigned int)position.X,(unsigned int)position.Y);
+			printf("[Distance Table]Valeur dans le tableau[%d] = %d\n",rank-1,distance_table[rank-1]);
     }
 
   minimum = get_min(distance_table,rank_max);
+	printf("[Distance Table]Valeur du min du tableau : %d\n",minimum);
   for(int rank = 1; rank <= rank_max; ++rank)
     {
       if (distance_table[rank-1] == minimum)
         {
-          *(rank_propose+depth) = rank;
+          rank_propose[depth] = rank;
           depth++;
         }
     }
@@ -147,11 +149,11 @@ int get_rank_with_any_coos(coordF position)
 
 int get_min(int* table , int rank_max)
 {
-  int min = *(table);
-  for (int rank = 1; rank <= rank_max; ++rank)
+  int min = table[0];
+  for (int rank = 1; rank < rank_max; ++rank)
   {
-    if (min >= *(table+rank))
-      min = *(table+rank);
+    if (min >= table[rank])
+      min = table[rank];
   }
   return min;
 }
@@ -261,28 +263,30 @@ void generate_new_base(int* order)
 //   free(center);
 // }
 //
-// void test_get_rank_with_any_coos(void)
-// {
-//   coordF* center;
-//   center = malloc(sizeof(coordF));
-// 	coord* axes;
-// 	axes = malloc(sizeof(coord));
-//
-// 	int buffer;
-// 	int rank_max = map.column*map.line;
-//
-//
-// 	for (int rank = 1 ; rank <= rank_max ; ++rank )
-//   	{
-// 			get_axes_with_rank(rank,axes);
-// 			get_center(center,axes->X,axes->Y);
-// 			buffer = get_rank_with_any_coos(*center);
-// 			printf("Pour la case %d on obtient la case %d.\n",rank,buffer);
-// 		}
-// 		free(center);
-// 		free(axes);
-// }
-//
+void test_get_rank_with_any_coos(void)
+{
+  coordF* center;
+  center = malloc(sizeof(coordF));
+	coord* axes;
+	axes = malloc(sizeof(coord));
+
+	int buffer;
+	int rank_max = map.column*map.line;
+
+
+	for (int rank = 1 ; rank <= rank_max ; ++rank )
+  	{
+			get_axes_with_rank(rank,axes);
+			get_center(center,axes->X,axes->Y);
+			center->X -= 100.0;
+			center->Y += 100.0;
+			buffer = get_rank_with_any_coos(*center);
+			printf("[Rank with any coos]Pour la case %d on obtient la case %d.\n",rank,buffer);
+		}
+		free(center);
+		free(axes);
+}
+
 // void test_get_min(void)
 // {
 //   int tableau[20]={};
@@ -293,23 +297,23 @@ void generate_new_base(int* order)
 //   int min = get_min(tableau,20);
 //   printf("Le minimum est : %d\n",min);
 // }
-//
-// void test_get_axes_with_rank(void)
-// {
-//   coord* proposition;
-//   proposition = malloc(sizeof(coord));
-//
-//   int rank;
-// 	int rank_max = map.column*map.line;
-//   //printf("Quelle rank ?\n");
-//   //scanf("%d",&rank);
-// 	for ( rank = 1 ; rank <= rank_max+1 ; ++rank)
-// 	{
-// 		get_axes_with_rank(rank,proposition);
-// 		printf("Rank %d correspond à la colonne %d et la ligne %d\n",rank,proposition->X,proposition->Y);
-// 	}
-//   free(proposition);
-// }
+
+void test_get_axes_with_rank(void)
+{
+  coord* proposition;
+  proposition = malloc(sizeof(coord));
+
+  int rank;
+	int rank_max = map.column*map.line;
+  // printf("Quelle rank ?\n");
+  // scanf("%d",&rank);
+	for ( rank = 1 ; rank <= rank_max+1 ; ++rank)
+	{
+		get_axes_with_rank(rank,proposition);
+		printf("[Axes with rank]Rank %d correspond à la colonne %d et la ligne %d\n",rank,proposition->X,proposition->Y);
+	}
+  free(proposition);
+}
 //
 // void test_generate_reversed_c_way_from_top(void)
 // {
@@ -341,9 +345,9 @@ void test_generate_new_base(void)
   table[0] = 1;
 
   generate_new_base(table);
-  for (int depth = 0 ; depth < 37 ; ++depth)
+  for (int depth = 0 ; depth < 36 ; ++depth)
     {
-      printf("Valeur du tableau[%d] = %d\n",depth ,table[depth]);
+      printf("[New_Base]Valeur du tableau[%d] = %d\n",depth ,table[depth]);
     }
   free(table);
 }
@@ -364,26 +368,28 @@ void test_generate_new_base(void)
 //   return 1;
 // }
 
-void test_final_spotting(void)
-{
-    split();
-    int max_rank = map.column*map.line;
-    table = malloc(max_rank*sizeof(int));
-
-    generate_new_base(table);
-
-    coord target = final_spotting(rank);
-
-    for (int save_rank = 1 ; save_rank <= max_rank ; ++save_rank)
-    {
-      print("Coordonnées : (%d,%d) , Rank : %d",target.X,target.Y,save_rank);
-    }
-
-}
+// void test_final_spotting(void)
+// {
+//     split();
+//     int max_rank = map.column*map.line;
+//     table = malloc(max_rank*sizeof(int));
+//
+//     generate_new_base(table);
+//
+//     coord target = final_spotting(rank);
+//
+//     for (int save_rank = 1 ; save_rank <= max_rank ; ++save_rank)
+//     {
+//       print("Coordonnées : (%d,%d) , Rank : %d",target.X,target.Y,save_rank);
+//     }
+//
+// }
 
 int main(int argc,char* argv[])
 {
   split();
-  test_generate_new_base();
+	test_get_axes_with_rank();
+  test_get_rank_with_any_coos();
+	test_generate_new_base();
   return 1;
 }
