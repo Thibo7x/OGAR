@@ -5,7 +5,7 @@
 #include <math.h>
 #include "mapFunctions.h"
 #include "chainedListFunctions.h"
-//obtenir les dimensions d'une case et le nombre selon la longueur , selon la largeur, is Ok
+//obtenir les dimensions d'une case et le nombre selon la longueur/largeur , is Ok
 void split(void)
 {
   map.long_length = 0.0;
@@ -35,7 +35,7 @@ void split(void)
   }
 }
 
-//obtenir le rank de la case en fonction de sa colonne/ligne , is Ok
+//obtenir le rank de la case en fonction de sa colonne/ligne  , is Ok
 int get_rank_with_axes(int column , int line)
 {
   int rank = (line-1)*map.column + column;
@@ -43,7 +43,7 @@ int get_rank_with_axes(int column , int line)
 }
 
 
-//obtenir le centre d'un rectangle en fonction de sa position sur le cadrillage, is Ok
+//obtenir le centre d'un rectangle en fonction de sa position sur le cadrillage ; is Ok
 void get_center(coordF* center, int column , int line)
 {
   int rank = get_rank_with_axes(column,line);
@@ -57,7 +57,7 @@ void get_center(coordF* center, int column , int line)
     perror("Out of grill");
 }
 
-//obtenir le rang d'une case à partir des coordonées de son centre , is Ok
+//obtenir le rang d'une case à partir des coordonées de son centre , is Ok (inutilisé)
 int get_rank_with_center_coos(coordF* center)
 {
   coordF* proposition;
@@ -158,33 +158,34 @@ void get_axes_with_rank(int rank,coord* proposition)
 		}
 }
 
-//prend un tableau , la 1ere case (tout en haut à gauche) ainsi que les "dimensions" (nb colonne , nb ligne) du quadrillage
-//puis rempli le tableau des ID de cases successif correspondant à un chemin en C à l'envers
-// int generate_reversed_c_way_from_top(int column , int line ,int rank,int* order)
-// {
-//   int rank_min = rank;
-// 	for(int x = 0 ; x < column ; x++)
-// 		{
-// 			order[rank+1] = (order[rank])+1;
-// 			rank++;
-// 		}
-// 		int rank_save = rank;
-//
-// 	for(int y = rank ; y < rank_save+line-1 ; y++)
-// 		{
-// 			order[rank+1] = order[rank]+column;
-// 			rank++;
-// 		}
-// 		rank_save = rank;
-//
-// 	for(int x = column ; x > 1 ; x--)
-// 		{
-// 			order[rank+1] = order[rank]-1;
-// 			rank++;
-// 		}
-//     array_safe_roll(order,rank_min-1,rank,2);
-// 	return rank;
-//}
+/*
+prend un tableau , la 1ere case (tout en haut à gauche) ainsi que les "dimensions" (nb colonne , nb ligne) du quadrillage
+puis rempli le tableau des ID de cases successif correspondant à un chemin en C à l'envers
+int generate_reversed_c_way_from_top(int column , int line ,int rank,int* order)
+{
+  int rank_min = rank;
+	for(int x = 0 ; x < column ; x++)
+		{
+			order[rank+1] = (order[rank])+1;
+			rank++;
+		}
+		int rank_save = rank;
+
+	for(int y = rank ; y < rank_save+line-1 ; y++)
+		{
+			order[rank+1] = order[rank]+column;
+			rank++;
+		}
+		rank_save = rank;
+
+	for(int x = column ; x > 1 ; x--)
+		{
+			order[rank+1] = order[rank]-1;
+			rank++;
+		}
+    array_safe_roll(order,rank_min-1,rank,2);
+	return rank;
+}
 
 //prend en entrée un tableau , et décale toutes les valeurs compris entre les indices min et max-rannge ,puis complète le tableau en recopiant la dernière valeur manipulé.
 void array_safe_roll(int* table,int min,int max,int range)
@@ -205,41 +206,41 @@ void array_safe_roll(int* table,int min,int max,int range)
 
 //prend un tableau , la 1ere case (tout en bas à gauche) ainsi que les "dimensions" (nb colonne , nb ligne) du quadrillage
 //puis complète le tableau des ID de cases successif correspondant à un chemin en C à l'envers
-// int generate_reversed_c_way_from_bottom(int column , int line ,int rank,int* order)
-// {
-//   order[rank-1] = order[rank-1]-biggest_column;//reprend la dernière valeur actuel pour déterminer le nouveau point de départ
-// 	for(int x = 0 ; x < column-1 ; x++)
-// 		{
-// 			order[rank] = (order[rank-1])+1;
-// 			rank++;
-// 		}
-// 		int rank_save = rank;
-//
-// 	for(int y = rank ; y < rank_save+line-1 ; y++)
-// 		{
-// 			order[rank] = order[rank-1]-column;
-// 			rank++;
-// 		}
-// 		rank_save = rank;
-//
-// 	for(int x = column ; x > 1 ; x--)
-// 		{
-// 			order[rank] = order[rank-1]-1;
-// 			rank++;
-// 		}
-//   return rank;
-// }
+int generate_reversed_c_way_from_bottom(int column , int line ,int rank,int* order)
+{
+  order[rank-1] = order[rank-1]-biggest_column;//reprend la dernière valeur actuel pour déterminer le nouveau point de départ
+	for(int x = 0 ; x < column-1 ; x++)
+		{
+			order[rank] = (order[rank-1])+1;
+			rank++;
+		}
+		int rank_save = rank;
 
-//générer l'ordre de parcours
-// void generate_new_base(int* order)
-// {
-//   int rank = generate_reversed_c_way_from_top(map.column,map.line,1,order);
-//   while (*(order+(map.column*map.line)-1) == 0)
-//     {
-//       rank = generate_reversed_c_way_from_bottom((map.column-1),2,rank,map.column,order);
-//     }
-// }
+	for(int y = rank ; y < rank_save+line-1 ; y++)
+		{
+			order[rank] = order[rank-1]-column;
+			rank++;
+		}
+		rank_save = rank;
 
+	for(int x = column ; x > 1 ; x--)
+		{
+			order[rank] = order[rank-1]-1;
+			rank++;
+		}
+  return rank;
+}
+
+générer l'ordre de parcours
+void generate_new_base(int* order)
+{
+  int rank = generate_reversed_c_way_from_top(map.column,map.line,1,order);
+  while (*(order+(map.column*map.line)-1) == 0)
+    {
+      rank = generate_reversed_c_way_from_bottom((map.column-1),2,rank,map.column,order);
+    }
+}
+*/
 
 
 
@@ -271,7 +272,7 @@ void save_our_sheeps(rencontre *voisins)
 
 }
 
-//Renvoie 1 si la distance enre 2 points est < 3 , sinon renvoie 0
+//renvoie 1 si la distance entre 2 points dépasse 3, renvoie 0 sinon , isOk
 int checkpoint(coord point,coordF target)
 {
   int radius = distance(point.X,point.Y,(int)(target.X),(int)(target.Y));
@@ -297,10 +298,10 @@ int count_sheeps()
 coord intel_blue(rencontre *voisins)
 {
   save_our_sheeps(voisins); // MAJ sheeps around
-  coord obj, backup;
+  coord obj;
 
   switch (dog->mode) {
-    case 1:
+    case 0:
     //Ordre
       //obj = spotting();
     //Sortie
@@ -350,7 +351,7 @@ coord intel_blue(rencontre *voisins)
       }
       if(count_sheeps() == 0)
       {
-        dog->mode = 1;
+        dog->mode = 0;
       }
     break;
 

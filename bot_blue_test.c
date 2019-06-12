@@ -7,6 +7,11 @@
 #define MAP_SIZE_X 10800
 #define MAP_SIZE_Y 10800
 
+int distance(int coordX1, int coordY1, int coordX2, int coordY2)
+{
+	return sqrt((coordX2-coordX1)*(coordX2-coordX1)+(coordY2-coordY1)*(coordY2-coordY1));
+}
+
 void split(void)
 {
   map.long_length = 0.0;
@@ -151,14 +156,16 @@ int get_min(int* table , int rank_max)
   return min;
 }
 
-int distance(int coordX1, int coordY1, int coordX2, int coordY2)
-{
-	return sqrt((coordX2-coordX1)*(coordX2-coordX1)+(coordY2-coordY1)*(coordY2-coordY1));
-}
+//nouvel algo pour generate new_base :
+/// 1 seul for  , qui fera toute la taille de la map
+/// 1 if pour séparer le cas descent , du cas monte
+//// 1 if avec un % pour simuler les répetitions du même motif
 
 void generate_new_base(int* order)
 {
-  printf("On est dessus.")
+    int rank_max = map.column*map.line;
+
+    printf("\t\t----\t\t\n");
 }
 
 // void test_split(void)
