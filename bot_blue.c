@@ -401,13 +401,16 @@ coord intel_blue(rencontre *voisins)
       //Sorties
       if(distance(MAP_SIZE_X/2,MAP_SIZE_Y/2,dog->coord.X,dog->coord.Y) >= 200)
       {
-        printf("ok1\n" );
         deleteChainedList(saved_sheeps,saved_sheeps->ID);
-        printf("ok2\n" );
         if(count_sheeps() == 0)
+        {
           dog->mode = 0;
+        }
         else
+        {
           dog->mode = 1;
+
+        }
       }
     break;
 
