@@ -184,32 +184,25 @@ void generate_new_base(int* order)
                 order[rank] = order[rank-1]-1;
             } // Premier IF
           //étape de transition
-          if (rank >= big_reversed_C_size && (rank-big_reversed_C_size)%little_reversed_C_size == 0 )
+          if (rank == big_reversed_C_size)
             {
               order[rank] = order[rank-1]-map.column;
-              lower_counter = 1;
+              lower_counter = 0;
             }//Deuxième IF
 
           //cas des petits C succesifs
-          if (rank >= big_reversed_C_size && (rank-big_reversed_C_size)%little_reversed_C_size != 0)
+          if (rank > big_reversed_C_size)
             {
+              lower_counter = rank-big_reversed_C_size;
               if (lower_counter < map.column-1)
-              {
-                order[rank] = order[rank-1]+1;
-                lower_counter += 1;
-              }
-            //cas similaire à la condition du 2ème IF , donc il rentre pas ici (a%b => a%2b)
-            if (lower_counter == map.column-1)
-              {
-                order[rank] = order[rank-1]-(5*map.column);
-                lower_counter += 1;
-                printf("\t\t--%d--\t\t\n",rank);
-              }
-            if (lower_counter > map.column-1)
-              {
+                  order[rank] = order[rank-1]+1;
+
+              if (lower_counter == map.column-1)
+                order[rank] = order[rank-1]-map.column;
+
+              if (lower_counter > map.column-1 && lower_counter < little_reversed_C_size)
                 order[rank] = order[rank-1]-1;
-                lower_counter += 1;
-              }
+
              }
       }
     printf("\t\t----\t\t\n");
