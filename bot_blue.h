@@ -16,15 +16,15 @@ struct rectangle_subdivision
 };
 
 void split(void);
-int get_rank_with_column_line(int column , int line);
+int get_rank_with_axes(int column , int line);
 void get_center(coordF* center, int column , int line);
 int get_rank_with_center_coos(coordF* center);
-int get_rank_with_any_coos(coordF* position);
+int get_rank_with_any_coos(coordF position);
 int get_min(int* table , int rank_max);
 void get_axes_with_rank(int rank,coord* proposition);
 int generate_reversed_c_way_from_top(int column , int line ,int rank,int* order);
 void array_safe_roll(int* table,int min,int max,int range);
-int generate_reversed_c_way_from_bottom(int column , int line ,int rank,int biggest_column,int* order);
+int generate_reversed_c_way_from_bottom(int column , int line ,int rank,int* order);
 void generate_new_base(int* order);
 void save_our_sheeps(rencontre *voisins);
 int checkpoint(coord point,coordF target);
