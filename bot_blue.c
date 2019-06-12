@@ -240,7 +240,23 @@ void array_safe_roll(int* table,int min,int max,int range)
 //     }
 // }
 
-
+coord spotting()
+{
+  split();
+  int *order = malloc(map.column * map.line * sizeof(int));
+  generate_new_base(order);
+  coord *position = malloc(sizeof(position));
+  coordF *centreF = malloc(sizeof(centreF));
+  coord centre;
+  get_axes_with_rank(order[old_rank++],position);
+  get_center(centreF, position->X , position->Y);
+  centre.X = ceil(centreF->X);
+  centre.Y = ceil(centreF->Y);
+  free(position);
+  free(centreF);
+  free(order);
+  return centre;
+}
 
 
 void save_our_sheeps(rencontre *voisins)
