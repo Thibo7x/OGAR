@@ -211,7 +211,29 @@ void generate_new_base(int* order)
       }
 }
 
-
+//renvoie l'indice d'une case de réference en fonction du cadran dans lequel se situe le chien, priorité à droite et en bas
+int first_rank(void)
+{
+  int references[4] = {2+map.column,(2*map.column)-1,2+((map.line-2)*map.column),((map.line-1)*(map.column))-1};
+	//printf("Ref 1 : %d\nRef 2 : %d\nRef 3 : %d\nRef 4 : %d\n",references[0],references[1],references[2],references[3]);
+	int x = dog->coord.X;
+	int y = dog->coord.Y;
+		if ( x >= (MAP_SIZE_X/2.0) )
+		{
+			if ( y > (MAP_SIZE_Y/2.0))
+				return references[3];
+			if ( y <= (MAP_SIZE_Y/2.0))
+				return references[1];
+		}
+		if ( x < (MAP_SIZE_X/2) )
+		{
+			if ( y > (MAP_SIZE_Y/2.0))
+				return references[2];
+			if ( y <= (MAP_SIZE_Y/2.0))
+				return references[0];
+		}
+    return references[3];
+}
 /* ---------------------------------*/
 coord spotting()
 {

@@ -314,30 +314,7 @@ void test_get_axes_with_rank(void)
 	}
   free(proposition);
 }
-//
-// void test_generate_reversed_c_way_from_top(void)
-// {
-//   int table[18];
-//   *(table) = 1;
-//   int rank = generate_reversed_c_way_from_top(6,6,1,table);
-//   for(int length = 0;length < 18;++length)
-//     {
-//       printf("Valeur dans le tableau[%d] = %d\n",length,table[length]);
-//     }
-// }
-//
-// void test_generate_reversed_c_way_from_bottom(void);
-// {
-//   int table[18];
-//   *(table) = 31;
-//   int rank = generate_reversed_c_way_from_top(6,6,31,table);
-//   for(int length = 0;length < 18;++length)
-//     {
-//       printf("Valeur dans le tableau[%d] = %d\n",length,table[length]);
-//     }
-//   return 1;
-// }
-//
+
 void test_generate_new_base(void)
 {
   int* table;
@@ -385,11 +362,43 @@ void test_generate_new_base(void)
 //
 // }
 
+
+// void test_first_rank(void)
+// {
+//
+// 	coordF* center;
+// 	center = malloc(sizeof(coordF));
+// 	coord* axes;
+// 	axes = malloc(sizeof(coord));
+// 	int references[4] = {2+map.column,(2*map.column)-1,2+((map.line-2)*map.column),((map.line-1)*(map.column))-1};
+//
+// 	for(int rank = 1 ; rank <= 20 ; ++rank)
+// 		{
+// 			get_axes_with_rank(rank,axes);
+// 			get_center(center,axes->X,axes->Y);
+// 			// center->X -= 100.0;
+// 			// center->Y += 100.0;
+// 			if ( center->X >= (MAP_SIZE_X/2.0) )
+// 			{
+// 				if ( center->Y  > (MAP_SIZE_Y/2.0))
+// 					printf("%d : reference = %d\n",rank,references[3]);
+// 				if ( center->Y  <= (MAP_SIZE_Y/2.0))
+// 					printf("%d : reference = %d\n",rank,references[1]);
+// 			}
+// 			if ( center->X < (MAP_SIZE_X/2) )
+// 			{
+// 				if ( center->Y > (MAP_SIZE_Y/2.0))
+// 					printf("%d : reference = %d\n",rank,references[2]);
+// 				if ( center->Y  <= (MAP_SIZE_Y/2.0))
+// 					printf("%d : reference = %d\n",rank,references[0]);
+// 			}
+// 		}
+// 		free(center);
+// 		free(axes);
+// }
+
 int main(int argc,char* argv[])
 {
-  split();
-	test_get_axes_with_rank();
-  test_get_rank_with_any_coos();
-	test_generate_new_base();
+	split();
   return 1;
 }
