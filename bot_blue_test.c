@@ -364,6 +364,23 @@ void test_generate_new_base(void)
 //   return 1;
 // }
 
+void test_final_spotting(void)
+{
+    split();
+    int max_rank = map.column*map.line;
+    table = malloc(max_rank*sizeof(int));
+
+    generate_new_base(table);
+
+    coord target = final_spotting(rank);
+
+    for (int save_rank = 1 ; save_rank <= max_rank ; ++save_rank)
+    {
+      print("Coordonnées : (%d,%d) , Rank : %d",target.X,target.Y,save_rank);
+    }
+
+}
+
 int main(int argc,char* argv[])
 {
   split();

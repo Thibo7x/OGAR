@@ -212,51 +212,34 @@ void generate_new_base(int* order)
 }
 
 
+/* ---------------------------------*/
 coord spotting()
 {
-  split();
-  int *order = malloc(map.column * map.line * sizeof(int));
-  generate_new_base(order);
-  coord *position = malloc(sizeof(position));
-  coordF *centreF = malloc(sizeof(centreF));
-  coord centre;
-  get_axes_with_rank(order[old_rank++],position);
-  get_center(centreF, position->X , position->Y);
-  centre.X = ceil(centreF->X);
-  centre.Y = ceil(centreF->Y);
-  free(position);
-  free(centreF);
-  free(order);
-  return centre;
-}
-/* ---------------------------------*/
-coord final_spotting(int rank)
-{
   coord target;
+  coordF targetF;
+  coord *proposition = malloc(sizeof(proposition));
   //attention , les tableau commencent à l'indice 0 , rank commence à l'indice 1.
-  target.X = 0;
-  target.Y = 0;
-  
+  get_axes_with_rank(table[old_rank-1], proposition);
+  coordF center;
+  get_center(&center,proposition->X,proposition->Y);
+  if(checkpoint(dog->coord,center))
+    {
+      old_rank++;
+      get_axes_with_rank(table[old_rank-1], proposition);
+      get_center(&targetF,proposition->X,proposition->Y);
+    }
+  else
+    {
+      get_axes_with_rank(table[old_rank-1], proposition);
+      get_center(&targetF,proposition->X,proposition->Y);
+    }
+  target.X = (int)(targetF.X);
+  target.Y = (int)(targetF.Y);
+  free(proposition);
   return target;
 }
 
-void test_final_spotting(void)
-{
-    split();
-    int max_rank = map.column*map.line;
-    int* table;
-    table = malloc(max_rank*sizeof(int));
 
-    generate_new_base(table);
-
-    coord target = final_spotting(rank);
-
-    for (int save_rank = 1 ; save_rank <= max_rank ; ++save_rank)
-    {
-      print("Coordonnées : (%d,%d) , Rank : %d",target.X,target.Y,save_rank);
-    }
-
-}
 
 /* ---------------------------------*/
 void save_our_sheeps(rencontre *voisins)
@@ -287,7 +270,7 @@ void save_our_sheeps(rencontre *voisins)
 
 }
 
-//renvoie 1 si la distance entre 2 points dépasse 3, renvoie 0 sinon , isOk
+//renvoie 0 si la distance entre 2 points dépasse 3, renvoie 1 sinon , isOk
 int checkpoint(coord point,coordF target)
 {
   int radius = distance(point.X,point.Y,(int)(target.X),(int)(target.Y));
@@ -318,7 +301,7 @@ coord intel_blue(rencontre *voisins)
   switch (dog->mode) {
     case 0:
     //Ordre
-      //obj = spotting();
+      obj = spotting();
     //Sortie
       if(count_sheeps() >= 4)
       dog->mode = 2;

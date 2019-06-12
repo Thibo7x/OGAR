@@ -40,6 +40,7 @@ void test_generate_reversed_c_way_from_top(void);
 
 int old_rank;
 subdivision map;
+int* table;
 rencontre *saved_sheeps;
 coord backup;
 int count_sheeps();
