@@ -1,3 +1,5 @@
 sock
 *.gch
 *.o
+*.out
+test

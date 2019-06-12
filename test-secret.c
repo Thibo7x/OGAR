@@ -1,8 +1,7 @@
-#define MAP_SIZE_X 9000
-#define MAP_SIZE_Y 6000
 #include <stdlib.h>
 #include <stdio.h>
 #include "test-secret.h"
+#include "mapFunctions.h"
 #include <math.h>
 
 void create_map(lines, columns)
@@ -55,8 +54,42 @@ void show_map(int lines, int columns)
   }
 }
 
+int get_id_actual_square(lines, columns)
+{
+  int i,j;
+  j = (int) floor( ((float)dog->coord.X) / (float)(MAP_SIZE_X/((float)columns)) );
+  i = (int) floor( ((float)dog->coord.Y) / (float)(MAP_SIZE_Y/((float)lines)) );
+  printf("i:%d j:%d", i,j);
+  return map[i][j];
+}
+
+coord get_square_center(id, lines, columns)
+{
+  coord ret;
+  int i = 0,j = 0,acquired = 0;
+  while (i < lines && acquired == 0)
+  {
+    while (j < columns && acquired == 0)
+    {
+      if (map[i][j] == id)
+        acquired = 1;
+      j++;
+    }
+    i++;
+  }
+  ret.X = (j)*(MAP_SIZE_Y/columns) + (MAP_SIZE_Y/columns)/2;
+  ret.Y = (i)*(MAP_SIZE_X/lines) + (MAP_SIZE_X/lines)/2;
+  return ret;
+}
+
+
 int main()
 {
+  MAP_SIZE_X = 9000.0;
+  MAP_SIZE_Y = 6000.0;
+  dog = malloc(sizeof(dog));
+  dog->coord.X = 5000;
+  dog->coord.Y = 3200;
   int lines = (int) ceil( (float)(MAP_SIZE_Y/2) / 2000.0) * 2;
   int columns = (int) ceil( (float)(MAP_SIZE_X/2) / 2000.0) * 2; // 600 = R_VUE[yellow]
 
@@ -93,14 +126,8 @@ int main()
   create_map(lines, columns);
   show_map(lines, columns);
 
+  printf("ID: %d\n",get_id_actual_square(lines, columns));
+
   return 0;
 //map[lines][columns]
 }
-
-
-
-// get_square_center(id)
-// {
-//   coord obj;
-//   obj.X = MAP_SIZE_X /
-// }
