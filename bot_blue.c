@@ -225,6 +225,10 @@ coord spotting()
   if(checkpoint(dog->coord,center))
     {
       old_rank++;
+      if (old_rank > max_rank)
+      {
+        old_rank = 1;
+      }
       get_axes_with_rank(table[old_rank-1], proposition);
       get_center(&targetF,proposition->X,proposition->Y);
     }

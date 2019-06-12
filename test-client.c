@@ -107,6 +107,14 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 				firstBorderInfoMessage = 0;
 				MAP_SIZE_X = *((double *)(rbuf+17));
 			  MAP_SIZE_Y = *((double *)(rbuf+25));
+				if(dog->color == 1)
+				{
+					old_rank = 1;
+					split();
+					max_rank = map.column*map.line;
+					table = malloc(max_rank*sizeof(int));
+					generate_new_base(table);
+				}
 			}
 			break;
 
@@ -285,7 +293,6 @@ int main(int argc, char **argv)
 {
 	int n = 0;
 	iii = 0;
-	int max_rank;
 	firstBorderInfoMessage = 1;
 	struct lws_context_creation_info info;
 	struct lws_client_connect_info i;
@@ -360,14 +367,6 @@ int main(int argc, char **argv)
 	dog->view.Y = Y_VIEW[dog->color];
 
 	i.context = context;
-
-	if(dog->color == 1)
-	{
-		split();
-		max_rank = map.column*map.line;
-		table = malloc(max_rank*sizeof(int));
-		generate_new_base(table);
-	}
 
 	if (lws_client_connect_via_info(&i)); // just to prevent warning !!
 

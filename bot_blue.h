@@ -39,6 +39,7 @@ void test_get_axes_with_rank(void);
 void test_generate_reversed_c_way_from_top(void);
 
 int old_rank;
+int max_rank;
 subdivision map;
 int* table;
 rencontre *saved_sheeps;
