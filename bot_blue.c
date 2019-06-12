@@ -285,15 +285,20 @@ int count_sheeps()
   return i;
 }
 /* ----------------main----------------- */
+
+//Reste à faire :
+//Fonction spotting()
+//dog->mode 6
+//Libérer la mémoire quand un mouton est indiqué
 coord intel_blue(rencontre *voisins)
 {
   save_our_sheeps(voisins); // MAJ sheeps around
-  coord obj;
+  coord obj, backup;
 
   switch (dog->mode) {
     case 1:
     //Ordre
-      obj = spotting();
+      //obj = spotting();
     //Sortie
       if(count_sheeps() >= 4)
       dog->mode = 2;
@@ -330,31 +335,36 @@ coord intel_blue(rencontre *voisins)
 
     case 5:
     //Ordre
+      backup = dog->coord;
       obj.X = MAP_SIZE_X/2;
       obj.Y = MAP_SIZE_Y/2;
     //Sortie
-      if((count_sheeps() < 4) && distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 90)
+      if((count_sheeps() > 0) && distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 90)
       {
-        dog->mode = 2;
-        sheep_indicated++;
+        //deleteChainedList(saved_sheeps,indicated_sheep_ID);
+        //Reculer pour éviter d'indiquer le mouton à 2 chiens jaunes
+        obj = backup;
+        if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) >= 145)
+          dog->mode = 2;
       }
-      if(count_sheeps() == 4)
+      if(count_sheeps() == 0)
       {
         dog->mode = 1;
-        sheep_indicated = 0;
       }
     break;
 
     case 6:
     //Ordre
+    //Voir ce qu'il faut faire ici
     //Sortie
     break;
 
     default:
     break;
 
-    return obj;
+
   }
+  return obj;
 
 }
 /* ----------------main----------------- */
