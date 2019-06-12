@@ -9,7 +9,6 @@
 
 coord intel_yellow(rencontre *voisins)
 {
-	printf("MODE : %d\n",dog->mode );
 	rencontre *sheep_viseur = voisins;
 	rencontre *blue_viseur = voisins;
 	coord obj;
