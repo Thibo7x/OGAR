@@ -290,9 +290,7 @@ int count_sheeps()
 /* ----------------main----------------- */
 
 //Reste à faire :
-//Fonction spotting()
-//dog->mode 6
-//Libérer la mémoire quand un mouton est indiqué
+//Carrément toute la fonction intel_blue
 coord intel_blue(rencontre *voisins)
 {
   save_our_sheeps(voisins); // MAJ sheeps around
