@@ -164,7 +164,25 @@ int get_min(int* table , int rank_max)
 void generate_new_base(int* order)
 {
     int rank_max = map.column*map.line;
+    int big_reversed_C_size = (2*map.column)+map.line-2;
+    //la première case vaux 1.
+    order[0] = 1 ;
+    for (int rank = 1 ; rank < rank_max ; ++rank)
+      {
+          //cas du premier C , anciennement reversed_C_from_top
+          if (rank < big_reversed_C_size)
+            {
+              if (rank < map.column)
+                order[rank] = order[rank-1]+1;
 
+              if (rank >= map.column && rank < map.column+map.line-1)
+                order[rank] = order[rank-1]+map.column;
+
+              if (rank >= map.column+map.line-1)
+                order[rank] = order[rank-1]-1;
+
+            }
+      }
     printf("\t\t----\t\t\n");
 }
 
