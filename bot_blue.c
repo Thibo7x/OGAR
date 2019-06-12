@@ -214,25 +214,26 @@ void generate_new_base(int* order)
 //renvoie l'indice d'une case de réference en fonction du cadran dans lequel se situe le chien, priorité à droite et en bas
 int first_rank(void)
 {
-  int references[4] = {2+map.column,(2*map.column)-1,2+((map.line-2)*map.column),((map.line-1)*(map.column))-1};
+  int references[4] = {19,17,14,16};
 	//printf("Ref 1 : %d\nRef 2 : %d\nRef 3 : %d\nRef 4 : %d\n",references[0],references[1],references[2],references[3]);
 	int x = dog->coord.X;
 	int y = dog->coord.Y;
+  int buffer;
 		if ( x >= (MAP_SIZE_X/2.0) )
 		{
 			if ( y > (MAP_SIZE_Y/2.0))
-				return references[3];
+				buffer = references[3];
 			if ( y <= (MAP_SIZE_Y/2.0))
-				return references[1];
+				buffer = references[1];
 		}
 		if ( x < (MAP_SIZE_X/2) )
 		{
 			if ( y > (MAP_SIZE_Y/2.0))
-				return references[2];
+				buffer = references[2];
 			if ( y <= (MAP_SIZE_Y/2.0))
-				return references[0];
+				buffer = references[0];
 		}
-    return references[3];
+    return buffer;
 }
 /* ---------------------------------*/
 coord spotting()
@@ -270,26 +271,30 @@ coord spotting()
 /* ---------------------------------*/
 void save_our_sheeps(rencontre *voisins)
 {
-  rencontre *pointer;
-  pointer = voisins;
-  while (pointer != NULL)
+  rencontre *pointer = voisins;
+  if (pointer != NULL)
   {
-    if ((rechercherListeChainee(saved_sheeps, pointer->ID) == NULL) && (!memcmp(pointer->couleur,"\xe6\xf0\xf0",3))) // Pas trouvé dans saved_sheeps
+    while (pointer != NULL)
     {
-      // On l'ajoute
-      rencontre *sheep = malloc(sizeof(sheep));
-      // Remplissage des caractéristiques
-      sheep->ID = pointer->ID;
-      sheep->coord = pointer->coord;
-      memcpy(sheep->couleur, pointer->couleur, 3*sizeof(unsigned char));
+      if ((rechercherListeChainee(saved_sheeps, pointer->ID) == NULL) && (!memcmp(pointer->couleur,"\xe6\xf0\xf0",3))) // Pas trouvé dans saved_sheeps
+      {
+        // On l'ajoute
+        rencontre *sheep = malloc(sizeof(sheep));
 
-      // Adresse
-      sheep->next = saved_sheeps;
-      saved_sheeps = sheep;
+        // Remplissage des caractéristiques
+        sheep->ID = pointer->ID;
+        sheep->coord = pointer->coord;
+        memcpy(sheep->couleur, pointer->couleur, 4*sizeof(unsigned char));
 
+        // Adresse
+        sheep->next = voisins;
+        voisins = sheep;
+
+      }
+      pointer = pointer->next;
     }
-    pointer = pointer->next;
   }
+
 }
 
 //renvoie 0 si la distance entre 2 points dépasse 3, renvoie 1 sinon , isOk
@@ -332,14 +337,12 @@ coord intel_blue(rencontre *voisins)
     case 2:
     //Ordre
       obj.X = dog->coord.X;
-      if(dog->coord.Y < MAP_SIZE_Y/2 - 160)
-        obj.Y = MAP_SIZE_Y/2 - 160;
-      if(dog->coord.Y > MAP_SIZE_Y/2 + 160)
-        obj.Y = MAP_SIZE_Y/2 + 160;
-
-      backup_done = 0;
+      if(dog->coord.Y > MAP_SIZE_Y - 150)
+        obj.Y = MAP_SIZE_Y - 150;
+        if(dog->coord.Y > MAP_SIZE_Y + 150)
+        obj.Y = MAP_SIZE_Y + 150;
     //Sortie
-      if((dog->coord.Y == MAP_SIZE_Y/2 - 160) || (dog->coord.Y == MAP_SIZE_Y/2 + 160))
+      if((dog->coord.Y == MAP_SIZE_Y/2 - 150) || (dog->coord.Y == MAP_SIZE_Y/2 + 150))
         dog->mode = 3;
     break;
     case 3:
@@ -347,7 +350,7 @@ coord intel_blue(rencontre *voisins)
       obj.X = turn_to_indicate(saved_sheeps).X;
       obj.Y = dog->coord.Y;
     //Sortie
-      if((dog->coord.X >= obj.X -1) || (dog->coord.X <= obj.X +1))
+      if(dog->coord.X == obj.X)
         dog->mode = 4;
     break;
 
@@ -362,21 +365,14 @@ coord intel_blue(rencontre *voisins)
 
     case 5:
     //Ordre
-      if(!backup_done)
-      {
-        backup = dog->coord;
-        backup_done = 1;
-      }
+      backup = dog->coord;
       obj.X = MAP_SIZE_X/2;
       obj.Y = MAP_SIZE_Y/2;
     //Sortie
-      if((count_sheeps() > 0) && (distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 90))
+      if((count_sheeps() > 0) && (distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 90) && find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins))
       {
-        if(find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins) != NULL && distance(MAP_SIZE_X/2,MAP_SIZE_Y/2,find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins)->coord.X,find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins)->coord.Y) < 2)
-        {
-          deleteChainedList(saved_sheeps,saved_sheeps->ID);
-          dog->mode = 6;
-        }
+        deleteChainedList(saved_sheeps,saved_sheeps->ID);
+        dog->mode = 6;
       }
       if(count_sheeps() == 0)
       {
@@ -397,7 +393,6 @@ coord intel_blue(rencontre *voisins)
 
 
   }
-  printf("MODE: %d\n", dog->mode);
   return obj;
 
 }
@@ -419,7 +414,7 @@ coord turn_to_indicate(rencontre *sheep)
 {
   coordF sheep_direction = direction(MAP_SIZE_X/2,MAP_SIZE_Y/2,sheep->coord.X,sheep->coord.Y);
   coord reach_point;
-  reach_point.X = MAP_SIZE_X/2 + ceil((sheep_direction.X)*160);
-	reach_point.Y = MAP_SIZE_Y/2 + ceil((sheep_direction.Y)*160);
+  reach_point.X = MAP_SIZE_X/2 + ceil((sheep_direction.X)*150);
+	reach_point.Y = MAP_SIZE_Y/2 + ceil((sheep_direction.Y)*150);
   return reach_point;
 }
