@@ -182,3 +182,17 @@ rencontre* dechiffrageMessage(unsigned char* rbuf)
 	} while ( (*reader_c != 0x0) || (*(reader_c+1) != 0x0) || (*(reader_c+2) != 0x0) || (*(reader_c+3) != 0x0) ); // Fin du payload
 	return firstNode;
 }
+
+rencontre *find_voisin_by_color(unsigned char* color, rencontre* voisins)
+{
+	rencontre *target = voisins;
+	while (target != NULL)
+	{
+		if (memcmp(target->couleur,color,3))
+			target = target->next;
+		else
+			break;
+	}
+
+	return target;
+}

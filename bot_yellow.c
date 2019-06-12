@@ -7,20 +7,6 @@
 #include <string.h>
 #define min(a,b) (a<=b?a:b)
 
-rencontre *find_voisin_by_color(unsigned char* color, rencontre* voisins)
-{
-	rencontre *target = voisins;
-	while (target != NULL)
-	{
-		if (memcmp(target->couleur,color,3))
-			target = target->next;
-		else
-			break;
-	}
-
-	return target;
-}
-
 coord intel_yellow(rencontre *voisins)
 {
 	printf("MODE : %d\n",dog->mode );

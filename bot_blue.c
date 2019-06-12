@@ -4,6 +4,7 @@
 #include <string.h>
 #include <math.h>
 #include "mapFunctions.h"
+#include "chainedListFunctions.h"
 //obtenir les dimensions
 void split(void)
 {
@@ -341,13 +342,10 @@ coord intel_blue(rencontre *voisins)
       obj.X = MAP_SIZE_X/2;
       obj.Y = MAP_SIZE_Y/2;
     //Sortie
-      if((count_sheeps() > 0) && distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 90)
+      if((count_sheeps() > 0) && (distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 90) && find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins))
       {
         deleteChainedList(saved_sheeps,saved_sheeps->ID);
-        //Reculer pour éviter d'indiquer le mouton à 2 chiens jaunes
-        obj = backup;
-        if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) >= 145)
-          dog->mode = 2;
+        dog->mode = 6;
       }
       if(count_sheeps() == 0)
       {
@@ -357,8 +355,10 @@ coord intel_blue(rencontre *voisins)
 
     case 6:
     //Ordre
-    //Voir ce qu'il faut faire ici
+      obj = backup;
     //Sortie
+    if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) >= 145)
+      dog->mode = 2;
     break;
 
     default:
