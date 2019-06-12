@@ -156,93 +156,9 @@ int distance(int coordX1, int coordY1, int coordX2, int coordY2)
 	return sqrt((coordX2-coordX1)*(coordX2-coordX1)+(coordY2-coordY1)*(coordY2-coordY1));
 }
 
-int generate_reversed_c_way_from_top(int column , int line ,int rank,int* order)
-{
-  int rank_min = rank;
-	for(int x = 0 ; x < column ; x++)
-		{
-			order[rank+1] = (order[rank])+1;
-			rank++;
-      printf("value de order[%d] = %d\n",rank,order[rank]);
-		}
-		int rank_save = rank;
-
-	for(int y = rank ; y < rank_save+line-1 ; y++)
-		{
-			order[rank+1] = order[rank]+column;
-			rank++;
-      printf("value de order[%d] = %d\n",rank,order[rank]);
-		}
-		rank_save = rank;
-
-	for(int x = column ; x > 1 ; x--)
-		{
-			order[rank+1] = order[rank]-1;
-			rank++;
-      printf("value de order[%d] = %d\n",rank,order[rank]);
-		}
-    array_safe_roll(order,rank_min-1,rank,2);
-	return rank;
-}
-
-//prend en entrée un tableau , et décale toutes les valeurs compris entre les indices min et max-rannge ,puis complète le tableau en recopiant la dernière valeur manipulé.
-void array_safe_roll(int* table,int min,int max,int range)
-{
-	for (int rank = min; rank <= max ; ++rank)
-		{
-      if (rank <= max-range+1)
-      {
-        table[rank] = table[rank+range];
-      }
-
-      if (rank > max-range && rank <= max)
-      {
-        table[rank] = table[max-range];
-      }
-    }
-}
-
-//prend un tableau , la 1ere case (tout en bas à gauche) ainsi que les "dimensions" (nb colonne , nb ligne) du quadrillage
-//puis complète le tableau des ID de cases successif correspondant à un chemin en C à l'envers
-int generate_reversed_c_way_from_bottom(int column , int line ,int rank,int* order)
-{
-  //reprend la dernière valeur actuel pour déterminer le nouveau point de départ
-  order[rank-1] = order[rank-1]-map.column;
-	for(int x = 0 ; x < column-1 ; x++)
-		{
-			order[rank] = (order[rank-1])+1;
-      rank++;
-      printf("value de order[%d] = %d\n",rank,order[rank]);
-		}
-  int rank_save = rank;
-
-	for(int y = rank ; y < rank_save+line-1 ; y++)
-		{
-			order[rank] = order[rank-1]-map.column;
-      rank++;
-      printf("value de order[%d] = %d\n",rank,order[rank]);
-		}
-      rank_save = rank;
-	for(int x = column ; x >= 1 ; x--)
-		{
-			order[rank] = order[rank-1]-1;
-      rank++;
-      printf("value de order[%d] = %d\n",rank,order[rank]);
-		}
-    rank_save = rank;
-    printf("value de rank_save = %d\n",rank_save);
-  return rank;
-}
-
 void generate_new_base(int* order)
 {
-  int rank = generate_reversed_c_way_from_top(map.column,map.line,1,order);
-  printf("\t\t----\t\t\n");
-  while (order[(map.column*map.line)-1] == 0)
-    {
-      rank = generate_reversed_c_way_from_bottom((map.column-1),2,rank,order);
-      printf("\t\t----\t\t\n");
-    }
+  printf("On est dessus.")
 }
 
 // void test_split(void)

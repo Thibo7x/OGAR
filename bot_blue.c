@@ -5,7 +5,7 @@
 #include <math.h>
 #include "mapFunctions.h"
 #include "chainedListFunctions.h"
-//obtenir les dimensions
+//obtenir les dimensions d'une case et le nombre selon la longueur , selon la largeur, is Ok
 void split(void)
 {
   map.long_length = 0.0;
@@ -35,7 +35,7 @@ void split(void)
   }
 }
 
-//obtenir le rank de la case en fonction de sa colonne/ligne
+//obtenir le rank de la case en fonction de sa colonne/ligne , is Ok
 int get_rank_with_axes(int column , int line)
 {
   int rank = (line-1)*map.column + column;
@@ -43,7 +43,7 @@ int get_rank_with_axes(int column , int line)
 }
 
 
-//obtenir le centre d'un rectangle en fonction de sa position sur le cadrillage
+//obtenir le centre d'un rectangle en fonction de sa position sur le cadrillage, is Ok
 void get_center(coordF* center, int column , int line)
 {
   int rank = get_rank_with_axes(column,line);
@@ -57,7 +57,7 @@ void get_center(coordF* center, int column , int line)
     perror("Out of grill");
 }
 
-//obtenir le rang d'une case à partir des coordonées de son centre
+//obtenir le rang d'une case à partir des coordonées de son centre , is Ok
 int get_rank_with_center_coos(coordF* center)
 {
   coordF* proposition;
@@ -84,7 +84,7 @@ int get_rank_with_center_coos(coordF* center)
 }
 
 
-//obtenir le rang d'une case à partir de ses coordonées , à finir, à tester , à faire évoluer
+//obtenir le rang d'une case à partir de ses coordonées , is Ok
 int get_rank_with_any_coos(coordF position)
 {
   coordF* proposition;
@@ -127,7 +127,7 @@ int get_rank_with_any_coos(coordF position)
 }
 
 
-//obtenir la valeur min d'un tableau
+//obtenir la valeur min d'un tableau , is Ok
 int get_min(int* table , int rank_max)
 {
   int min = *(table);
@@ -139,7 +139,7 @@ int get_min(int* table , int rank_max)
   return min;
 }
 
-//permet d'obtenir la colonne et la ligne en fonction du numéro de la case
+//permet d'obtenir la colonne et la ligne en fonction du numéro de la case , is Ok
 void get_axes_with_rank(int rank,coord* proposition)
 {
   if (rank > map.column*map.line)
@@ -271,6 +271,7 @@ void save_our_sheeps(rencontre *voisins)
 
 }
 
+//Renvoie 1 si la distance enre 2 points est < 3 , sinon renvoie 0
 int checkpoint(coord point,coordF target)
 {
   int radius = distance(point.X,point.Y,(int)(target.X),(int)(target.Y));
@@ -296,10 +297,10 @@ int count_sheeps()
 coord intel_blue(rencontre *voisins)
 {
   save_our_sheeps(voisins); // MAJ sheeps around
-  coord obj;
+  coord obj, backup;
 
   switch (dog->mode) {
-    case 0:
+    case 1:
     //Ordre
       //obj = spotting();
     //Sortie
@@ -349,7 +350,7 @@ coord intel_blue(rencontre *voisins)
       }
       if(count_sheeps() == 0)
       {
-        dog->mode = 0;
+        dog->mode = 1;
       }
     break;
 
