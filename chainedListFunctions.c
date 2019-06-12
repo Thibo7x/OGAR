@@ -91,7 +91,6 @@ rencontre* rechercherListeChainee(rencontre *firstNode, unsigned char id)
 		if (viseur == NULL)
 		{
 			break;
-			return NULL;
 		}
 	}
 	return viseur;
@@ -101,7 +100,7 @@ void deleteChainedList(rencontre *firstNode, unsigned char id)
 {
 	rencontre *deletedElem = rechercherListeChainee(firstNode, id);
 	rencontre *precedent_deletedElem = rechercherListeChainee(firstNode->next, id);
-	if (precedent_deletedElem != NULL) // deletedElem est le 1er de la liste
+	if (precedent_deletedElem == NULL) // deletedElem est le 1er de la liste
 	{
 		firstNode = deletedElem->next;
 	}
