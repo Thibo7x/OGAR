@@ -229,19 +229,25 @@ int generate_reversed_c_way_from_bottom(int column , int line ,int rank,int* ord
 			rank++;
 		}
   return rank;
-}
+}*/
 
-générer l'ordre de parcours
-void generate_new_base(int* order)
+coord spotting()
 {
-  int rank = generate_reversed_c_way_from_top(map.column,map.line,1,order);
-  while (*(order+(map.column*map.line)-1) == 0)
-    {
-      rank = generate_reversed_c_way_from_bottom((map.column-1),2,rank,map.column,order);
-    }
+  split();
+  int *order = malloc(map.column * map.line * sizeof(int));
+  generate_new_base(order);
+  coord *position = malloc(sizeof(position));
+  coordF *centreF = malloc(sizeof(centreF));
+  coord centre;
+  get_axes_with_rank(order[old_rank++],position);
+  get_center(centreF, position->X , position->Y);
+  centre.X = ceil(centreF->X);
+  centre.Y = ceil(centreF->Y);
+  free(position);
+  free(centreF);
+  free(order);
+  return centre;
 }
-*/
-
 
 
 void save_our_sheeps(rencontre *voisins)

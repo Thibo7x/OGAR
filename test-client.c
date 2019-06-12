@@ -124,7 +124,7 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 						pos.Y = 0;
 					break;
 					case 1:
-						pos = intel_blue(voisins);
+						pos = spotting();
 					break;
 					case 2:
 					// GREEN
