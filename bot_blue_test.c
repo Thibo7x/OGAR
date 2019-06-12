@@ -167,6 +167,7 @@ void generate_new_base(int* order)
     int big_reversed_C_size = (2*map.column)+map.line-2;
     int little_reversed_C_size = 2*(map.column-1);
     int lower_counter = 0;
+    int coefficient = 0;
     //la première case vaux 1.
     order[0] = 1 ;
     for (int rank = 1 ; rank < rank_max ; ++rank)
@@ -187,13 +188,13 @@ void generate_new_base(int* order)
           if (rank == big_reversed_C_size)
             {
               order[rank] = order[rank-1]-map.column;
-              lower_counter = 0;
             }//Deuxième IF
 
           //cas des petits C succesifs
           if (rank > big_reversed_C_size)
             {
-              lower_counter = rank-big_reversed_C_size;
+              lower_counter = rank-big_reversed_C_size-(coefficient*little_reversed_C_size);
+
               if (lower_counter < map.column-1)
                   order[rank] = order[rank-1]+1;
 
@@ -201,11 +202,15 @@ void generate_new_base(int* order)
                 order[rank] = order[rank-1]-map.column;
 
               if (lower_counter > map.column-1 && lower_counter < little_reversed_C_size)
-                order[rank] = order[rank-1]-1;
+                  order[rank] = order[rank-1]-1;
 
+							if (lower_counter == little_reversed_C_size)
+								{
+									order[rank] = order[rank-1]-map.column;
+									coefficient++;
+								}
              }
       }
-    printf("\t\t----\t\t\n");
 }
 
 // void test_split(void)

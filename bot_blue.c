@@ -158,78 +158,58 @@ void get_axes_with_rank(int rank,coord* proposition)
 		}
 }
 
-/*
-prend un tableau , la 1ere case (tout en haut à gauche) ainsi que les "dimensions" (nb colonne , nb ligne) du quadrillage
-puis rempli le tableau des ID de cases successif correspondant à un chemin en C à l'envers
-int generate_reversed_c_way_from_top(int column , int line ,int rank,int* order)
+void generate_new_base(int* order)
 {
-  int rank_min = rank;
-	for(int x = 0 ; x < column ; x++)
-		{
-			order[rank+1] = (order[rank])+1;
-			rank++;
-		}
-		int rank_save = rank;
+    int rank_max = map.column*map.line;
+    int big_reversed_C_size = (2*map.column)+map.line-2;
+    int little_reversed_C_size = 2*(map.column-1);
+    int lower_counter = 0;
+    int coefficient = 0;
+    //la première case vaux 1.
+    order[0] = 1 ;
+    for (int rank = 1 ; rank < rank_max ; ++rank)
+      {
+          //cas du premier C , anciennement reversed_C_from_top , is Ok
+          if (rank < big_reversed_C_size)
+            {
+              if (rank < map.column)
+                order[rank] = order[rank-1]+1;
 
-	for(int y = rank ; y < rank_save+line-1 ; y++)
-		{
-			order[rank+1] = order[rank]+column;
-			rank++;
-		}
-		rank_save = rank;
+              if (rank >= map.column && rank < map.column+map.line-1)
+                order[rank] = order[rank-1]+map.column;
 
-	for(int x = column ; x > 1 ; x--)
-		{
-			order[rank+1] = order[rank]-1;
-			rank++;
-		}
-    array_safe_roll(order,rank_min-1,rank,2);
-	return rank;
+              if (rank >= map.column+map.line-1)
+                order[rank] = order[rank-1]-1;
+            } // Premier IF
+          //étape de transition
+          if (rank == big_reversed_C_size)
+            {
+              order[rank] = order[rank-1]-map.column;
+            }//Deuxième IF
+
+          //cas des petits C succesifs
+          if (rank > big_reversed_C_size)
+            {
+              lower_counter = rank-big_reversed_C_size-(coefficient*little_reversed_C_size);
+
+              if (lower_counter < map.column-1)
+                  order[rank] = order[rank-1]+1;
+
+              if (lower_counter == map.column-1)
+                order[rank] = order[rank-1]-map.column;
+
+              if (lower_counter > map.column-1 && lower_counter < little_reversed_C_size)
+                  order[rank] = order[rank-1]-1;
+
+							if (lower_counter == little_reversed_C_size)
+								{
+									order[rank] = order[rank-1]-map.column;
+									coefficient++;
+								}
+             }
+      }
 }
 
-//prend en entrée un tableau , et décale toutes les valeurs compris entre les indices min et max-rannge ,puis complète le tableau en recopiant la dernière valeur manipulé.
-void array_safe_roll(int* table,int min,int max,int range)
-{
-	for (int rank = min; rank <= max ; ++rank)
-		{
-      if (rank <= max-range+1)
-      {
-        table[rank] = table[rank+range];
-      }
-
-      if (rank > max-range && rank <= max)
-      {
-        table[rank] = table[max-range];
-      }
-    }
-}
-
-//prend un tableau , la 1ere case (tout en bas à gauche) ainsi que les "dimensions" (nb colonne , nb ligne) du quadrillage
-//puis complète le tableau des ID de cases successif correspondant à un chemin en C à l'envers
-int generate_reversed_c_way_from_bottom(int column , int line ,int rank,int* order)
-{
-  order[rank-1] = order[rank-1]-biggest_column;//reprend la dernière valeur actuel pour déterminer le nouveau point de départ
-	for(int x = 0 ; x < column-1 ; x++)
-		{
-			order[rank] = (order[rank-1])+1;
-			rank++;
-		}
-		int rank_save = rank;
-
-	for(int y = rank ; y < rank_save+line-1 ; y++)
-		{
-			order[rank] = order[rank-1]-column;
-			rank++;
-		}
-		rank_save = rank;
-
-	for(int x = column ; x > 1 ; x--)
-		{
-			order[rank] = order[rank-1]-1;
-			rank++;
-		}
-  return rank;
-}*/
 
 coord spotting()
 {
