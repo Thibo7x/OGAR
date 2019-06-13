@@ -30,7 +30,6 @@ coord intel_yellow(rencontre *voisins)
 				dog->mode = 2;
 			if((blue_viseur != NULL) && (dog->coord.X == MAP_SIZE_X/2) && (dog->coord.Y == MAP_SIZE_Y/2))
 			{
-				coord_blue_dog = follow_blue_dog(voisins, blue_viseur);
 				dog->mode = 3;
 			}
 		break;
@@ -69,24 +68,28 @@ coord intel_yellow(rencontre *voisins)
 
 		case 3:
 			//Ordre
-			if(distance(blue_viseur->coord.X,blue_viseur->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 3)
-			 blue_dog = 1;
+			if(blue_viseur != NULL && distance(blue_viseur->coord.X,blue_viseur->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 3)
+			{
+				blue_dog = 1;
+			}
 			if(blue_dog)
 			{
 				blue_direction = follow_blue_dog(voisins,blue_viseur);
- 				obj = blue_direction;
+ 			 	obj = blue_direction;
+			}
+			else
+			{
+				obj.X = MAP_SIZE_X/2;
+				obj.Y = MAP_SIZE_Y/2;
 			}
 			//Sorties
 			if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) >= 250)
-			{
 				dog->mode = 4;
-				blue_dog = 0;
-			}
-
 		break;
 
 		case 4:
 			//Ordre
+			blue_dog = 0;
 			obj = blue_direction;
 			//Sorties
 			if(sheep_viseur != NULL)
@@ -96,7 +99,6 @@ coord intel_yellow(rencontre *voisins)
 		dog->mode = 0;
 		break;
 	}
-
 	return obj;
 }
 

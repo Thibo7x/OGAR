@@ -137,7 +137,7 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 							coordF dogF;
 							dogF.X = (float)(dog->coord.X);
 							dogF.Y = (float)(dog->coord.Y);
-							old_rank = get_rank_with_any_coos(dogF);
+							old_rank = first_rank();
 							// printf("%d & %d\n", dog->coord.X, dog->coord.Y);
 							// printf("Rank : %d\n", table[old_rank]);
 							saved_sheeps = NULL;

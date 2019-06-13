@@ -233,6 +233,7 @@ int first_rank(void)
 			if ( y <= (MAP_SIZE_Y/2.0))
 				buffer = references[0];
 		}
+    printf("First_Rank = %d\n",buffer);
     return buffer;
 }
 /* ---------------------------------*/
@@ -262,6 +263,7 @@ coord spotting()
   }
   target.X = (int)(targetF.X);
   target.Y = (int)(targetF.Y);
+  printf("Les coordonnées cibles sont : (%d,%d)\n",target.X,target.Y);
   free(proposition);
   return target;
 }
@@ -277,17 +279,21 @@ void save_our_sheeps(rencontre *voisins)
   {
     if ((rechercherListeChainee(saved_sheeps, pointer->ID) == NULL) && (!memcmp(pointer->couleur,"\xe6\xf0\xf0",3))) // Pas trouvé dans saved_sheeps
     {
-      // On l'ajoute
-      rencontre *sheep = malloc(sizeof(sheep));
+      if(distance(0, MAP_SIZE_Y/2, pointer->coord.X, pointer->coord.Y) > MAP_SIZE_X/10)
+      {
+        // On l'ajoute
+        rencontre *sheep = malloc(sizeof(sheep));
 
-      // Remplissage des caractéristiques
-      sheep->ID = pointer->ID;
-      sheep->coord = pointer->coord;
-      memcpy(sheep->couleur, pointer->couleur, 3*sizeof(unsigned char));
+        // Remplissage des caractéristiques
+        sheep->ID = pointer->ID;
+        sheep->coord = pointer->coord;
+        memcpy(sheep->couleur, pointer->couleur, 3*sizeof(unsigned char));
 
-      // Adresse
-      sheep->next = saved_sheeps;
-      saved_sheeps = sheep;
+        // Adresse
+        sheep->next = saved_sheeps;
+        saved_sheeps = sheep;
+
+      }
 
     }
     pointer = pointer->next;
@@ -335,8 +341,11 @@ coord intel_blue(rencontre *voisins)
       obj.X = MAP_SIZE_X/2;
       obj.Y = MAP_SIZE_Y/2;
       //Sortie
-      if (distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 2)
-        dog->mode = 2;
+      if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 2)
+      {
+        if(find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins) != NULL && distance(MAP_SIZE_X/2,MAP_SIZE_Y/2,find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins)->coord.X,find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins)->coord.Y) < 2)
+          dog->mode = 2;
+      }
     break;
 
     case 2:
@@ -444,14 +453,6 @@ coord intel_blue(rencontre *voisins)
 
 }
 /* ----------------main----------------- */
-//rallier le centre d'un carreau en fonction du numéro de case donné , à finir , à tester
-// coord join_center(int rank,coordF center)
-// {
-//
-//   int rank = get_rank_with_any_coos(center);
-//
-// }
-//renvoie 1 si les coordonnées sont à - de 3 de distance de la target
 
 /* ----------Work in progress----------- */
 
