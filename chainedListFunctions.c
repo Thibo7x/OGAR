@@ -103,7 +103,7 @@ void deleteChainedList(rencontre *firstNode, unsigned char id)
 
 	if (deletedElem == firstNode) // deletedElem est le 1er de la liste
 	{
-		firstNode = deletedElem->next;
+		firstNode = NULL;
 	}
 	else
 	{
