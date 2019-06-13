@@ -83,54 +83,48 @@ void explore_chained_list(rencontre *firstNode)
 rencontre* rechercherListeChainee(rencontre *firstNode, unsigned char id)
 {
 	rencontre *viseur = firstNode;
+
 	while (viseur != NULL)
 	{
 		if (viseur->ID == id)
 		{
-			return viseur;
+			break;
 		}
 		else
 		{
 			viseur = viseur->next;
 		}
 	}
-	return NULL;
+	return viseur;
 }
 
-void deleteChainedList(rencontre *firstNode, unsigned char id)
-{
-	rencontre *deletedElem = rechercherListeChainee(firstNode, id);
-	rencontre *precedent_deletedElem = firstNode;
-
-	while (precedent_deletedElem->next != NULL)
-	{
-		if (precedent_deletedElem->next == deletedElem)
-			break;
-		else
-			precedent_deletedElem = precedent_deletedElem->next;
-	}
-
-	if (precedent_deletedElem == NULL)
-	{
-		firstNode = deletedElem->next;
-	}
-	else
-	{
-		precedent_deletedElem->next = deletedElem->next;
-	}
-}
-
-int count_voisins(rencontre *firstNode)
-{
-	rencontre *viseur = firstNode;
-	int i = 0;
-	while (viseur != NULL)
-	{
-		i++;
-		viseur = viseur->next;
-	}
-	return i;
-}
+// void deleteChainedList(rencontre *firstNode, unsigned char id)
+// {
+// 	rencontre *deletedElem = rechercherListeChainee(firstNode, id);
+//
+// 	if (deletedElem == NULL)
+// 		return;
+//
+// 	rencontre *precedent_deletedElem = firstNode;
+//
+// 	while (precedent_deletedElem->next != NULL && precedent_deletedElem->next != (void *)0x20)
+// 	{
+// 		if (precedent_deletedElem->next != deletedElem)
+// 			precedent_deletedElem = precedent_deletedElem->next;
+// 		else
+// 			break;
+// 	}
+//
+// 	if (precedent_deletedElem->next == NULL)
+// 	{
+// 		firstNode = deletedElem->next;
+// 	}
+// 	else
+// 	{
+// 		precedent_deletedElem->next = deletedElem->next;
+// 	}
+// 	free(deletedElem);
+// }
 
 /**
 \brief Decrypt 0x10 messages from server

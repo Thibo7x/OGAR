@@ -28,6 +28,8 @@ int checkpoint(coord point,coordF target);
 coord turn_to_indicate(rencontre *sheep);
 coord spotting();
 int first_rank(void);
+
+int count_voisins(rencontre *firstNode);
 //work in progress
 
 //tests
@@ -49,7 +51,6 @@ int* table;
 rencontre *saved_sheeps;
 
 coord backup;
-int count_sheeps();
 /* ----------------.h----------------- */
 coord intel_blue(rencontre *voisins);
 

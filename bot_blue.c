@@ -294,7 +294,6 @@ void save_our_sheeps(rencontre *voisins)
           // Adresse
           sheep->next = saved_sheeps;
           saved_sheeps = sheep;
-
         }
       }
     }
@@ -312,29 +311,34 @@ int checkpoint(coord point,coordF target)
     return 0;
 }
 
-
-int count_sheeps()
+int count_voisins(rencontre *firstNode)
 {
-  int i;
-  i = count_voisins(saved_sheeps);
-  return i;
+	int ab = 0;
+	rencontre *num = firstNode;
+
+	while ((num != NULL) && (num != (void *)0x20))
+	{
+		ab++;
+		num = num->next;
+	}
+	return ab;
 }
+
 /* ----------------main----------------- */
 
 //Reste à faire :
 //Carrément toute la fonction intel_blue
 coord intel_blue(rencontre *voisins)
 {
-  printf("MODE: %d\n", dog->mode);
-  save_our_sheeps(voisins); // MAJ sheeps around
   coord obj;
   //printf("MODE : %d\n",dog->mode );
   switch (dog->mode) {
     case 0:
       //Ordre
       obj = spotting();
+      save_our_sheeps(voisins); // MAJ sheeps around
       //Sortie
-      if(count_sheeps() >= 4)
+      if( count_voisins(saved_sheeps) >= 4)
       dog->mode = 1;
     break;
 
@@ -354,10 +358,13 @@ coord intel_blue(rencontre *voisins)
       //Ordre
       obj = saved_sheeps->coord;
       //Sorties
-      if(distance(MAP_SIZE_X/2,MAP_SIZE_Y/2,dog->coord.X,dog->coord.Y) >= 300)
+      if(distance(MAP_SIZE_X/2,MAP_SIZE_Y/2,dog->coord.X,dog->coord.Y) >= 200)
       {
-        deleteChainedList(saved_sheeps,saved_sheeps->ID);
-        if(count_sheeps() == 0)
+        rencontre *old = saved_sheeps;
+        saved_sheeps = saved_sheeps->next;
+        free(old);
+        //deleteChainedList(saved_sheeps,saved_sheeps->ID);
+        if( count_voisins(saved_sheeps) == 0)
         {
           dog->mode = 0;
         }
