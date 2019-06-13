@@ -246,20 +246,20 @@ coord spotting()
   coordF center;
   get_center(&center,proposition->X,proposition->Y);
   if(checkpoint(dog->coord,center))
+  {
+    old_rank++;
+    if (old_rank > max_rank)
     {
-      old_rank++;
-      if (old_rank > max_rank)
-      {
-        old_rank = 1;
-      }
-      get_axes_with_rank(table[old_rank-1], proposition);
-      get_center(&targetF,proposition->X,proposition->Y);
+      old_rank = 1;
     }
+    get_axes_with_rank(table[old_rank-1], proposition);
+    get_center(&targetF,proposition->X,proposition->Y);
+  }
   else
-    {
-      get_axes_with_rank(table[old_rank-1], proposition);
-      get_center(&targetF,proposition->X,proposition->Y);
-    }
+  {
+    get_axes_with_rank(table[old_rank-1], proposition);
+    get_center(&targetF,proposition->X,proposition->Y);
+  }
   target.X = (int)(targetF.X);
   target.Y = (int)(targetF.Y);
   free(proposition);
@@ -272,29 +272,26 @@ coord spotting()
 void save_our_sheeps(rencontre *voisins)
 {
   rencontre *pointer = voisins;
-  if (pointer != NULL)
+
+  while (pointer != NULL)
   {
-    while (pointer != NULL)
+    if ((rechercherListeChainee(saved_sheeps, pointer->ID) == NULL) && (!memcmp(pointer->couleur,"\xe6\xf0\xf0",3))) // Pas trouvé dans saved_sheeps
     {
-      if ((rechercherListeChainee(saved_sheeps, pointer->ID) == NULL) && (!memcmp(pointer->couleur,"\xe6\xf0\xf0",3))) // Pas trouvé dans saved_sheeps
-      {
-        // On l'ajoute
-        rencontre *sheep = malloc(sizeof(sheep));
+      // On l'ajoute
+      rencontre *sheep = malloc(sizeof(sheep));
 
-        // Remplissage des caractéristiques
-        sheep->ID = pointer->ID;
-        sheep->coord = pointer->coord;
-        memcpy(sheep->couleur, pointer->couleur, 4*sizeof(unsigned char));
+      // Remplissage des caractéristiques
+      sheep->ID = pointer->ID;
+      sheep->coord = pointer->coord;
+      memcpy(sheep->couleur, pointer->couleur, 3*sizeof(unsigned char));
 
-        // Adresse
-        sheep->next = saved_sheeps;
-        saved_sheeps = sheep;
+      // Adresse
+      sheep->next = saved_sheeps;
+      saved_sheeps = sheep;
 
-      }
-      pointer = pointer->next;
     }
+    pointer = pointer->next;
   }
-
 }
 
 //renvoie 0 si la distance entre 2 points dépasse 3, renvoie 1 sinon , isOk
@@ -320,6 +317,7 @@ int count_sheeps()
 //Carrément toute la fonction intel_blue
 coord intel_blue(rencontre *voisins)
 {
+  printf("MODE: %d\n", dog->mode);
   save_our_sheeps(voisins); // MAJ sheeps around
   coord obj;
   //printf("MODE : %d\n",dog->mode );
@@ -337,7 +335,7 @@ coord intel_blue(rencontre *voisins)
       obj.X = MAP_SIZE_X/2;
       obj.Y = MAP_SIZE_Y/2;
       //Sortie
-      if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 2)
+      if (distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 2)
         dog->mode = 2;
     break;
 
@@ -345,7 +343,7 @@ coord intel_blue(rencontre *voisins)
       //Ordre
       obj = saved_sheeps->coord;
       //Sorties
-      if(distance(MAP_SIZE_X/2,MAP_SIZE_Y/2,dog->coord.X,dog->coord.Y) >= 200)
+      if(distance(MAP_SIZE_X/2,MAP_SIZE_Y/2,dog->coord.X,dog->coord.Y) >= 300)
       {
         deleteChainedList(saved_sheeps,saved_sheeps->ID);
         if(count_sheeps() == 0)
@@ -355,7 +353,6 @@ coord intel_blue(rencontre *voisins)
         else
         {
           dog->mode = 1;
-
         }
       }
     break;

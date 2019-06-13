@@ -45,7 +45,9 @@ int init_rank;
 int backup_done;
 subdivision map;
 int* table;
+
 rencontre *saved_sheeps;
+
 coord backup;
 int count_sheeps();
 /* ----------------.h----------------- */

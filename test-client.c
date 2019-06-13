@@ -140,6 +140,7 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 							old_rank = get_rank_with_any_coos(dogF);
 							// printf("%d & %d\n", dog->coord.X, dog->coord.Y);
 							// printf("Rank : %d\n", table[old_rank]);
+							saved_sheeps = NULL;
 						}
 						pos = intel_blue(voisins);
 					break;
@@ -302,9 +303,8 @@ int main(int argc, char **argv)
 {
 	int n = 0;
 	iii = 0;
-	init_rank = 1;
 	firstBorderInfoMessage = 1;
-	blue_dog = 0;
+
 	struct lws_context_creation_info info;
 	struct lws_client_connect_info i;
 	struct lws_context *context;
@@ -343,6 +343,17 @@ int main(int argc, char **argv)
 	dog = malloc(sizeof(dog));
 	idColor(couleur);
 	dog->mode = 0;
+
+	if (dog->mode == 1)
+	{
+		init_rank = 1;
+	}
+	if (dog->mode == 3) // Jaune
+	{
+		blue_dog = 0;
+	}
+
+
 	srandom(time(NULL));
 	if (optind >= argc)
 		goto usage;
