@@ -94,6 +94,8 @@ coord intel_yellow(rencontre *voisins)
 			//Sorties
 			if(sheep_viseur != NULL)
 				dog->mode = 2;
+			if(dog->coord.X < 50 || dog->coord.Y < 50 || dog->coord.X > MAP_SIZE_X-50 || dog->coord.Y > MAP_SIZE_Y-50)
+				dog->mode = 0;
 		break;
 		default:
 		dog->mode = 0;
