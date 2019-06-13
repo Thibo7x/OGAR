@@ -47,8 +47,7 @@ int get_rank_with_axes(int column , int line)
 void get_center(coordF* center, int column , int line)
 {
   int rank = get_rank_with_axes(column,line);
-  int rank_max = map.column*map.line;
-  if (1 <= rank && rank <= rank_max)
+  if (1 <= rank && rank <= max_rank)
     {
       center->X = ((float)(column-1)*map.long_length)+map.long_length/2.0;
       center->Y = ((float)(line-1)*map.large_length)+map.large_length/2.0;
@@ -93,26 +92,24 @@ int get_rank_with_any_coos(coordF position)
   coord* rank_properties;
   rank_properties = malloc(sizeof(coord));
 
-  int rank_max = map.column*map.line;
-
   int* distance_table;
-  distance_table = malloc(rank_max*sizeof(int));
+  distance_table = malloc(max_rank*sizeof(int));
 
   int minimum;
   int depth = 0;
   //cas critique : si on appel la fonction lorsque le point se trouve pile entre 2 cases ou entre 4 cases
-  int rank_propose[4] = {rank_max,rank_max,rank_max,rank_max};
+  int rank_propose[4] = {max_rank,max_rank,max_rank,max_rank};
 
   //on enregistre l'ensemble des distances du point donné par rapport aux différents centres
-  for(int rank = 1; rank <= rank_max; ++rank)
+  for(int rank = 1; rank <= max_rank; ++rank)
     {
       get_axes_with_rank(rank,rank_properties);
 			get_center(proposition,rank_properties->X,rank_properties->Y);
       distance_table[rank-1] = distance((unsigned int)proposition->X,(unsigned int)proposition->Y,(unsigned int)position.X,(unsigned int)position.Y);
     }
 
-  minimum = get_min(distance_table,rank_max);
-  for(int rank = 1; rank <= rank_max; ++rank)
+  minimum = get_min(distance_table);
+  for(int rank = 1; rank <= max_rank; ++rank)
     {
       if (distance_table[rank-1] == minimum)
         {
@@ -128,10 +125,10 @@ int get_rank_with_any_coos(coordF position)
 
 
 //obtenir la valeur min d'un tableau , is Ok
-int get_min(int* table , int rank_max)
+int get_min(int* table)
 {
   int min = table[0];
-  for (int rank = 1; rank < rank_max; ++rank)
+  for (int rank = 1; rank < max_rank; ++rank)
   {
     if (min >= table[rank])
       min = table[rank];
@@ -142,7 +139,7 @@ int get_min(int* table , int rank_max)
 //permet d'obtenir la colonne et la ligne en fonction du numéro de la case , is Ok
 void get_axes_with_rank(int rank,coord* proposition)
 {
-  if (rank > map.column*map.line)
+  if (rank > max_rank)
 	{
 			perror("Out of range , rank too high");
 	}
@@ -161,14 +158,13 @@ void get_axes_with_rank(int rank,coord* proposition)
 //genère un chemin , un grand C exterieur partant du haut, puis des petits c les uns au dessus des autres. isOk;
 void generate_new_base(int* order)
 {
-    int rank_max = map.column*map.line;
     int big_reversed_C_size = (2*map.column)+map.line-2;
     int little_reversed_C_size = 2*(map.column-1);
     int lower_counter = 0;
     int coefficient = 0;
     //la première case vaux 1.
     order[0] = 1 ;
-    for (int rank = 1 ; rank < rank_max ; ++rank)
+    for (int rank = 1 ; rank < max_rank ; ++rank)
       {
           //cas du premier C , anciennement reversed_C_from_top , is Ok
           if (rank < big_reversed_C_size)
@@ -263,7 +259,7 @@ coord spotting()
   }
   target.X = (int)(targetF.X);
   target.Y = (int)(targetF.Y);
-  printf("Les coordonnées cibles sont : (%d,%d)\n",target.X,target.Y);
+  // printf("Les coordonnées cibles sont : (%d,%d)\n",target.X,target.Y);
   free(proposition);
   return target;
 }
@@ -349,7 +345,7 @@ coord intel_blue(rencontre *voisins)
       //Sortie
       if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 2)
       {
-        if(find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins) != NULL && distance(MAP_SIZE_X/2,MAP_SIZE_Y/2,find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins)->coord.X,find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins)->coord.Y) < 2)
+        if(find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins) != NULL && distance(MAP_SIZE_X/2,MAP_SIZE_Y/2,find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins)->coord.X,find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins)->coord.Y) < 1)
           dog->mode = 2;
       }
     break;
