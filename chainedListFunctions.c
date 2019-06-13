@@ -87,30 +87,37 @@ rencontre* rechercherListeChainee(rencontre *firstNode, unsigned char id)
 	{
 		if (viseur->ID == id)
 		{
-			break;
+			return viseur;
 		}
 		else
 		{
 			viseur = viseur->next;
 		}
 	}
-	return viseur;
+	return NULL;
 }
 
 void deleteChainedList(rencontre *firstNode, unsigned char id)
 {
 	rencontre *deletedElem = rechercherListeChainee(firstNode, id);
+	rencontre *precedent_deletedElem = firstNode;
 
-	if (deletedElem == firstNode) // deletedElem est le 1er de la liste
+	while (precedent_deletedElem->next != NULL)
 	{
-		firstNode = NULL;
+		if (precedent_deletedElem->next == deletedElem)
+			break;
+		else
+			precedent_deletedElem = precedent_deletedElem->next;
+	}
+
+	if (precedent_deletedElem == NULL)
+	{
+		firstNode = deletedElem->next;
 	}
 	else
 	{
-		rencontre *precedent_deletedElem = rechercherListeChainee(firstNode->next, id);
 		precedent_deletedElem->next = deletedElem->next;
 	}
-	free(deletedElem);
 }
 
 int count_voisins(rencontre *firstNode)
