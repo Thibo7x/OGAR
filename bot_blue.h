@@ -49,6 +49,7 @@ subdivision map;
 int* table;
 
 rencontre *saved_sheeps;
+rencontre *old_saved_sheeps;
 
 coord backup;
 /* ----------------.h----------------- */

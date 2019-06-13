@@ -124,6 +124,7 @@ int get_rank_with_any_coos(coordF position)
 }
 
 
+
 //obtenir la valeur min d'un tableau , is Ok
 int get_min(int* table)
 {
@@ -275,7 +276,7 @@ void save_our_sheeps(rencontre *voisins)
   {
     if (!memcmp(pointer->couleur,"\xe6\xf0\xf0",3))
     {
-      if (rechercherListeChainee(saved_sheeps, pointer->ID) == NULL) // Pas trouvé dans saved_sheeps
+      if ( (rechercherListeChainee(saved_sheeps, pointer->ID) == NULL) && (rechercherListeChainee(old_saved_sheeps, pointer->ID) == NULL) ) // Pas trouvé dans saved_sheeps ni dans old_saved_sheeps
       {
         if(distance(0, MAP_SIZE_Y/2, pointer->coord.X, pointer->coord.Y) > MAP_SIZE_X/10)
         {
@@ -357,8 +358,9 @@ coord intel_blue(rencontre *voisins)
       if(distance(MAP_SIZE_X/2,MAP_SIZE_Y/2,dog->coord.X,dog->coord.Y) >= 200)
       {
         rencontre *old = saved_sheeps;
+        old->next= old_saved_sheeps->next;
+        old_saved_sheeps = old;
         saved_sheeps = saved_sheeps->next;
-        free(old);
         //deleteChainedList(saved_sheeps,saved_sheeps->ID);
         if( count_voisins(saved_sheeps) == 0)
         {
