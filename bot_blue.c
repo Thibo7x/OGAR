@@ -233,6 +233,7 @@ int first_rank(void)
 			if ( y <= (MAP_SIZE_Y/2.0))
 				buffer = references[0];
 		}
+    printf("First_Rank = %d\n",buffer);
     return buffer;
 }
 /* ---------------------------------*/
@@ -262,6 +263,7 @@ coord spotting()
     }
   target.X = (int)(targetF.X);
   target.Y = (int)(targetF.Y);
+  printf("Les coordonnées cibles sont : (%d,%d)\n",target.X,target.Y);
   free(proposition);
   return target;
 }
@@ -452,14 +454,6 @@ coord intel_blue(rencontre *voisins)
 
 }
 /* ----------------main----------------- */
-//rallier le centre d'un carreau en fonction du numéro de case donné , à finir , à tester
-// coord join_center(int rank,coordF center)
-// {
-//
-//   int rank = get_rank_with_any_coos(center);
-//
-// }
-//renvoie 1 si les coordonnées sont à - de 3 de distance de la target
 
 /* ----------Work in progress----------- */
 
