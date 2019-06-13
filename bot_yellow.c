@@ -69,11 +69,20 @@ coord intel_yellow(rencontre *voisins)
 
 		case 3:
 			//Ordre
-			 blue_direction = follow_blue_dog(voisins,blue_viseur);
-			 obj = blue_direction;
+			if(distance(blue_viseur->coord.X,blue_viseur->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 3)
+			 blue_dog = 1;
+			if(blue_dog)
+			{
+				blue_direction = follow_blue_dog(voisins,blue_viseur);
+ 				obj = blue_direction;
+			}
 			//Sorties
 			if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) >= 250)
+			{
 				dog->mode = 4;
+				blue_dog = 0;
+			}
+
 		break;
 
 		case 4:

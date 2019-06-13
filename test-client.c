@@ -304,6 +304,7 @@ int main(int argc, char **argv)
 	iii = 0;
 	init_rank = 1;
 	firstBorderInfoMessage = 1;
+	blue_dog = 0;
 	struct lws_context_creation_info info;
 	struct lws_client_connect_info i;
 	struct lws_context *context;

@@ -6,6 +6,7 @@
 
 int iii;
 int enclos;
+int blue_dog;
 unsigned char ID_suivi;
 coord coord_blue_dog;
 coord blue_direction;
