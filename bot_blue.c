@@ -264,7 +264,7 @@ coord spotting()
     }
   target.X = (int)(targetF.X);
   target.Y = (int)(targetF.Y);
-  printf("Les coordonnées cibles sont : (%d,%d)\n",target.X,target.Y);
+  // printf("Les coordonnées cibles sont : (%d,%d)\n",target.X,target.Y);
   free(proposition);
   return target;
 }
