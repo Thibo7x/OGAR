@@ -233,7 +233,7 @@ int first_rank(void)
 			if ( y <= (MAP_SIZE_Y/2.0))
 				buffer = references[0];
 		}
-    printf("First_Rank = %d\n",buffer);
+    //printf("First_Rank = %d\n",buffer);
     return buffer;
 }
 /* ---------------------------------*/
@@ -263,7 +263,7 @@ coord spotting()
     }
   target.X = (int)(targetF.X);
   target.Y = (int)(targetF.Y);
-  printf("Les coordonnées cibles sont : (%d,%d)\n",target.X,target.Y);
+  //printf("Les coordonnées cibles sont : (%d,%d)\n",target.X,target.Y);
   free(proposition);
   return target;
 }
@@ -342,27 +342,23 @@ coord intel_blue(rencontre *voisins)
       obj.Y = MAP_SIZE_Y/2;
       //Sortie
       if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 2)
-      {
-        if(find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins) != NULL && distance(MAP_SIZE_X/2,MAP_SIZE_Y/2,find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins)->coord.X,find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins)->coord.Y) < 2)
-          dog->mode = 2;
-      }
+        dog->mode = 2;
     break;
 
     case 2:
       //Ordre
       obj = saved_sheeps->coord;
       //Sorties
-      if(distance(MAP_SIZE_X/2,MAP_SIZE_Y/2,dog->coord.X,dog->coord.Y) >= 300)
+      if(distance(MAP_SIZE_X/2,MAP_SIZE_Y/2,dog->coord.X,dog->coord.Y) >= 320)
       {
         deleteChainedList(saved_sheeps,saved_sheeps->ID);
         if(count_sheeps() == 0)
         {
           dog->mode = 0;
         }
-        else
+        else if(find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins) != NULL && distance(MAP_SIZE_X/2,MAP_SIZE_Y/2,find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins)->coord.X,find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins)->coord.Y) < 2)
         {
           dog->mode = 1;
-
         }
       }
     break;

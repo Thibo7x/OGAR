@@ -134,12 +134,7 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 					// BLUE
 						if (init_rank) {
 							init_rank = 0;
-							coordF dogF;
-							dogF.X = (float)(dog->coord.X);
-							dogF.Y = (float)(dog->coord.Y);
 							old_rank = first_rank();
-							// printf("%d & %d\n", dog->coord.X, dog->coord.Y);
-							// printf("Rank : %d\n", table[old_rank]);
 						}
 						pos = intel_blue(voisins);
 					break;
