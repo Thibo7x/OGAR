@@ -214,7 +214,8 @@ void generate_new_base(int* order)
 //renvoie l'indice d'une case de réference en fonction du cadran dans lequel se situe le chien, priorité à droite et en bas
 int first_rank(void)
 {
-  int references[4] = {19,17,14,16};
+  	int references[4] = {max_rank-1,max_rank-1-(map.column/2),2*map.column+map.line,((5*map.column)/2)+map.line};
+
 	//printf("Ref 1 : %d\nRef 2 : %d\nRef 3 : %d\nRef 4 : %d\n",references[0],references[1],references[2],references[3]);
 	int x = dog->coord.X;
 	int y = dog->coord.Y;
@@ -233,7 +234,7 @@ int first_rank(void)
 			if ( y <= (MAP_SIZE_Y/2.0))
 				buffer = references[0];
 		}
-    printf("First_Rank = %d\n",buffer);
+    // printf("First_Rank = %d\n",buffer);
     return buffer;
 }
 /* ---------------------------------*/

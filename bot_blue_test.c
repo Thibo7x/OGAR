@@ -4,8 +4,8 @@
 #include <math.h>
 #include <stdlib.h>
 
-#define MAP_SIZE_X 9000
-#define MAP_SIZE_Y 6000
+#define MAP_SIZE_X 10800
+#define MAP_SIZE_Y 10800
 
 int distance(int coordX1, int coordY1, int coordX2, int coordY2)
 {
@@ -263,29 +263,29 @@ void generate_new_base(int* order)
 //   free(center);
 // }
 //
-void test_get_rank_with_any_coos(void)
-{
-  coordF* center;
-  center = malloc(sizeof(coordF));
-	coord* axes;
-	axes = malloc(sizeof(coord));
-
-	int buffer;
-	int rank_max = map.column*map.line;
-
-
-	for (int rank = 1 ; rank <= rank_max ; ++rank )
-  	{
-			get_axes_with_rank(rank,axes);
-			get_center(center,axes->X,axes->Y);
-			center->X -= 100.0;
-			center->Y += 100.0;
-			buffer = get_rank_with_any_coos(*center);
-			printf("[Rank with any coos]Pour la case %d on obtient la case %d.\n",rank,buffer);
-		}
-		free(center);
-		free(axes);
-}
+// void test_get_rank_with_any_coos(void)
+// {
+//   coordF* center;
+//   center = malloc(sizeof(coordF));
+// 	coord* axes;
+// 	axes = malloc(sizeof(coord));
+//
+// 	int buffer;
+// 	int rank_max = map.column*map.line;
+//
+//
+// 	for (int rank = 1 ; rank <= rank_max ; ++rank )
+//   	{
+// 			get_axes_with_rank(rank,axes);
+// 			get_center(center,axes->X,axes->Y);
+// 			center->X -= 100.0;
+// 			center->Y += 100.0;
+// 			buffer = get_rank_with_any_coos(*center);
+// 			printf("[Rank with any coos]Pour la case %d on obtient la case %d.\n",rank,buffer);
+// 		}
+// 		free(center);
+// 		free(axes);
+// }
 
 // void test_get_min(void)
 // {
@@ -298,36 +298,36 @@ void test_get_rank_with_any_coos(void)
 //   printf("Le minimum est : %d\n",min);
 // }
 
-void test_get_axes_with_rank(void)
-{
-  coord* proposition;
-  proposition = malloc(sizeof(coord));
+// void test_get_axes_with_rank(void)
+// {
+//   coord* proposition;
+//   proposition = malloc(sizeof(coord));
+//
+//   int rank;
+// 	int rank_max = map.column*map.line;
+//   // printf("Quelle rank ?\n");
+//   // scanf("%d",&rank);
+// 	for ( rank = 1 ; rank <= rank_max+1 ; ++rank)
+// 	{
+// 		get_axes_with_rank(rank,proposition);
+// 		printf("[Axes with rank]Rank %d correspond à la colonne %d et la ligne %d\n",rank,proposition->X,proposition->Y);
+// 	}
+//   free(proposition);
+// }
 
-  int rank;
-	int rank_max = map.column*map.line;
-  // printf("Quelle rank ?\n");
-  // scanf("%d",&rank);
-	for ( rank = 1 ; rank <= rank_max+1 ; ++rank)
-	{
-		get_axes_with_rank(rank,proposition);
-		printf("[Axes with rank]Rank %d correspond à la colonne %d et la ligne %d\n",rank,proposition->X,proposition->Y);
-	}
-  free(proposition);
-}
-
-void test_generate_new_base(void)
-{
-  int* table;
-  table = malloc(36*sizeof(int));
-  table[0] = 1;
-
-  generate_new_base(table);
-  for (int depth = 0 ; depth < 36 ; ++depth)
-    {
-      printf("[New_Base]Valeur du tableau[%d] = %d\n",depth ,table[depth]);
-    }
-  free(table);
-}
+// void test_generate_new_base(void)
+// {
+//   int* table;
+//   table = malloc(36*sizeof(int));
+//   table[0] = 1;
+//
+//   generate_new_base(table);
+//   for (int depth = 0 ; depth < 36 ; ++depth)
+//     {
+//       printf("[New_Base]Valeur du tableau[%d] = %d\n",depth ,table[depth]);
+//     }
+//   free(table);
+// }
 //void test_checkpoint(void)
 // {
 //   coord point;
@@ -363,42 +363,43 @@ void test_generate_new_base(void)
 // }
 
 
-// void test_first_rank(void)
-// {
-//
-// 	coordF* center;
-// 	center = malloc(sizeof(coordF));
-// 	coord* axes;
-// 	axes = malloc(sizeof(coord));
-// 	int references[4] = {2+map.column,(2*map.column)-1,2+((map.line-2)*map.column),((map.line-1)*(map.column))-1};
-//
-// 	for(int rank = 1 ; rank <= 20 ; ++rank)
-// 		{
-// 			get_axes_with_rank(rank,axes);
-// 			get_center(center,axes->X,axes->Y);
-// 			// center->X -= 100.0;
-// 			// center->Y += 100.0;
-// 			if ( center->X >= (MAP_SIZE_X/2.0) )
-// 			{
-// 				if ( center->Y  > (MAP_SIZE_Y/2.0))
-// 					printf("%d : reference = %d\n",rank,references[3]);
-// 				if ( center->Y  <= (MAP_SIZE_Y/2.0))
-// 					printf("%d : reference = %d\n",rank,references[1]);
-// 			}
-// 			if ( center->X < (MAP_SIZE_X/2) )
-// 			{
-// 				if ( center->Y > (MAP_SIZE_Y/2.0))
-// 					printf("%d : reference = %d\n",rank,references[2]);
-// 				if ( center->Y  <= (MAP_SIZE_Y/2.0))
-// 					printf("%d : reference = %d\n",rank,references[0]);
-// 			}
-// 		}
-// 		free(center);
-// 		free(axes);
-// }
+void test_first_rank(void)
+{
+	int max_rank = map.column*map.line;
+	coordF* center;
+	center = malloc(sizeof(coordF));
+	coord* axes;
+	axes = malloc(sizeof(coord));
+	int references[4] = {max_rank-1,max_rank-1-(map.column/2),2*map.column+map.line,((5*map.column)/2)+map.line};
+
+	for(int rank = 1 ; rank <= 36 ; ++rank)
+		{
+			get_axes_with_rank(rank,axes);
+			get_center(center,axes->X,axes->Y);
+			// center->X -= 100.0;
+			// center->Y += 100.0;
+			if ( center->X >= (MAP_SIZE_X/2.0) )
+			{
+				if ( center->Y  > (MAP_SIZE_Y/2.0))
+					printf("%d : reference = %d\n",rank,references[3]);
+				if ( center->Y  <= (MAP_SIZE_Y/2.0))
+					printf("%d : reference = %d\n",rank,references[1]);
+			}
+			if ( center->X < (MAP_SIZE_X/2) )
+			{
+				if ( center->Y > (MAP_SIZE_Y/2.0))
+					printf("%d : reference = %d\n",rank,references[2]);
+				if ( center->Y  <= (MAP_SIZE_Y/2.0))
+					printf("%d : reference = %d\n",rank,references[0]);
+			}
+		}
+		free(center);
+		free(axes);
+}
 
 int main(int argc,char* argv[])
 {
 	split();
+	test_first_rank();
   return 1;
 }
