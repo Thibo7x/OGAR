@@ -18,6 +18,7 @@ coord intel_yellow(rencontre *voisins)
 
 	sheep_viseur = find_voisin_by_color((unsigned char *)"\xe6\xf0\xf0", voisins);
 	blue_viseur = find_voisin_by_color((unsigned char *)"\x0\x0\xff",voisins);
+	//printf("MODE : %d\n", dog->mode);
 	switch (dog->mode) {
 
 		case 0:
@@ -27,6 +28,7 @@ coord intel_yellow(rencontre *voisins)
 
 			// Sorties
 			if(sheep_viseur != NULL && distance(dog->coord.X, dog->coord.Y, 0, MAP_SIZE_Y/2) > (MAP_SIZE_X/10+dog->view.X))
+				ID_suivi = sheep_viseur->ID;
 				dog->mode = 2;
 			if((blue_viseur != NULL) && (dog->coord.X == MAP_SIZE_X/2) && (dog->coord.Y == MAP_SIZE_Y/2))
 			{
