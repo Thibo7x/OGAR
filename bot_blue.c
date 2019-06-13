@@ -278,18 +278,20 @@ void save_our_sheeps(rencontre *voisins)
     {
       if ((rechercherListeChainee(saved_sheeps, pointer->ID) == NULL) && (!memcmp(pointer->couleur,"\xe6\xf0\xf0",3))) // Pas trouvé dans saved_sheeps
       {
-        // On l'ajoute
-        rencontre *sheep = malloc(sizeof(sheep));
+        if(distance(0, MAP_SIZE_Y/2, pointer->coord.X, pointer->coord.Y) > MAP_SIZE_X/10)
+        {
+          // On l'ajoute
+          rencontre *sheep = malloc(sizeof(sheep));
 
-        // Remplissage des caractéristiques
-        sheep->ID = pointer->ID;
-        sheep->coord = pointer->coord;
-        memcpy(sheep->couleur, pointer->couleur, 4*sizeof(unsigned char));
+          // Remplissage des caractéristiques
+          sheep->ID = pointer->ID;
+          sheep->coord = pointer->coord;
+          memcpy(sheep->couleur, pointer->couleur, 4*sizeof(unsigned char));
 
-        // Adresse
-        sheep->next = saved_sheeps;
-        saved_sheeps = sheep;
-
+          // Adresse
+          sheep->next = saved_sheeps;
+          saved_sheeps = sheep;
+        }
       }
       pointer = pointer->next;
     }
@@ -338,14 +340,17 @@ coord intel_blue(rencontre *voisins)
       obj.Y = MAP_SIZE_Y/2;
       //Sortie
       if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 2)
-        dog->mode = 2;
+      {
+        if(find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins) != NULL && distance(MAP_SIZE_X/2,MAP_SIZE_Y/2,find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins)->coord.X,find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins)->coord.Y) < 2)
+          dog->mode = 2;
+      }
     break;
 
     case 2:
       //Ordre
       obj = saved_sheeps->coord;
       //Sorties
-      if(distance(MAP_SIZE_X/2,MAP_SIZE_Y/2,dog->coord.X,dog->coord.Y) >= 200)
+      if(distance(MAP_SIZE_X/2,MAP_SIZE_Y/2,dog->coord.X,dog->coord.Y) >= 300)
       {
         deleteChainedList(saved_sheeps,saved_sheeps->ID);
         if(count_sheeps() == 0)
