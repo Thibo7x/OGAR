@@ -249,7 +249,13 @@ void generate_new_base(int* order)
 //   split();
 //
 //   int column;
-//   int line;
+//   int line;typedef struct rencontre {
+    unsigned char ID;
+    coord coord;
+    unsigned char couleur[4];
+    struct rencontre *next;
+} rencontre;
+
 //   printf("Quelle colonne ? Quelle ligne ?\n");
 //   scanf("%d %d",&column,&line);
 //
@@ -396,6 +402,15 @@ void test_first_rank(void)
 		free(center);
 		free(axes);
 }
+
+void dont_save_our_sheeps(rencontre* )
+{
+
+
+}
+//générer une liste , vide
+//récupérer l'ID du mouton cible
+//l'ajouter dans la liste.
 
 int main(int argc,char* argv[])
 {
