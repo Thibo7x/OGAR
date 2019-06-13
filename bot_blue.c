@@ -363,7 +363,6 @@ coord intel_blue(rencontre *voisins)
         else
         {
           dog->mode = 1;
-
         }
       }
     break;
