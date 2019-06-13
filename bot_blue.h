@@ -20,7 +20,7 @@ int get_rank_with_axes(int column , int line);
 void get_center(coordF* center, int column , int line);
 int get_rank_with_center_coos(coordF* center);
 int get_rank_with_any_coos(coordF position);
-int get_min(int* table , int rank_max);
+int get_min(int* table);
 void get_axes_with_rank(int rank,coord* proposition);
 void generate_new_base(int* order);
 void save_our_sheeps(rencontre *voisins);
