@@ -83,7 +83,7 @@ coord intel_yellow(rencontre *voisins)
 				obj.Y = MAP_SIZE_Y/2;
 			}
 			//Sorties
-			if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) >= 300)
+			if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) >= 250)
 				dog->mode = 4;
 		break;
 
@@ -94,6 +94,8 @@ coord intel_yellow(rencontre *voisins)
 			//Sorties
 			if(sheep_viseur != NULL)
 				dog->mode = 2;
+			if(dog->coord.X < 50 || dog->coord.Y < 50 || dog->coord.X > MAP_SIZE_X-50 || dog->coord.Y > MAP_SIZE_Y-50)
+				dog->mode = 0;
 		break;
 		default:
 		dog->mode = 0;
@@ -209,11 +211,11 @@ coord follow_blue_dog(rencontre* voisins, rencontre* blue_radar)
 	}
 	else
 	{
-		if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 300)
+		if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 250)
 		{
 			reach_point = blue_radar->coord;
 		}
-		if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) >= 300)
+		if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) >= 250)
 		{
 			sheep_direction = direction(MAP_SIZE_X/2,MAP_SIZE_Y/2,blue_radar->coord.X,blue_radar->coord.Y);
 			reach_point.X = MAP_SIZE_X/2 + ceil((sheep_direction.X)*((int)(min(MAP_SIZE_X, MAP_SIZE_Y))));
