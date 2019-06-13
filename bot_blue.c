@@ -341,7 +341,7 @@ coord intel_blue(rencontre *voisins)
       //Sortie
       if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 2)
       {
-        if(find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins) != NULL && distance(MAP_SIZE_X/2,MAP_SIZE_Y/2,find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins)->coord.X,find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins)->coord.Y) < 2)
+        if(find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins) != NULL && distance(MAP_SIZE_X/2,MAP_SIZE_Y/2,find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins)->coord.X,find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins)->coord.Y) < 1)
           dog->mode = 2;
       }
     break;
