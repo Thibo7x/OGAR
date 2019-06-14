@@ -337,7 +337,7 @@ coord intel_blue(rencontre *voisins)
       obj = spotting();
       save_our_sheeps(voisins); // MAJ sheeps around
       //Sortie
-      if( count_voisins(saved_sheeps) >= 4 || changement() == 0)
+      if( count_voisins(saved_sheeps) >= 4 || absolute_rank == max_rank)
         dog->mode = 1;
     break;
 
@@ -345,6 +345,7 @@ coord intel_blue(rencontre *voisins)
       //Ordre
       obj.X = MAP_SIZE_X/2;
       obj.Y = MAP_SIZE_Y/2;
+      absolute_rank = 1;
       //Sortie
       if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 2)
       {
@@ -473,21 +474,6 @@ coord intel_blue(rencontre *voisins)
 /* ----------------main----------------- */
 
 /* ----------Work in progress----------- */
-
-int changement(void)
-{
-  int value_to_return;
-  if (absolute_rank%max_rank == 0)
-  {
-    counter.Y = counter.X;
-    counter.X = count_voisins(saved_sheeps);
-  }
-  value_to_return = counter.X-counter.Y;
-  if (value_to_return != 0)
-    value_to_return = 1;
-    printf("[Changement]Value saved : %d , Value to save : %d , Delta = %d\n",counter.Y,counter.X,value_to_return);
-  return value_to_return;
-}
 
 coord turn_to_indicate(rencontre *sheep)
 //Indique les coordonnées à atteindre pour indiquer le mouton

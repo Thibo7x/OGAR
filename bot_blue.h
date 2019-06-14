@@ -52,7 +52,6 @@ int* table;
 
 rencontre *saved_sheeps;
 rencontre *old_saved_sheeps;
-coord counter;
 coord backup;
 /* ----------------.h----------------- */
 coord intel_blue(rencontre *voisins);
