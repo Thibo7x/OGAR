@@ -11,7 +11,8 @@ coord intel_yellow(rencontre *voisins)
 {
 	rencontre *sheep_viseur = voisins;
 	rencontre *blue_viseur = voisins;
-	rencontre *yellow_viseur = voisins;
+	//rencontre *yellow_viseur = voisins;
+	rencontre *sheep_vise;
 	coord obj;
 	int radius;
 	obj.X = 0;
@@ -19,7 +20,7 @@ coord intel_yellow(rencontre *voisins)
 
 	sheep_viseur = find_voisin_by_color((unsigned char *)"\xe6\xf0\xf0", voisins);
 	blue_viseur = find_voisin_by_color((unsigned char *)"\x0\x0\xff",voisins);
-	yellow_viseur = find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins);
+	//yellow_viseur = find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins);
 	printf("MODE : %d\n", dog->mode);
 	switch (dog->mode) {
 
@@ -42,8 +43,20 @@ coord intel_yellow(rencontre *voisins)
 
 		case 1:
 			// Ordre
-			obj = bring_back_our_sheeps(rechercherListeChainee(sheep_viseur, ID_suivi));
-			iii++;
+			sheep_vise = rechercherListeChainee(sheep_viseur, ID_suivi);
+
+			if (sheep_vise == NULL) // On a perdu le mouton
+			{
+				dog->mode = 0;
+				obj.X = MAP_SIZE_X/2;
+				obj.Y = MAP_SIZE_Y/2;
+				break;
+			}
+			else
+			{
+				obj = bring_back_our_sheeps(sheep_vise);
+				iii++;
+			}
 
 			// Sorties
 			if(distance(dog->coord.X, dog->coord.Y, 0, MAP_SIZE_Y/2) <= MAP_SIZE_X/10)
@@ -60,8 +73,17 @@ coord intel_yellow(rencontre *voisins)
 
 		case 2:
 			//Ordre
-			if(ID_suivi != sheep_viseur->ID) // MAJ ID_suivi
-				ID_suivi = sheep_viseur->ID;
+			sheep_viseur = rechercherListeChainee(voisins, ID_suivi);
+			// if(ID_suivi != sheep_viseur->ID) // MAJ ID_suivi
+			// 	ID_suivi = sheep_viseur->ID;
+			if (sheep_viseur == NULL)
+			{
+				obj.X = MAP_SIZE_X/2;
+				obj.Y = MAP_SIZE_Y/2;
+				dog->mode = 0;
+				break;
+			}
+
 			obj = circumvention(sheep_viseur);
 
 			//Sorties
@@ -100,7 +122,10 @@ coord intel_yellow(rencontre *voisins)
 			obj = blue_direction;
 			//Sorties
 			if(sheep_viseur != NULL)
+			{
+				ID_suivi = sheep_viseur->ID;
 				dog->mode = 2;
+			}
 			if(dog->coord.X < 50 || dog->coord.Y < 50 || dog->coord.X > MAP_SIZE_X-50 || dog->coord.Y > MAP_SIZE_Y-50)
 				dog->mode = 0;
 		break;
@@ -184,7 +209,7 @@ coord bring_back_our_sheeps(rencontre *sheep)
 	return ret;
 }
 
-int has_lower_ID(rencontre* voisins)
+int has_lower_ID_center(rencontre* voisins)
 //Teste si parmis les chiens jaunes groupés au centre, le chien à l'ID le plus bas
 {
 	int has_lower_ID = 1;
@@ -196,6 +221,25 @@ int has_lower_ID(rencontre* voisins)
 		if(!memcmp(yellow_tester->couleur,"\xff\xff\x0",3))
 		{
 			if(yellow_tester->ID < dog->ID && distance(yellow_tester->coord.X,yellow_tester->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2))
+				has_lower_ID = 0;
+		}
+		yellow_tester = yellow_tester->next;
+	}
+	return has_lower_ID;
+}
+
+int has_lower_ID(rencontre* voisins)
+//Teste si parmis les chiens jaunes groupés au centre, le chien à l'ID le plus bas
+{
+	int has_lower_ID = 1;
+	rencontre* yellow_tester = voisins;
+	if(yellow_tester == NULL)
+		return has_lower_ID;
+	while((yellow_tester->next != NULL) && (has_lower_ID == 1))
+	{
+		if(!memcmp(yellow_tester->couleur,"\xff\xff\x0",3))
+		{
+			if(yellow_tester->ID < dog->ID)
 				has_lower_ID = 0;
 		}
 		yellow_tester = yellow_tester->next;
