@@ -29,7 +29,7 @@ coord turn_to_indicate(rencontre *sheep);
 coord spotting();
 int first_rank(void);
 int count_voisins(rencontre *firstNode);
-int changement(void);
+int maybe_it_is_chased(rencontre* voisins,int Identifier);
 //work in progress
 
 //tests

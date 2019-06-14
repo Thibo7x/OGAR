@@ -230,7 +230,7 @@ int first_rank(void)
 			if ( y <= (MAP_SIZE_Y/2.0))
 				buffer = references[0];
 		}
-    //printf("First_Rank = %d\n",buffer);
+    printf("First_Rank = %d\n",buffer);
     return buffer;
 }
 /* ---------------------------------*/
@@ -262,7 +262,7 @@ coord spotting()
   }
   target.X = (int)(targetF.X);
   target.Y = (int)(targetF.Y);
-  // ("Les coordonnées cibles sont : (%d,%d)\n",target.X,target.Y);
+  // printf("Les coordonnées cibles sont : (%d,%d)\n",target.X,target.Y);
   free(proposition);
   return target;
 }
@@ -278,7 +278,7 @@ void save_our_sheeps(rencontre *voisins)
   {
     if (!memcmp(pointer->couleur,"\xe6\xf0\xf0",3))
     {
-      if ( (rechercherListeChainee(saved_sheeps, pointer->ID) == NULL) )
+      if ( (rechercherListeChainee(saved_sheeps, pointer->ID) == NULL) /*|| ((rechercherListeChainee(saved_sheeps, pointer->ID) != NULL) && maybe_it_is_chased(voisins,pointer->ID)) */)
       //if ( (rechercherListeChainee(saved_sheeps, pointer->ID) == NULL) && (rechercherListeChainee(old_saved_sheeps, pointer->ID) == NULL) ) // Pas trouvé dans saved_sheeps ni dans old_saved_sheeps
       {
         if(distance(0, MAP_SIZE_Y/2, pointer->coord.X, pointer->coord.Y) > MAP_SIZE_X/10)
@@ -474,25 +474,19 @@ coord intel_blue(rencontre *voisins)
 /* ----------------main----------------- */
 
 /* ----------Work in progress----------- */
+// int maybe_it_is_chased(rencontre* voisins,int Identifier)
+// {
+//   int value_to_return = 0;
+//   printf("Nombre de moutons dans la liste : %d , Nombre de mouton dans le voisinage : %d\n",count_voisins(saved_sheeps),count_voisins(voisins));
+//   rencontre* target = rechercherListeChainee(voisins,Identifier);
+//   rencontre* saved_coord = rechercherListeChainee(saved_sheeps,Identifier);
+//   int dist = distance(target->coord.X,target->coord.Y,saved_coord->coord.X,saved_coord->coord.Y);
+//
+//   if (dist == 0)
+//     value_to_return = 1;
+// return value_to_return;
+// }
 
-<<<<<<< HEAD
-=======
-int changement(void)
-{
-  int value_to_return;
-  if (absolute_rank%max_rank == 0)
-  {
-    counter.Y = counter.X;
-    counter.X = count_voisins(saved_sheeps);
-  }
-  value_to_return = counter.X-counter.Y;
-  if (value_to_return != 0)
-    value_to_return = 1;
-    //printf("[Changement]Value saved : %d , Value to save : %d , Delta = %d\n",counter.Y,counter.X,value_to_return);
-  return value_to_return;
-}
-
->>>>>>> 54bf72c83b20920d4e5516ebb761476d161c5718
 coord turn_to_indicate(rencontre *sheep)
 //Indique les coordonnées à atteindre pour indiquer le mouton
 {
