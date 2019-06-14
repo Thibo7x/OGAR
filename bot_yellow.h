@@ -16,6 +16,7 @@ int action_over_sheep(rencontre *sheep, rencontre *dog_tested);
 coord circumvention(rencontre *sheep);
 coord bring_back_our_sheeps(rencontre *sheep);
 int has_lower_ID(rencontre* voisins);
+int has_lower_ID_center(rencontre* voisins);
 coord follow_blue_dog(rencontre* voisins, rencontre* blue_radar);
 
 #endif

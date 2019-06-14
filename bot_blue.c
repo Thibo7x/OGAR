@@ -355,7 +355,8 @@ coord intel_blue(rencontre *voisins)
 
     case 2:
       //Ordre
-      obj = saved_sheeps->coord;
+      if (saved_sheeps->coord != NULL)
+        obj = saved_sheeps->coord; // segfault
       //Sorties
       if(distance(MAP_SIZE_X/2,MAP_SIZE_Y/2,dog->coord.X,dog->coord.Y) >= 300)
       {
