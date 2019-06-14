@@ -286,12 +286,3 @@ coord follow_blue_dog(rencontre* voisins, rencontre* blue_radar)
 	}
 	return reach_point;
 }
-
-int is_in_zone()
-{
-	if(distance(dog->coord.X,dog->coord.Y,0,MAP_SIZE_Y/2) <= MAP_SIZE_X/10)
-		return 1;
-	else
-		return 0;
-
-}

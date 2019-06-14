@@ -23,6 +23,15 @@ coord reach_point(coord sheep, coordF direction)
 	return reach_point;
 }
 
+
+int is_in_zone(rencontre *sheep)
+{
+	if(distance(sheep->coord.X,sheep->coord.Y,0,MAP_SIZE_Y/2) <= MAP_SIZE_X/10)
+		return 1;
+	else
+		return 0;
+}
+
 // //correction de plage d'effet si on se trouve près du plafond ou près du mur de gauche.
 // //Pas encore effectif
 // void correction(effect* border)
