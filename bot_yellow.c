@@ -236,11 +236,12 @@ int has_lower_ID_center(rencontre* voisins)
 	rencontre* yellow_tester = voisins;
 	if(yellow_tester == NULL)
 		return has_lower_ID;
+
 	while((yellow_tester->next != NULL) && (has_lower_ID == 1))
 	{
-		if(!memcmp(yellow_tester->couleur,"\xff\xff\x0",3) && distance(MAP_SIZE_X/2,MAP_SIZE_Y/2, voisins->coord.X,voisins->coord.Y))
+		if(!memcmp(yellow_tester->couleur,"\xff\xff\x0",3))
 		{
-			if(yellow_tester->ID < dog->ID && distance(yellow_tester->coord.X,yellow_tester->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/4) < 3)
+			if((int)yellow_tester->ID < (int)dog->ID && distance(yellow_tester->coord.X,yellow_tester->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 3)
 				has_lower_ID = 0;
 		}
 		yellow_tester = yellow_tester->next;
@@ -283,8 +284,8 @@ coord follow_blue_dog(rencontre* voisins, rencontre* blue_radar)
 		if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) >= 250)
 		{
 			sheep_direction = direction(MAP_SIZE_X/2,MAP_SIZE_Y/2,blue_radar->coord.X,blue_radar->coord.Y);
-			reach_point.X = MAP_SIZE_X/2 + ceil((sheep_direction.X)*((int)(min(MAP_SIZE_X, MAP_SIZE_Y))));
-			reach_point.Y = MAP_SIZE_Y/2 + ceil((sheep_direction.Y)*((int)(min(MAP_SIZE_X, MAP_SIZE_Y))));
+			reach_point.X = MAP_SIZE_X/2 + round((sheep_direction.X)*((int)(min(MAP_SIZE_X, MAP_SIZE_Y))));
+			reach_point.Y = MAP_SIZE_Y/2 + round((sheep_direction.Y)*((int)(min(MAP_SIZE_X, MAP_SIZE_Y))));
 			if (reach_point.X>MAP_SIZE_X)
 				reach_point.X = MAP_SIZE_X;
 			if (reach_point.X<0)
