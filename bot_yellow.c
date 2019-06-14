@@ -32,13 +32,14 @@ coord intel_yellow(rencontre *voisins)
 			// Sorties
 			if(sheep_viseur != NULL)
 			{
+				//if (!is_in_zone(sheep_viseur) && PAS_PRIS)
 				if (!is_in_zone(sheep_viseur))
 				{
 					ID_suivi = sheep_viseur->ID;
 					dog->mode = 2;
 				}
 			}
-			if((blue_viseur != NULL) && (dog->coord.X == MAP_SIZE_X/2) && (dog->coord.Y == MAP_SIZE_Y/2))
+			if((blue_viseur != NULL) && distance(dog->coord.X, dog->coord.Y, MAP_SIZE_X/2, MAP_SIZE_Y/2) && has_lower_ID_center(voisins))
 			{
 				dog->mode = 3;
 			}
@@ -228,7 +229,7 @@ int has_lower_ID_center(rencontre* voisins)
 	{
 		if(!memcmp(yellow_tester->couleur,"\xff\xff\x0",3))
 		{
-			if(yellow_tester->ID < dog->ID && distance(yellow_tester->coord.X,yellow_tester->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2))
+			if(yellow_tester->ID < dog->ID && distance(yellow_tester->coord.X,yellow_tester->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 3)
 				has_lower_ID = 0;
 		}
 		yellow_tester = yellow_tester->next;
@@ -236,8 +237,6 @@ int has_lower_ID_center(rencontre* voisins)
 	return has_lower_ID;
 }
 
-<<<<<<< HEAD
-=======
 int has_lower_ID(rencontre* tested)
 //Teste si le chien à l'ID le plus bas
 {
@@ -252,14 +251,7 @@ int has_lower_ID(rencontre* tested)
 	return has_lower_ID;
 }
 
-// typedef struct rencontre {
-//     unsigned char ID;
-//     coord coord;
-//     unsigned char couleur[4];
-//     struct rencontre *next;
-// } rencontre;
 
->>>>>>> 109ab265ccb3cfdf54ec9267f64c4a1286637e95
 coord follow_blue_dog(rencontre* voisins, rencontre* blue_radar)
 //Renvoie les coordonnées à suivre pour atteindre la brebis indiquée par le chien bleu
 {
