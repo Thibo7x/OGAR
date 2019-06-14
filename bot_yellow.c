@@ -11,6 +11,7 @@ coord intel_yellow(rencontre *voisins)
 {
 	rencontre *sheep_viseur = voisins;
 	rencontre *blue_viseur = voisins;
+	rencontre *yellow_viseur = voisins;
 	coord obj;
 	int radius;
 	obj.X = 0;
@@ -18,6 +19,7 @@ coord intel_yellow(rencontre *voisins)
 
 	sheep_viseur = find_voisin_by_color((unsigned char *)"\xe6\xf0\xf0", voisins);
 	blue_viseur = find_voisin_by_color((unsigned char *)"\x0\x0\xff",voisins);
+	yellow_viseur = find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins);
 	printf("MODE : %d\n", dog->mode);
 	switch (dog->mode) {
 
@@ -44,12 +46,15 @@ coord intel_yellow(rencontre *voisins)
 			iii++;
 
 			// Sorties
-			if (distance(dog->coord.X, dog->coord.Y, 0, MAP_SIZE_Y/2) <= MAP_SIZE_X/10)
+			if(distance(dog->coord.X, dog->coord.Y, 0, MAP_SIZE_Y/2) <= MAP_SIZE_X/10)
 			{
 				dog->mode = 0;
 			}
-
-			if (iii == dog->R_action/2)
+			if((yellow_viseur != NULL) && (sheep_viseur != NULL) && distance(yellow_viseur->coord.X,yellow_viseur->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) < 50)
+			{
+				dog->mode = 0;
+			}
+			if(iii == dog->R_action/2)
 			{
 				iii = 0;
 				dog->mode = 2;
