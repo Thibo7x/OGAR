@@ -77,8 +77,9 @@ coord intel_yellow(rencontre *voisins)
 
 		case 2:
 			//Ordre
-			if(yellow_viseur != NULL && sheep_viseur != NULL && distance(yellow_viseur->coord.X,yellow_viseur->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) < dog->R_action/2)
+			if(yellow_viseur != NULL && sheep_viseur != NULL)
 			{
+				if (distance(yellow_viseur->coord.X,yellow_viseur->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) < distance(dog->coord.X,dog->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) || distance(yellow_viseur->coord.X,yellow_viseur->coord.Y,dog->coord.X,dog->coord.Y) == 0)
 				dog->mode = 0;
 				obj.X = MAP_SIZE_X/2;
 				obj.Y = MAP_SIZE_Y/2;
