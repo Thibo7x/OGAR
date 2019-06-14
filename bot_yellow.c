@@ -68,7 +68,7 @@ coord intel_yellow(rencontre *voisins)
 				dog->mode = 0;
 			}
 
-			if(iii == dog->R_action/2)
+			if(iii == 0.75*dog->R_action)
 			{
 				iii = 0;
 				dog->mode = 2;
@@ -77,7 +77,7 @@ coord intel_yellow(rencontre *voisins)
 
 		case 2:
 			//Ordre
-			if(yellow_viseur != NULL && sheep_viseur != NULL && distance(yellow_viseur->coord.X,yellow_viseur->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) < dog->R_action)
+			if(yellow_viseur != NULL && sheep_viseur != NULL && distance(yellow_viseur->coord.X,yellow_viseur->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) < dog->R_action/2)
 			{
 				dog->mode = 0;
 				obj.X = MAP_SIZE_X/2;
@@ -236,12 +236,11 @@ int has_lower_ID_center(rencontre* voisins)
 	{
 		if(!memcmp(yellow_tester->couleur,"\xff\xff\x0",3))
 		{
-			if(yellow_tester->ID < dog->ID && distance(yellow_tester->coord.X,yellow_tester->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 3)
+			if(yellow_tester->ID < dog->ID && distance(yellow_tester->coord.X,yellow_tester->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/4) < 3)
 				has_lower_ID = 0;
 		}
 		yellow_tester = yellow_tester->next;
 	}
-	printf("has_lower_ID : %d\n",has_lower_ID );
 	return has_lower_ID;
 }
 
