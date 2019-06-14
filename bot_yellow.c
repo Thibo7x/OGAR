@@ -79,11 +79,14 @@ coord intel_yellow(rencontre *voisins)
 			//Ordre
 			if(yellow_viseur != NULL && sheep_viseur != NULL)
 			{
-				if (distance(yellow_viseur->coord.X,yellow_viseur->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) < distance(dog->coord.X,dog->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) || distance(yellow_viseur->coord.X,yellow_viseur->coord.Y,dog->coord.X,dog->coord.Y) == 0)
-				dog->mode = 0;
-				obj.X = MAP_SIZE_X/2;
-				obj.Y = MAP_SIZE_Y/2;
-				break;
+				//|| distance(yellow_viseur->coord.X,yellow_viseur->coord.Y,dog->coord.X,dog->coord.Y) == 0
+				if (distance(yellow_viseur->coord.X,yellow_viseur->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) < distance(dog->coord.X,dog->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) )
+				{
+					dog->mode = 0;
+					obj.X = MAP_SIZE_X/2;
+					obj.Y = MAP_SIZE_Y/2;
+					break;
+				}
 			}
 			sheep_viseur = rechercherListeChainee(voisins, ID_suivi);
 			// if(ID_suivi != sheep_viseur->ID) // MAJ ID_suivi
