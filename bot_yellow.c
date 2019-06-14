@@ -62,7 +62,7 @@ coord intel_yellow(rencontre *voisins)
 			}
 
 			// Sorties
-			if(distance(dog->coord.X, dog->coord.Y, 0, MAP_SIZE_Y/2) <= MAP_SIZE_X/10)
+			if(distance(dog->coord.X, dog->coord.Y, 0, MAP_SIZE_Y/2) <= MAP_SIZE_X/10 || sheep_viseur == NULL)
 			{
 				dog->mode = 0;
 			}
@@ -236,6 +236,8 @@ int has_lower_ID_center(rencontre* voisins)
 	return has_lower_ID;
 }
 
+<<<<<<< HEAD
+=======
 int has_lower_ID(rencontre* tested)
 //Teste si le chien à l'ID le plus bas
 {
@@ -257,6 +259,7 @@ int has_lower_ID(rencontre* tested)
 //     struct rencontre *next;
 // } rencontre;
 
+>>>>>>> 109ab265ccb3cfdf54ec9267f64c4a1286637e95
 coord follow_blue_dog(rencontre* voisins, rencontre* blue_radar)
 //Renvoie les coordonnées à suivre pour atteindre la brebis indiquée par le chien bleu
 {
@@ -291,26 +294,12 @@ coord follow_blue_dog(rencontre* voisins, rencontre* blue_radar)
 	}
 	return reach_point;
 }
-	// coordF sheep_direction;
-	// coord reach_point;
-	// if(has_lower_ID(voisins))
-	// {
-	// sheep_direction = direction(dog->coord.X,dog->coord.Y,blue_radar->coord.X,blue_radar->coord.Y);
-	// reach_point.X = blue_radar->coord.X + ceil((sheep_direction.X)*((int)(min(MAP_SIZE_X, MAP_SIZE_Y))));
-	// reach_point.Y = blue_radar->coord.Y + ceil((sheep_direction.Y)*((int)(min(MAP_SIZE_X, MAP_SIZE_Y))));
-	// 	if (reach_point.X>MAP_SIZE_X)
-	// 		reach_point.X = MAP_SIZE_X;
-	// 	if (reach_point.X<0)
-	// 		reach_point.X = 0;
-	// 	if (reach_point.Y>MAP_SIZE_Y)
-	// 		reach_point.Y = MAP_SIZE_Y;
-	// 	if (reach_point.Y<0)
-	// 		reach_point.Y = 0;
-	// }
-	// else
-	// {
-	// 	reach_point.X = MAP_SIZE_X/2;
-	// 	reach_point.Y = MAP_SIZE_Y/2;
-	// 	dog->mode = 0;
-	// }
-	// return reach_point;
+
+int is_in_zone()
+{
+	if(distance(dog->coord.X,dog->coord.Y,0,MAP_SIZE_Y/2) <= MAP_SIZE_X/10)
+		return 1;
+	else
+		return 0;
+
+}
