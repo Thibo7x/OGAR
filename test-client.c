@@ -113,6 +113,9 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 					max_rank = map.column*map.line;
 					table = malloc(max_rank*sizeof(int));
 					generate_new_base(table);
+					absolute_rank = 1;
+					counter.X = 100;
+					counter.Y = 1;
 				}
 			}
 			break;

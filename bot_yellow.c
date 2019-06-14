@@ -196,7 +196,7 @@ int has_lower_ID(rencontre* voisins)
 		return has_lower_ID;
 	while((yellow_tester->next != NULL) && (has_lower_ID == 1))
 	{
-		if(memcmp(yellow_tester->couleur,"\xff\x0\xff",3) == 0)
+		if(!memcmp(yellow_tester->couleur,"\xff\xff\x0",3))
 		{
 			if(yellow_tester->ID < dog->ID)
 				has_lower_ID = 0;
