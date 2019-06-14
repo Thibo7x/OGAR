@@ -25,3 +25,11 @@ chainedListFunctions.o: chainedListFunctions.c chainedListFunctions.h
 clean:
 	rm -rf $(EXEC)
 	rm -rf *.o *.gch
+
+multi : $(EXEC)
+		gnome-terminal -e "./sock -n yellow -p 2006 192.168.130.150"
+		gnome-terminal -e "./sock -n yellow -p 2006 192.168.130.150"
+		gnome-terminal -e "./sock -n yellow -p 2006 192.168.130.150"
+		gnome-terminal -e "./sock -n yellow -p 2006 192.168.130.150"
+		gnome-terminal -e "./sock -n yellow -p 2006 192.168.130.150"
+		gnome-terminal -e "./sock -n blue -p 2006 192.168.130.150"
