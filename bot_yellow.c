@@ -11,7 +11,7 @@ coord intel_yellow(rencontre *voisins)
 {
 	rencontre *sheep_viseur = voisins;
 	rencontre *blue_viseur = voisins;
-	//rencontre *yellow_viseur = voisins;
+	rencontre *yellow_viseur = voisins;
 	rencontre *sheep_vise;
 	coord obj;
 	int radius;
@@ -20,7 +20,7 @@ coord intel_yellow(rencontre *voisins)
 
 	sheep_viseur = find_voisin_by_color((unsigned char *)"\xe6\xf0\xf0", voisins);
 	blue_viseur = find_voisin_by_color((unsigned char *)"\x0\x0\xff",voisins);
-	//yellow_viseur = find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins);
+	yellow_viseur = find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins);
 	printf("MODE : %d\n", dog->mode);
 	switch (dog->mode) {
 
@@ -228,38 +228,12 @@ int has_lower_ID_center(rencontre* voisins)
 	return has_lower_ID;
 }
 
-int has_lower_ID(rencontre* voisins)
-//Teste si parmis les chiens jaunes groupés au centre, le chien à l'ID le plus bas
-{
-	int has_lower_ID = 1;
-	rencontre* yellow_tester = voisins;
-	if(yellow_tester == NULL)
-		return has_lower_ID;
-	while((yellow_tester->next != NULL) && (has_lower_ID == 1))
-	{
-		if(!memcmp(yellow_tester->couleur,"\xff\xff\x0",3))
-		{
-			if(yellow_tester->ID < dog->ID)
-				has_lower_ID = 0;
-		}
-		yellow_tester = yellow_tester->next;
-	}
-	return has_lower_ID;
-}
-
-// typedef struct rencontre {
-//     unsigned char ID;
-//     coord coord;
-//     unsigned char couleur[4];
-//     struct rencontre *next;
-// } rencontre;
-
 coord follow_blue_dog(rencontre* voisins, rencontre* blue_radar)
 //Renvoie les coordonnées à suivre pour atteindre la brebis indiquée par le chien bleu
 {
 	coordF sheep_direction;
 	coord reach_point;
-	if(!has_lower_ID(voisins))
+	if(!has_lower_ID_center(voisins))
 	{
 		reach_point.X = MAP_SIZE_X/2;
 		reach_point.Y = MAP_SIZE_Y/2;
@@ -288,26 +262,12 @@ coord follow_blue_dog(rencontre* voisins, rencontre* blue_radar)
 	}
 	return reach_point;
 }
-	// coordF sheep_direction;
-	// coord reach_point;
-	// if(has_lower_ID(voisins))
-	// {
-	// sheep_direction = direction(dog->coord.X,dog->coord.Y,blue_radar->coord.X,blue_radar->coord.Y);
-	// reach_point.X = blue_radar->coord.X + ceil((sheep_direction.X)*((int)(min(MAP_SIZE_X, MAP_SIZE_Y))));
-	// reach_point.Y = blue_radar->coord.Y + ceil((sheep_direction.Y)*((int)(min(MAP_SIZE_X, MAP_SIZE_Y))));
-	// 	if (reach_point.X>MAP_SIZE_X)
-	// 		reach_point.X = MAP_SIZE_X;
-	// 	if (reach_point.X<0)
-	// 		reach_point.X = 0;
-	// 	if (reach_point.Y>MAP_SIZE_Y)
-	// 		reach_point.Y = MAP_SIZE_Y;
-	// 	if (reach_point.Y<0)
-	// 		reach_point.Y = 0;
-	// }
-	// else
-	// {
-	// 	reach_point.X = MAP_SIZE_X/2;
-	// 	reach_point.Y = MAP_SIZE_Y/2;
-	// 	dog->mode = 0;
-	// }
-	// return reach_point;
+
+int is_in_zone()
+{
+	if(distance(dog->coord.X,dog->coord.Y,0,MAP_SIZE_Y/2) <= MAP_SIZE_X/10)
+		return 1;
+	else
+		return 0;
+
+}
