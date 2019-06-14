@@ -203,6 +203,13 @@ int has_lower_ID(rencontre* voisins)
 	return has_lower_ID;
 }
 
+// typedef struct rencontre {
+//     unsigned char ID;
+//     coord coord;
+//     unsigned char couleur[4];
+//     struct rencontre *next;
+// } rencontre;
+
 coord follow_blue_dog(rencontre* voisins, rencontre* blue_radar)
 //Renvoie les coordonnées à suivre pour atteindre la brebis indiquée par le chien bleu
 {
