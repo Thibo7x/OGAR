@@ -355,9 +355,17 @@ coord intel_blue(rencontre *voisins)
 
     case 2:
       //Ordre
-      obj = saved_sheeps->coord;
+      if(saved_sheeps != NULL)
+        obj = saved_sheeps->coord;
+      else
+      {
+        dog->mode = 0;
+        obj.X = MAP_SIZE_X/2;
+        obj.Y = MAP_SIZE_Y/2;
+        break;
+      }
       //Sorties
-      if(distance(MAP_SIZE_X/2,MAP_SIZE_Y/2,dog->coord.X,dog->coord.Y) >= 300)
+      if(distance(MAP_SIZE_X/2,MAP_SIZE_Y/2,dog->coord.X,dog->coord.Y) >= 350)
       {
         rencontre *old = saved_sheeps;
         // old->next= old_saved_sheeps;

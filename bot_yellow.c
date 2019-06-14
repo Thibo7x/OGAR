@@ -39,7 +39,7 @@ coord intel_yellow(rencontre *voisins)
 					dog->mode = 2;
 				}
 			}
-			if((blue_viseur != NULL) && distance(dog->coord.X, dog->coord.Y, MAP_SIZE_X/2, MAP_SIZE_Y/2) && has_lower_ID_center(voisins))
+			if((blue_viseur != NULL) && (dog->coord.X == MAP_SIZE_X/2) && (dog->coord.Y == MAP_SIZE_Y/2) && has_lower_ID_center(voisins))
 			{
 				dog->mode = 3;
 			}
@@ -77,6 +77,13 @@ coord intel_yellow(rencontre *voisins)
 
 		case 2:
 			//Ordre
+			if(yellow_viseur != NULL && sheep_viseur != NULL && distance(yellow_viseur->coord.X,yellow_viseur->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) < dog->R_action)
+			{
+				dog->mode = 0;
+				obj.X = MAP_SIZE_X/2;
+				obj.Y = MAP_SIZE_Y/2;
+				break;
+			}
 			sheep_viseur = rechercherListeChainee(voisins, ID_suivi);
 			// if(ID_suivi != sheep_viseur->ID) // MAJ ID_suivi
 			// 	ID_suivi = sheep_viseur->ID;
@@ -116,7 +123,7 @@ coord intel_yellow(rencontre *voisins)
 				blue_dog = 0;
 			}
 			//Sorties
-			if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) >= 250)
+			if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) >= 300)
 				dog->mode = 4;
 		break;
 
@@ -205,7 +212,7 @@ coord circumvention(rencontre *sheep)
 coord bring_back_our_sheeps(rencontre *sheep)
 {
 	coord ret;
-	if(distance(dog->coord.X,dog->coord.Y,sheep->coord.X,sheep->coord.Y) < ( dog->R_action) )
+	if(distance(dog->coord.X,dog->coord.Y,sheep->coord.X,sheep->coord.Y) < ( dog->R_action /2) )
 	{
 		ret.X = dog->coord.X;
 		ret.Y = dog->coord.Y;
@@ -234,6 +241,7 @@ int has_lower_ID_center(rencontre* voisins)
 		}
 		yellow_tester = yellow_tester->next;
 	}
+	printf("has_lower_ID : %d\n",has_lower_ID );
 	return has_lower_ID;
 }
 
