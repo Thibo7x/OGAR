@@ -136,10 +136,15 @@ coord intel_yellow(rencontre *voisins)
 	return obj;
 }
 
-unsigned int action_over_sheep(rencontre *sheep)
+int action_over_sheep(rencontre *sheep, rencontre *dog_tested) //
 {
-	if (distance(dog->coord.X, dog->coord.Y, sheep->coord.X, sheep->coord.Y) < dog->R_action)
-		return 1;
+	if (distance(dog_tested->coord.X, dog_tested->coord.Y, sheep->coord.X, sheep->coord.Y) < dog->R_action)
+	{
+		if (!has_lower_ID(dog_tested))
+			return 1;
+		else
+			return 0;
+	}
 	else
 		return 0;
 }
@@ -228,6 +233,30 @@ int has_lower_ID_center(rencontre* voisins)
 	return has_lower_ID;
 }
 
+<<<<<<< HEAD
+=======
+int has_lower_ID(rencontre* tested)
+//Teste si le chien à l'ID le plus bas
+{
+	int has_lower_ID = 1;
+
+	if(tested == NULL)
+		return has_lower_ID;
+
+	if(((int)tested->ID) < ((int)dog->ID))
+		has_lower_ID = 0;
+
+	return has_lower_ID;
+}
+
+// typedef struct rencontre {
+//     unsigned char ID;
+//     coord coord;
+//     unsigned char couleur[4];
+//     struct rencontre *next;
+// } rencontre;
+
+>>>>>>> 109ab265ccb3cfdf54ec9267f64c4a1286637e95
 coord follow_blue_dog(rencontre* voisins, rencontre* blue_radar)
 //Renvoie les coordonnées à suivre pour atteindre la brebis indiquée par le chien bleu
 {

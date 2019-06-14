@@ -27,9 +27,9 @@ clean:
 	rm -rf *.o *.gch
 
 multi : $(EXEC)
-		gnome-terminal -e "./sock -n yellow -p 1443 192.168.130.161"
-		gnome-terminal -e "./sock -n yellow -p 1443 192.168.130.161"
-		gnome-terminal -e "./sock -n yellow -p 1443 192.168.130.161"
-		gnome-terminal -e "./sock -n yellow -p 1443 192.168.130.161"
-		gnome-terminal -e "./sock -n yellow -p 1443 192.168.130.161"
-		gnome-terminal -e "./sock -n blue -p 1443 192.168.130.161"
+		gnome-terminal -e "gdb -ex run --args sock -n yellow -p 1443 192.168.130.160"
+		gnome-terminal -e "gdb -ex run --args sock -n yellow -p 1443 192.168.130.160"
+		gnome-terminal -e "gdb -ex run --args sock -n yellow -p 1443 192.168.130.160"
+		gnome-terminal -e "gdb -ex run --args sock -n yellow -p 1443 192.168.130.160"
+		gnome-terminal -e "gdb -ex run --args sock -n yellow -p 1443 192.168.130.160"
+		gnome-terminal -e "gdb -ex run --args sock -n blue -p 1443 192.168.130.160"
