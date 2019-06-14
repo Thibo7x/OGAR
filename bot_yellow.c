@@ -191,7 +191,7 @@ int has_lower_ID(rencontre* voisins)
 		return has_lower_ID;
 	while((yellow_tester->next != NULL) && (has_lower_ID == 1))
 	{
-		if(!memcmp(yellow_tester->couleur,"\xff\x0\xff",3))
+		if(memcmp(yellow_tester->couleur,"\xff\x0\xff",3) == 0)
 		{
 			if(yellow_tester->ID < dog->ID)
 				has_lower_ID = 0;
@@ -200,6 +200,13 @@ int has_lower_ID(rencontre* voisins)
 	}
 	return has_lower_ID;
 }
+
+// typedef struct rencontre {
+//     unsigned char ID;
+//     coord coord;
+//     unsigned char couleur[4];
+//     struct rencontre *next;
+// } rencontre;
 
 coord follow_blue_dog(rencontre* voisins, rencontre* blue_radar)
 //Renvoie les coordonnées à suivre pour atteindre la brebis indiquée par le chien bleu
