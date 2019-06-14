@@ -85,6 +85,7 @@ coord intel_yellow(rencontre *voisins)
 			{
 				obj.X = MAP_SIZE_X/2;
 				obj.Y = MAP_SIZE_Y/2;
+				blue_dog = 0;
 			}
 			//Sorties
 			if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) >= 250)
@@ -187,17 +188,15 @@ int has_lower_ID(rencontre* voisins)
 	int has_lower_ID = 1;
 	rencontre* yellow_tester = voisins;
 	if(yellow_tester == NULL)
-		return 0;
-	while(yellow_tester->next != NULL && has_lower_ID == 1)
+		return has_lower_ID;
+	while((yellow_tester->next != NULL) && (has_lower_ID == 1))
 	{
 		if(!memcmp(yellow_tester->couleur,"\xff\x0\xff",3))
 		{
-			if ((unsigned int)yellow_tester->ID < (unsigned int)dog->ID) {
+			if(yellow_tester->ID < dog->ID)
 				has_lower_ID = 0;
-			}
-			else
-				yellow_tester = yellow_tester->next;
 		}
+		yellow_tester = yellow_tester->next;
 	}
 	return has_lower_ID;
 }
