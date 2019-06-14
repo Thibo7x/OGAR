@@ -246,9 +246,11 @@ coord spotting()
   if(checkpoint(dog->coord,center))
   {
     old_rank++;
+    absolute_rank++;
     if (old_rank > max_rank)
     {
       old_rank = 1;
+      // count_save_sheeps = count_voisins(saved_sheeps);
     }
     get_axes_with_rank(table[old_rank-1], proposition);
     get_center(&targetF,proposition->X,proposition->Y);
@@ -283,7 +285,6 @@ void save_our_sheeps(rencontre *voisins)
         {
           // On l'ajoute
           rencontre *sheep = malloc(sizeof(sheep));
-
           // Remplissage des caractéristiques
           sheep->ID = pointer->ID;
           sheep->coord = pointer->coord;
@@ -336,8 +337,8 @@ coord intel_blue(rencontre *voisins)
       obj = spotting();
       save_our_sheeps(voisins); // MAJ sheeps around
       //Sortie
-      if( count_voisins(saved_sheeps) >= 4)
-      dog->mode = 1;
+      if( count_voisins(saved_sheeps) >= 4 || changement() == 0)
+        dog->mode = 1;
     break;
 
     case 1:
@@ -465,6 +466,20 @@ coord intel_blue(rencontre *voisins)
 
 /* ----------Work in progress----------- */
 
+int changement(void)
+{
+  int value_to_return;
+  if (absolute_rank%max_rank == 0)
+  {
+    counter.Y = counter.X;
+    counter.X = count_voisins(saved_sheeps);
+  }
+  value_to_return = counter.X-counter.Y;
+  if (value_to_return != 0)
+    value_to_return = 1;
+    printf("[Changement]Value saved : %d , Value to save : %d , Delta = %d\n",counter.Y,counter.X,value_to_return);
+  return value_to_return;
+}
 
 coord turn_to_indicate(rencontre *sheep)
 //Indique les coordonnées à atteindre pour indiquer le mouton
