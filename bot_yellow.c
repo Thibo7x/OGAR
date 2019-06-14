@@ -30,10 +30,13 @@ coord intel_yellow(rencontre *voisins)
 			obj.Y = MAP_SIZE_Y/2;
 
 			// Sorties
-			if(sheep_viseur != NULL && distance(dog->coord.X, dog->coord.Y, 0, MAP_SIZE_Y/2) > (MAP_SIZE_X/10+dog->view.X))
+			if(sheep_viseur != NULL)
 			{
-				ID_suivi = sheep_viseur->ID;
-				dog->mode = 2;
+				if (!is_in_zone(sheep_viseur))
+				{
+					ID_suivi = sheep_viseur->ID;
+					dog->mode = 2;
+				}
 			}
 			if((blue_viseur != NULL) && (dog->coord.X == MAP_SIZE_X/2) && (dog->coord.Y == MAP_SIZE_Y/2))
 			{
