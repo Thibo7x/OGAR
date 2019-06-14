@@ -24,9 +24,7 @@ struct node_effect_borders
 };
 
 int distance(int coordX1, int coordY1, int coordX2, int coordY2);
-unsigned int action_over_sheep(rencontre *sheep);
 coordF direction(int coordX1, int coordY1, int coordX2, int coordY2);
 coord reach_point(coord sheep, coordF direction);
-void correction(effect* border);
 
 #endif

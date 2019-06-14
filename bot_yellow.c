@@ -11,7 +11,7 @@ coord intel_yellow(rencontre *voisins)
 {
 	rencontre *sheep_viseur = voisins;
 	rencontre *blue_viseur = voisins;
-	//rencontre *yellow_viseur = voisins;
+	rencontre *yellow_viseur = voisins;
 	rencontre *sheep_vise;
 	coord obj;
 	int radius;
@@ -20,7 +20,7 @@ coord intel_yellow(rencontre *voisins)
 
 	sheep_viseur = find_voisin_by_color((unsigned char *)"\xe6\xf0\xf0", voisins);
 	blue_viseur = find_voisin_by_color((unsigned char *)"\x0\x0\xff",voisins);
-	//yellow_viseur = find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins);
+	yellow_viseur = find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins);
 	printf("MODE : %d\n", dog->mode);
 	switch (dog->mode) {
 
@@ -136,10 +136,15 @@ coord intel_yellow(rencontre *voisins)
 	return obj;
 }
 
-unsigned int action_over_sheep(rencontre *sheep)
+int action_over_sheep(rencontre *sheep, rencontre *dog_tested) //
 {
-	if (distance(dog->coord.X, dog->coord.Y, sheep->coord.X, sheep->coord.Y) < dog->R_action)
-		return 1;
+	if (distance(dog_tested->coord.X, dog_tested->coord.Y, sheep->coord.X, sheep->coord.Y) < dog->R_action)
+	{
+		if (!has_lower_ID(dog_tested))
+			return 1;
+		else
+			return 0;
+	}
 	else
 		return 0;
 }
@@ -228,22 +233,17 @@ int has_lower_ID_center(rencontre* voisins)
 	return has_lower_ID;
 }
 
-int has_lower_ID(rencontre* voisins)
-//Teste si parmis les chiens jaunes groupés au centre, le chien à l'ID le plus bas
+int has_lower_ID(rencontre* tested)
+//Teste si le chien à l'ID le plus bas
 {
 	int has_lower_ID = 1;
-	rencontre* yellow_tester = voisins;
-	if(yellow_tester == NULL)
+
+	if(tested == NULL)
 		return has_lower_ID;
-	while((yellow_tester->next != NULL) && (has_lower_ID == 1))
-	{
-		if(!memcmp(yellow_tester->couleur,"\xff\xff\x0",3))
-		{
-			if(yellow_tester->ID < dog->ID)
-				has_lower_ID = 0;
-		}
-		yellow_tester = yellow_tester->next;
-	}
+
+	if(((int)tested->ID) < ((int)dog->ID))
+		has_lower_ID = 0;
+
 	return has_lower_ID;
 }
 
@@ -259,7 +259,7 @@ coord follow_blue_dog(rencontre* voisins, rencontre* blue_radar)
 {
 	coordF sheep_direction;
 	coord reach_point;
-	if(!has_lower_ID(voisins))
+	if(!has_lower_ID_center(voisins))
 	{
 		reach_point.X = MAP_SIZE_X/2;
 		reach_point.Y = MAP_SIZE_Y/2;

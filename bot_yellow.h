@@ -12,7 +12,7 @@ coord coord_blue_dog;
 coord blue_direction;
 rencontre *find_voisin_by_color(unsigned char* color, rencontre* voisins);
 coord intel_yellow(rencontre *voisins);
-unsigned int action_over_sheep(rencontre *sheep);
+int action_over_sheep(rencontre *sheep, rencontre *dog_tested);
 coord circumvention(rencontre *sheep);
 coord bring_back_our_sheeps(rencontre *sheep);
 int has_lower_ID(rencontre* voisins);
