@@ -358,7 +358,7 @@ coord intel_blue(rencontre *voisins)
       if(distance(MAP_SIZE_X/2,MAP_SIZE_Y/2,dog->coord.X,dog->coord.Y) >= 200)
       {
         rencontre *old = saved_sheeps;
-        old->next= old_saved_sheeps->next;
+        old->next= old_saved_sheeps;
         old_saved_sheeps = old;
         saved_sheeps = saved_sheeps->next;
         //deleteChainedList(saved_sheeps,saved_sheeps->ID);
