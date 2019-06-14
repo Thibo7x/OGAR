@@ -21,7 +21,7 @@ coord intel_yellow(rencontre *voisins)
 	sheep_viseur = find_voisin_by_color((unsigned char *)"\xe6\xf0\xf0", voisins);
 	blue_viseur = find_voisin_by_color((unsigned char *)"\x0\x0\xff",voisins);
 	yellow_viseur = find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins);
-	printf("MODE : %d\n", dog->mode);
+	//printf("MODE : %d\n", dog->mode);
 	switch (dog->mode) {
 
 		case 0:
@@ -234,7 +234,7 @@ int has_lower_ID_center(rencontre* voisins)
 		return has_lower_ID;
 	while((yellow_tester->next != NULL) && (has_lower_ID == 1))
 	{
-		if(!memcmp(yellow_tester->couleur,"\xff\xff\x0",3))
+		if(!memcmp(yellow_tester->couleur,"\xff\xff\x0",3) && distance(MAP_SIZE_X/2,MAP_SIZE_Y/2, voisins->coord.X,voisins->coord.Y))
 		{
 			if(yellow_tester->ID < dog->ID && distance(yellow_tester->coord.X,yellow_tester->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/4) < 3)
 				has_lower_ID = 0;

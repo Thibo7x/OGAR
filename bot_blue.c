@@ -230,7 +230,7 @@ int first_rank(void)
 			if ( y <= (MAP_SIZE_Y/2.0))
 				buffer = references[0];
 		}
-    printf("First_Rank = %d\n",buffer);
+    //printf("First_Rank = %d\n",buffer);
     return buffer;
 }
 /* ---------------------------------*/
@@ -262,7 +262,7 @@ coord spotting()
   }
   target.X = (int)(targetF.X);
   target.Y = (int)(targetF.Y);
-  // printf("Les coordonnées cibles sont : (%d,%d)\n",target.X,target.Y);
+  // ("Les coordonnées cibles sont : (%d,%d)\n",target.X,target.Y);
   free(proposition);
   return target;
 }
@@ -485,7 +485,7 @@ int changement(void)
   value_to_return = counter.X-counter.Y;
   if (value_to_return != 0)
     value_to_return = 1;
-    printf("[Changement]Value saved : %d , Value to save : %d , Delta = %d\n",counter.Y,counter.X,value_to_return);
+    //printf("[Changement]Value saved : %d , Value to save : %d , Delta = %d\n",counter.Y,counter.X,value_to_return);
   return value_to_return;
 }
 
