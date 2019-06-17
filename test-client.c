@@ -302,6 +302,7 @@ int main(int argc, char **argv)
 	CENTER_PEN_Y = 3000.0;
 	int n = 0;
 	iii = 0;
+	int side;
 	firstBorderInfoMessage = 1;
 
 	struct lws_context_creation_info info;
@@ -318,7 +319,7 @@ int main(int argc, char **argv)
 	i.origin = "agar.io";
 
 	while (n >= 0) {
-		n = getopt(argc, argv, "hsp:P:n:");
+		n = getopt(argc, argv, "hsp:P:n:S:");
 		if (n < 0)
 			continue;
 		switch (n) {
@@ -334,11 +335,24 @@ int main(int argc, char **argv)
 		case 'n':
 		  couleur = optarg;
 			break;
+		case 'S':
+			//Side , 0 gauche 1 droite
+			side = atoi(optarg);
+			if (side)
+				{
+					CENTER_PEN_X = 9000.0;
+					CENTER_PEN_Y = 3000.0;
+				}
+			else
+				{
+					CENTER_PEN_X = 0.0;
+					CENTER_PEN_Y = 3000.0;
+				}
+			break;
 		case 'h':
 			goto usage;
 		}
 	}
-
 	dog = malloc(sizeof(dog));
 	idColor(couleur);
 	dog->mode = 0;
@@ -400,6 +414,6 @@ int main(int argc, char **argv)
 	return 0;
 
 usage:
-	fprintf(stderr, "Usage: ogar-client -h -s -p <port> -n <nickname> -P <proxy> <server address> \n");
+	fprintf(stderr, "Usage: ogar-client -h -S <side> -s -p <port> -n <nickname> -P <proxy> <server address> \n");
 	return 1;
 }
