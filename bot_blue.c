@@ -385,7 +385,7 @@ coord intel_blue(rencontre *voisins)
         break;
       }
       //Sorties
-      if(distance(MAP_SIZE_X/2,MAP_SIZE_Y/2,dog->coord.X,dog->coord.Y) >= 950 || distance(saved_sheeps->coord.X,saved_sheeps->coord.Y,dog->coord.X,dog->coord.Y) < 50)
+      if(distance(MAP_SIZE_X/2,MAP_SIZE_Y/2,dog->coord.X,dog->coord.Y) >= 400 || distance(saved_sheeps->coord.X,saved_sheeps->coord.Y,dog->coord.X,dog->coord.Y) < 50)
       {
         rencontre *old = saved_sheeps;
         // old->next= old_saved_sheeps;

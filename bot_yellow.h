@@ -19,5 +19,4 @@ int has_lower_ID_center(rencontre* voisins);
 coord follow_blue_dog(rencontre* voisins);
 int has_lower_ID_center(rencontre* voisins);
 int three_in_the_center(rencontre* voisins);
-void random_direction();
 #endif

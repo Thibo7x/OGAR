@@ -46,7 +46,10 @@ coord intel_yellow(rencontre *voisins)
 			if((blue_viseur != NULL) && (dog->coord.X == MAP_SIZE_X/2) && (dog->coord.Y == MAP_SIZE_Y/2) && has_lower_ID_center(voisins))
 			{
 				dog->mode = 3;
+				break;
 			}
+			if(three_in_the_center(voisins) && (dog->coord.X == MAP_SIZE_X/2) && (dog->coord.Y == MAP_SIZE_Y/2) && has_lower_ID_center(voisins))
+				dog->mode = 3;
 			// if(has_lower_ID_center(voisins) && three_in_the_center(voisins) && distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 3)
 			// {
 			// 	dog->mode = 4;
@@ -128,6 +131,16 @@ coord intel_yellow(rencontre *voisins)
 				obj.X = MAP_SIZE_X/2;
 				obj.Y = MAP_SIZE_Y/2;
 			}
+			if(three_in_the_center(voisins) && (dog->coord.X == MAP_SIZE_X/2) && (dog->coord.Y == MAP_SIZE_Y/2) && has_lower_ID_center(voisins))
+			{
+				srand(time(NULL));
+				coordF random_direction;
+				random_direction.X = (float)(rand() % 100000) / 100000.0 * pow(1,(int)rand());
+				random_direction.Y = (float)(rand() % 100000) / 100000.0 * pow(1,(int)rand());
+				obj.X = round(MAP_SIZE_X/2 + (random_direction.X)*300);
+				obj.Y = round(MAP_SIZE_Y/2 + (random_direction.Y)*300);
+				printf("bouge\n");
+			}
 			//Sorties
 			if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) >= 300 || sheep_viseur != NULL)
 				dog->mode = 4;
@@ -140,7 +153,7 @@ coord intel_yellow(rencontre *voisins)
 			{
 				if(distance(yellow_viseur->coord.X,yellow_viseur->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) < distance(dog->coord.X,dog->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) )
 				{
-					obj = blue_direction;
+					obj = follow_blue_dog(voisins);
 					break;
 				}
 			}
@@ -290,37 +303,19 @@ int has_lower_ID_center(rencontre* voisins)
 	return has_lower_ID;
 }
 
-// int three_in_the_center(rencontre* voisins)
-// {
-// 	rencontre* yellow = voisins;
-// 	int yellow_counter = 0;
-// 	while(yellow != NULL)
-// 	{
-// 		if(!memcmp(yellow->couleur,"\xff\xff\x0",3))
-// 		{
-// 			yellow_counter++;
-// 		}
-// 		yellow = yellow->next;
-// 	}
-// 	if(yellow_counter > 2)
-// 		return 1;
-// 	return 0;
-// }
-
-// void random_direction()
-// {
-// 	srand(time(NULL));
-// 	coordF random_direction;
-// 	random_direction.X = (float)(rand() % 100000) / 100000.0 * pow(1,(int)rand());
-// 	random_direction.Y = (float)(rand() % 100000) / 100000.0 * pow(1,(int)rand());
-// 	blue_direction.X = round(MAP_SIZE_X/2 + (random_direction.X)*distance(MAP_SIZE_X/2,MAP_SIZE_Y/2,MAP_SIZE_X,MAP_SIZE_Y));
-// 	blue_direction.Y = round(MAP_SIZE_Y/2 + (random_direction.Y)*distance(MAP_SIZE_X/2,MAP_SIZE_Y/2,MAP_SIZE_X,MAP_SIZE_Y));
-// 	if (blue_direction.X>MAP_SIZE_X)
-// 		blue_direction.X = MAP_SIZE_X;
-// 	if (blue_direction.X<0)
-// 		blue_direction.X = 0;
-// 	if (blue_direction.Y>MAP_SIZE_Y)
-// 		blue_direction.Y = MAP_SIZE_Y;
-// 	if (blue_direction.Y<0)
-// 		blue_direction.Y = 0;
-// 	}
+int three_in_the_center(rencontre* voisins)
+{
+	rencontre* yellow = voisins;
+	int yellow_counter = 0;
+	while(yellow != NULL)
+	{
+		if(!memcmp(yellow->couleur,"\xff\xff\x0",3))
+		{
+			yellow_counter++;
+		}
+		yellow = yellow->next;
+	}
+	if(yellow_counter > 2)
+		return 1;
+	return 0;
+}
