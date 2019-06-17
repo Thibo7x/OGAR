@@ -119,7 +119,7 @@ coord intel_yellow(rencontre *voisins)
 
 		case 3:
 			//Ordre
-			if(blue_viseur != NULL && distance(blue_viseur->coord.X,blue_viseur->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 3 && distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 3)
+			if(blue_viseur != NULL)
 			{
  			 	obj = blue_viseur->coord;
 			}
@@ -129,13 +129,13 @@ coord intel_yellow(rencontre *voisins)
 				obj.Y = MAP_SIZE_Y/2;
 			}
 			//Sorties
-			if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) >= 800)
+			if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) >= 300 || sheep_viseur != NULL)
 				dog->mode = 4;
 		break;
 
 		case 4:
 			//Ordre
-			obj = follow_blue_dog(voisins,blue_viseur);
+			obj = follow_blue_dog(voisins);
 			if(yellow_viseur != NULL && sheep_viseur != NULL)
 			{
 				if(distance(yellow_viseur->coord.X,yellow_viseur->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) < distance(dog->coord.X,dog->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) )
@@ -255,14 +255,14 @@ int has_lower_ID(rencontre* tested)
 }
 
 
-coord follow_blue_dog(rencontre* voisins, rencontre* blue_radar)
+coord follow_blue_dog(rencontre* voisins)
 //Renvoie les coordonnées à suivre pour atteindre la brebis indiquée par le chien bleu
 {
 	coordF sheep_direction;
 	coord reach_point;
-	sheep_direction = direction(MAP_SIZE_X/2,MAP_SIZE_Y/2,blue_radar->coord.X,blue_radar->coord.Y);
-	reach_point.X = round(dog->coord.X + (sheep_direction.X)*distance(blue_radar->coord.X,blue_radar->coord.Y,MAP_SIZE_X,MAP_SIZE_Y));
-	reach_point.Y = round(dog->coord.Y + (sheep_direction.Y)*distance(blue_radar->coord.X,blue_radar->coord.Y,MAP_SIZE_X,MAP_SIZE_Y));
+	sheep_direction = direction(MAP_SIZE_X/2,MAP_SIZE_Y/2,dog->coord.X,dog->coord.Y);
+	reach_point.X = round(dog->coord.X + (sheep_direction.X)*50);
+	reach_point.Y = round(dog->coord.Y + (sheep_direction.Y)*50);
 	if (reach_point.X>MAP_SIZE_X)
 		reach_point.X = MAP_SIZE_X;
 	if (reach_point.X<0)
