@@ -14,6 +14,15 @@ int distance(int coordX1, int coordY1, int coordX2, int coordY2)
 	return sqrt((coordX2-coordX1)*(coordX2-coordX1)+(coordY2-coordY1)*(coordY2-coordY1));
 }
 
+int checkpoint(coord point,coordF target)
+{
+  int radius = distance(point.X,point.Y,(int)(target.X),(int)(target.Y));
+  if (radius < 3)
+    return 1;
+  else
+    return 0;
+}
+/* -----------------------*/
 //On genère un circuit de 4 points , (0,2800);(1100,2800);(1100,3200);(0,3200) sur un 9000x6000. isOk
 void split_purple(void)
 {
@@ -73,9 +82,37 @@ int get_closest_point(void)
 //     }
 // }
 
-int main(int argc,char* argv[])
-{
-  split_purple();
 
-  return 1;
+coord spotting_purple(void)
+{
+		coord target;
+		coordF poiiints;
+		poiiints.X = points[saved_rank][0];
+		poiiints.Y = points[saved_rank][1];
+		if (checkpoint(dog->coord,poiiints))
+			{
+				++saved_rank;
+				if (saved_rank == 4)
+					saved_rank = 0;
+			}
+		target.X = (int)points[saved_rank][0];
+		target.Y = (int)points[saved_rank][1];
+	return target;
 }
+
+// coord intel_purple(rencontre* voisins)
+// {
+// 	coord obj;
+//   rencontre *sheep_viseur = voisins;
+//   sheep_viseur = find_voisin_by_color((unsigned char *)"\xe6\xf0\xf0", voisins);
+//   //mode 0 : il se ballade , mode 1 = il se rapproche du blanc , mode 2 = il repousse l'envahisseur allemand.
+//   switch (dog->mode) {
+//     case 0:
+//       //Sortie
+// 			obj = spotting_purple();
+//       if(sheep_viseur != NULL && !(is_in_zone(sheep_viseur)))
+//         dog->mode = 1;
+// 		case 1:
+//
+// 	return obj;
+// }
