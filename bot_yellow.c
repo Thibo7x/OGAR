@@ -126,23 +126,17 @@ coord intel_yellow(rencontre *voisins)
 			{
  			 	obj = blue_viseur->coord;
 			}
-			else
-			{
-				obj.X = MAP_SIZE_X/2;
-				obj.Y = MAP_SIZE_Y/2;
-			}
-			if(three_in_the_center(voisins) && (dog->coord.X == MAP_SIZE_X/2) && (dog->coord.Y == MAP_SIZE_Y/2) && has_lower_ID_center(voisins))
+			else if(three_in_the_center(voisins) && (dog->coord.X == MAP_SIZE_X/2) && (dog->coord.Y == MAP_SIZE_Y/2) && has_lower_ID_center(voisins))
 			{
 				srand(time(NULL));
 				coordF random_direction;
-				random_direction.X = (float)(rand() % 100000) / 100000.0 * pow(1,(int)rand());
-				random_direction.Y = (float)(rand() % 100000) / 100000.0 * pow(1,(int)rand());
-				obj.X = round(MAP_SIZE_X/2 + (random_direction.X)*300);
-				obj.Y = round(MAP_SIZE_Y/2 + (random_direction.Y)*300);
-				printf("bouge\n");
+				random_direction.X = (float)(rand() % 100000) / 100000.0 * pow(-1,(int)rand()%2);
+				random_direction.Y = (float)(rand() % 100000) / 100000.0 * pow(-1,(int)rand()%2);
+				obj.X = round(MAP_SIZE_X/2.0 + (random_direction.X)*200.0);
+				obj.Y = round(MAP_SIZE_Y/2.0 + (random_direction.Y)*200.0);
 			}
 			//Sorties
-			if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) >= 300 || sheep_viseur != NULL)
+			if((distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) >= 200) || (sheep_viseur != NULL))
 				dog->mode = 4;
 		break;
 
@@ -306,7 +300,7 @@ int has_lower_ID_center(rencontre* voisins)
 int three_in_the_center(rencontre* voisins)
 {
 	rencontre* yellow = voisins;
-	int yellow_counter = 0;
+	int yellow_counter = 1;
 	while(yellow != NULL)
 	{
 		if(!memcmp(yellow->couleur,"\xff\xff\x0",3))
