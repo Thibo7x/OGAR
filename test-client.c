@@ -298,6 +298,8 @@ static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void 
 /****************************************************************************************************************************/
 int main(int argc, char **argv)
 {
+	CENTER_PEN_X = 9000.0;
+	CENTER_PEN_Y = 3000.0;
 	int n = 0;
 	iii = 0;
 	firstBorderInfoMessage = 1;

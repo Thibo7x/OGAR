@@ -17,10 +17,9 @@ coord intel_yellow(rencontre *voisins)
 	rencontre *blue_viseur = voisins;
 	rencontre *yellow_viseur = voisins;
 	rencontre *sheep_vise;
+	coordF random_direction;
 	coord obj;
 	int radius;
-	obj.X = 0;
-	obj.Y = 0;
 
 	sheep_viseur = find_voisin_by_color((unsigned char *)"\xe6\xf0\xf0", voisins);
 	blue_viseur = find_voisin_by_color((unsigned char *)"\x0\x0\xff",voisins);
@@ -75,7 +74,7 @@ coord intel_yellow(rencontre *voisins)
 			}
 
 			// Sorties
-			if(distance(dog->coord.X, dog->coord.Y, 0, MAP_SIZE_Y/2) <= MAP_SIZE_X/10 || sheep_viseur == NULL)
+			if(distance(dog->coord.X, dog->coord.Y, CENTER_PEN_X, CENTER_PEN_Y) <= MAP_SIZE_X/10 || sheep_viseur == NULL)
 			{
 				dog->mode = 0;
 			}
@@ -129,12 +128,12 @@ coord intel_yellow(rencontre *voisins)
 			else if(three_in_the_center(voisins) && (dog->coord.X == MAP_SIZE_X/2) && (dog->coord.Y == MAP_SIZE_Y/2) && has_lower_ID_center(voisins))
 			{
 				srand(time(NULL));
-				coordF random_direction;
 				random_direction.X = (float)(rand() % 100000) / 100000.0 * pow(-1,(int)rand()%2);
 				random_direction.Y = (float)(rand() % 100000) / 100000.0 * pow(-1,(int)rand()%2);
 				obj.X = round(MAP_SIZE_X/2.0 + (random_direction.X)*200.0);
 				obj.Y = round(MAP_SIZE_Y/2.0 + (random_direction.Y)*200.0);
 			}
+			else obj = follow_blue_dog(voisins);
 			//Sorties
 			if((distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) >= 200) || (sheep_viseur != NULL))
 				dog->mode = 4;
@@ -184,7 +183,7 @@ int action_over_sheep(rencontre *sheep, rencontre *dog_tested) //
 coord circumvention(rencontre *sheep)
 {
 	int decalage = 0;
-	coord objectif = reach_point(sheep->coord, direction(100, MAP_SIZE_Y/2, sheep->coord.X, sheep->coord.Y));
+	coord objectif = reach_point(sheep->coord, direction(CENTER_PEN_X, CENTER_PEN_Y, sheep->coord.X, sheep->coord.Y));
 	int radiusX = (int)distance(objectif.X, dog->coord.Y, dog->coord.X, dog->coord.Y);
 	coord chemin;
 	chemin.X = objectif.X;
@@ -198,31 +197,31 @@ coord circumvention(rencontre *sheep)
 	}
 
 	//Si le mouton est sur le bord, le décolle du bord
-	if(chemin.X > MAP_SIZE_X-20)
+	if(chemin.X > MAP_SIZE_X-50)
 	{
 		chemin.X = MAP_SIZE_X;
 		chemin.Y = sheep->coord.Y;
 		decalage = 1;
 	}
-	if(chemin.X < 20)
+	if(chemin.X < 50)
 	{
 		chemin.X = 0;
 		chemin.Y = sheep->coord.Y;
 		decalage = 1;
 	}
-	if(chemin.Y > MAP_SIZE_Y-20)
+	if(chemin.Y > MAP_SIZE_Y-50)
 	{
 		chemin.X = sheep->coord.X;
 		chemin.Y = MAP_SIZE_Y;
 		decalage = 1;
 	}
-	if(chemin.Y < 20)
+	if(chemin.Y < 50)
 	{
 		chemin.X = sheep->coord.X;
 		chemin.Y = 0;
 		decalage = 1;
 	}
-	if(decalage && distance(dog->coord.X,dog->coord.Y,sheep->coord.X,sheep->coord.Y) >= 20)
+	if(decalage && distance(dog->coord.X,dog->coord.Y,sheep->coord.X,sheep->coord.Y) >= 50)
 	{
 		chemin.X = dog->coord.X;
 		chemin.Y = dog->coord.Y;
