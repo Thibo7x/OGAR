@@ -380,10 +380,7 @@ int main(int argc, char **argv)
 		saved_sheeps = NULL;
 		init_rank = 1;
 	}
-	if (dog->color == 3) // Jaune
-	{
-		blue_dog = 0;
-	}
+
 
 	i.context = context;
 

@@ -281,7 +281,7 @@ coord spotting()
 void save_our_sheeps(rencontre *voisins)
 {
   rencontre *pointer = voisins;
-  rencontre *yellow = voisins;;
+  rencontre *yellow = voisins;
   while (pointer != NULL)
   {
     if (!memcmp(pointer->couleur,"\xe6\xf0\xf0",3))
@@ -296,6 +296,7 @@ void save_our_sheeps(rencontre *voisins)
             if(!(!memcmp(yellow->couleur,"\xff\xff\xf0",3) && distance(yellow->coord.X,yellow->coord.Y,pointer->coord.X,pointer->coord.Y) < 100))
             {
               // On l'ajoute
+              yellow = NULL;
               rencontre *sheep = malloc(sizeof(sheep));
               // Remplissage des caractéristiques
               sheep->ID = pointer->ID;
@@ -306,7 +307,8 @@ void save_our_sheeps(rencontre *voisins)
               sheep->next = saved_sheeps;
               saved_sheeps = sheep;
             }
-            yellow = yellow->next;
+            if(yellow != NULL)
+              yellow = yellow->next;
           }
         }
       }

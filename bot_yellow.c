@@ -5,7 +5,11 @@
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
+#include <stdlib.h>
+#include <time.h>
 #define min(a,b) (a<=b?a:b)
+#define max(a,b) (((a)>(b))?(a):(b))
+
 
 coord intel_yellow(rencontre *voisins)
 {
@@ -43,6 +47,11 @@ coord intel_yellow(rencontre *voisins)
 			{
 				dog->mode = 3;
 			}
+			// if(has_lower_ID_center(voisins) && three_in_the_center(voisins) && distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 3)
+			// {
+			// 	dog->mode = 4;
+			// 	random_direction();
+			// }
 		break;
 
 		case 1:
@@ -112,18 +121,12 @@ coord intel_yellow(rencontre *voisins)
 			//Ordre
 			if(blue_viseur != NULL && distance(blue_viseur->coord.X,blue_viseur->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 3 && distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 3)
 			{
-				blue_dog = 1;
-			}
-			if(blue_dog)
-			{
-				blue_direction = follow_blue_dog(voisins,blue_viseur);
- 			 	obj = blue_direction;
+ 			 	obj = blue_viseur->coord;
 			}
 			else
 			{
 				obj.X = MAP_SIZE_X/2;
 				obj.Y = MAP_SIZE_Y/2;
-				blue_dog = 0;
 			}
 			//Sorties
 			if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) >= 800)
@@ -132,8 +135,7 @@ coord intel_yellow(rencontre *voisins)
 
 		case 4:
 			//Ordre
-			blue_dog = 0;
-			obj = blue_direction;
+			obj = follow_blue_dog(voisins,blue_viseur);
 			if(yellow_viseur != NULL && sheep_viseur != NULL)
 			{
 				if(distance(yellow_viseur->coord.X,yellow_viseur->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) < distance(dog->coord.X,dog->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) )
@@ -258,24 +260,17 @@ coord follow_blue_dog(rencontre* voisins, rencontre* blue_radar)
 {
 	coordF sheep_direction;
 	coord reach_point;
-	if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) < 800)
-	{
-		reach_point = blue_radar->coord;
-	}
-	if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X/2,MAP_SIZE_Y/2) >= 800)
-	{
-		sheep_direction = direction(MAP_SIZE_X/2,MAP_SIZE_Y/2,blue_radar->coord.X,blue_radar->coord.Y);
-		reach_point.X = round(MAP_SIZE_X/2 + (sheep_direction.X)*min(MAP_SIZE_X, MAP_SIZE_Y));
-		reach_point.Y = round(MAP_SIZE_Y/2 + (sheep_direction.Y)*min(MAP_SIZE_X, MAP_SIZE_Y));
-		if (reach_point.X>MAP_SIZE_X)
-			reach_point.X = MAP_SIZE_X;
-		if (reach_point.X<0)
-			reach_point.X = 0;
-		if (reach_point.Y>MAP_SIZE_Y)
-			reach_point.Y = MAP_SIZE_Y;
-		if (reach_point.Y<0)
-			reach_point.Y = 0;
-	}
+	sheep_direction = direction(MAP_SIZE_X/2,MAP_SIZE_Y/2,blue_radar->coord.X,blue_radar->coord.Y);
+	reach_point.X = round(dog->coord.X + (sheep_direction.X)*distance(blue_radar->coord.X,blue_radar->coord.Y,MAP_SIZE_X,MAP_SIZE_Y));
+	reach_point.Y = round(dog->coord.Y + (sheep_direction.Y)*distance(blue_radar->coord.X,blue_radar->coord.Y,MAP_SIZE_X,MAP_SIZE_Y));
+	if (reach_point.X>MAP_SIZE_X)
+		reach_point.X = MAP_SIZE_X;
+	if (reach_point.X<0)
+		reach_point.X = 0;
+	if (reach_point.Y>MAP_SIZE_Y)
+		reach_point.Y = MAP_SIZE_Y;
+	if (reach_point.Y<0)
+		reach_point.Y = 0;
 	return reach_point;
 }
 
@@ -294,3 +289,38 @@ int has_lower_ID_center(rencontre* voisins)
 	}
 	return has_lower_ID;
 }
+
+// int three_in_the_center(rencontre* voisins)
+// {
+// 	rencontre* yellow = voisins;
+// 	int yellow_counter = 0;
+// 	while(yellow != NULL)
+// 	{
+// 		if(!memcmp(yellow->couleur,"\xff\xff\x0",3))
+// 		{
+// 			yellow_counter++;
+// 		}
+// 		yellow = yellow->next;
+// 	}
+// 	if(yellow_counter > 2)
+// 		return 1;
+// 	return 0;
+// }
+
+// void random_direction()
+// {
+// 	srand(time(NULL));
+// 	coordF random_direction;
+// 	random_direction.X = (float)(rand() % 100000) / 100000.0 * pow(1,(int)rand());
+// 	random_direction.Y = (float)(rand() % 100000) / 100000.0 * pow(1,(int)rand());
+// 	blue_direction.X = round(MAP_SIZE_X/2 + (random_direction.X)*distance(MAP_SIZE_X/2,MAP_SIZE_Y/2,MAP_SIZE_X,MAP_SIZE_Y));
+// 	blue_direction.Y = round(MAP_SIZE_Y/2 + (random_direction.Y)*distance(MAP_SIZE_X/2,MAP_SIZE_Y/2,MAP_SIZE_X,MAP_SIZE_Y));
+// 	if (blue_direction.X>MAP_SIZE_X)
+// 		blue_direction.X = MAP_SIZE_X;
+// 	if (blue_direction.X<0)
+// 		blue_direction.X = 0;
+// 	if (blue_direction.Y>MAP_SIZE_Y)
+// 		blue_direction.Y = MAP_SIZE_Y;
+// 	if (blue_direction.Y<0)
+// 		blue_direction.Y = 0;
+// 	}
