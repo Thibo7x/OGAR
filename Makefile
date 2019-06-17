@@ -19,7 +19,7 @@ bot_yellow.o: bot_yellow.c bot_yellow.h entities.h
 bot_blue.o: bot_blue.c bot_blue.h entities.h
 	$(CC) -std=c99 -c $^ $(FLAGS)
 
-bot_cyan.o: bot_cyan.c
+bot_cyan.o: bot_cyan.c bot_cyan.h entities.h
 	$(CC) -c $^ $(FLAGS)
 
 chainedListFunctions.o: chainedListFunctions.c chainedListFunctions.h

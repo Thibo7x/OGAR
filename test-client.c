@@ -12,6 +12,7 @@
 #include "client.h"
 #include "bot_yellow.h"
 #include "bot_blue.h"
+#include "bot_cyan.h"
 #include "chainedListFunctions.h"
 #include "entities.h"
 #include "mapFunctions.h"
@@ -151,8 +152,7 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 					break;
 					case 4:
 					// CYAN
-						pos.X = 0;
-						pos.Y = 0;
+						pos = intel_cyan(voisins);
 					break;
 					case 5:
 					// PURPLE

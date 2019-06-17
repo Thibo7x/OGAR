@@ -9,7 +9,6 @@
 #include <math.h>
 
 
-int iii;
 unsigned char ID_suivi;
 coord intel_cyan(rencontre *voisins);
 
