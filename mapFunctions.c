@@ -42,50 +42,33 @@ int is_in_opposite_zone(rencontre *sheep)
 
 coord circumvention(rencontre *sheep)
 {
-	int decalage = 0;
 	coord objectif = reach_point(sheep->coord, direction(CENTER_PEN_X, CENTER_PEN_Y, sheep->coord.X, sheep->coord.Y));
-	int radiusX = (int)distance(objectif.X, dog->coord.Y, dog->coord.X, dog->coord.Y);
 	coord chemin;
-	chemin.X = objectif.X;
-	if (radiusX > 2)
-	{
-		chemin.Y = dog->coord.Y;
-	}
-	else
-	{
-		chemin.Y = objectif.Y;
-	}
+	chemin = objectif;
+
 
 	//Si le mouton est sur le bord, le décolle du bord
 	if(chemin.X > MAP_SIZE_X-50)
 	{
 		chemin.X = MAP_SIZE_X;
 		chemin.Y = sheep->coord.Y;
-		decalage = 1;
 	}
 	if(chemin.X < 50)
 	{
 		chemin.X = 0;
 		chemin.Y = sheep->coord.Y;
-		decalage = 1;
 	}
 	if(chemin.Y > MAP_SIZE_Y-50)
 	{
 		chemin.X = sheep->coord.X;
 		chemin.Y = MAP_SIZE_Y;
-		decalage = 1;
 	}
 	if(chemin.Y < 50)
 	{
 		chemin.X = sheep->coord.X;
 		chemin.Y = 0;
-		decalage = 1;
 	}
-	if(decalage && distance(dog->coord.X,dog->coord.Y,sheep->coord.X,sheep->coord.Y) >= 50)
-	{
-		chemin.X = dog->coord.X;
-		chemin.Y = dog->coord.Y;
-	}
+
 	return chemin;
 }
 
