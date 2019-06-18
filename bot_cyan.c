@@ -7,7 +7,7 @@ coord intel_cyan(rencontre *voisins)
   rencontre *sheep_vise;
   coordF sheep_direction;
   sheep_viseur = find_voisin_by_color((unsigned char *)"\xe6\xf0\xf0", voisins);
-  printf("MODE [%d]\n",dog->mode );
+  //printf("MODE [%d]\n",dog->mode );
   switch (dog->mode) {
     case 0:
     //Ordre
@@ -28,14 +28,11 @@ coord intel_cyan(rencontre *voisins)
       {
         sheep_direction = direction(dog->coord.X,dog->coord.Y,sheep_vise->coord.X,sheep_vise->coord.Y);
       	obj = sheep_vise->coord;
-        printf("vers le mouton\n");
       }
       if(sheep_vise == NULL)
       {
       	obj.X = round(dog->coord.X + (sheep_direction.X)*20);
       	obj.Y = round(dog->coord.Y + (sheep_direction.Y)*20);
-        printf("direction mouton\n");
-
       }
     //Sortie
       if((distance(dog->coord.X,dog->coord.Y,9000-CENTER_PEN_X,CENTER_PEN_Y) > MAP_SIZE_X/10 + 100))
