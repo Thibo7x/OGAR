@@ -5,9 +5,8 @@ coord intel_cyan(rencontre *voisins)
   coord obj;
   rencontre *sheep_viseur = voisins;
   rencontre *sheep_vise;
-  coordF sheep_direction;
   sheep_viseur = find_voisin_by_color((unsigned char *)"\xe6\xf0\xf0", voisins);
-  //printf("MODE [%d]\n",dog->mode );
+  //printf("MODE %d\n",dog->mode );
   switch (dog->mode) {
     case 0:
     //Ordre

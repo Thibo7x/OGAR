@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-
+coordF sheep_direction;
 unsigned char ID_suivi;
 coord intel_cyan(rencontre *voisins);
 
