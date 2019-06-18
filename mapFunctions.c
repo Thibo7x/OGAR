@@ -18,8 +18,8 @@ coordF direction(int coordX1, int coordY1, int coordX2, int coordY2)
 coord reach_point(coord sheep, coordF direction)
 {
 	coord reach_point;
-	reach_point.X = sheep.X + ceil((direction.X)*(dog->R_action + ENTITY_SIZE));
-	reach_point.Y = sheep.Y + ceil((direction.Y)*(dog->R_action + ENTITY_SIZE));
+	reach_point.X = sheep.X + ceil((direction.X)*(dog->R_action/2));
+	reach_point.Y = sheep.Y + ceil((direction.Y)*(dog->R_action/2));
 	return reach_point;
 }
 
@@ -75,7 +75,7 @@ coord circumvention(rencontre *sheep)
 coord bring_back_our_sheeps(rencontre *sheep)
 {
 	coord ret;
-	if(distance(dog->coord.X,dog->coord.Y,sheep->coord.X,sheep->coord.Y) < ( dog->R_action /4) )
+	if(distance(dog->coord.X,dog->coord.Y,sheep->coord.X,sheep->coord.Y) < ( dog->R_action /3) )
 	{
 		ret.X = dog->coord.X;
 		ret.Y = dog->coord.Y;
