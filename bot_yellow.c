@@ -113,7 +113,7 @@ coord intel_yellow(rencontre *voisins)
 
 			//Sorties
 			radius = (int) ceil(distance(obj.X, obj.Y, dog->coord.X, dog->coord.Y));
-			if (radius <= 30) // Il pousse le mouton s'il est bien positionné
+			if (radius <= 50) // Il pousse le mouton s'il est bien positionné
 			{
 				dog->mode = 1;
 			}
