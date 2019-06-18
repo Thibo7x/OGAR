@@ -94,7 +94,16 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 		switch (rbuf[0]) {
 			case 0x12:
 			//Q On Command, on répond avec le Nickname
-			sendCommand(wsi,CODES_ASCII[dog->color],CODES_ASCII_LENGTH[dog->color]);
+			if(mode == 2)
+			{
+				if(side == 2)
+					sendCommand(wsi,CODES_ASCII_RIGHT[dog->color],CODES_ASCII_LENGTH[dog->color]);
+				if(side == 1)
+					sendCommand(wsi,CODES_ASCII_LEFT[dog->color],CODES_ASCII_LENGTH[dog->color]);
+			}
+			if(mode == 1)
+				sendCommand(wsi,CODES_ASCII_SOLO[dog->color],CODES_ASCII_LENGTH[dog->color]);
+
 			break;
 
 			case 0x20:
@@ -302,7 +311,6 @@ int main(int argc, char **argv)
 	CENTER_PEN_Y = 3000.0;
 	int n = 0;
 	iii = 0;
-	int side;
 	firstBorderInfoMessage = 1;
 
 	struct lws_context_creation_info info;
@@ -319,7 +327,7 @@ int main(int argc, char **argv)
 	i.origin = "agar.io";
 
 	while (n >= 0) {
-		n = getopt(argc, argv, "hsp:P:n:S:");
+		n = getopt(argc, argv, "hsp:P:n:m:S:");
 		if (n < 0)
 			continue;
 		switch (n) {
@@ -334,6 +342,9 @@ int main(int argc, char **argv)
 			break;
 		case 'n':
 		  couleur = optarg;
+			break;
+		case 'm':
+			mode = atoi(optarg);
 			break;
 		case 'S':
 			//Side , 1 gauche 2 droite
@@ -414,6 +425,6 @@ int main(int argc, char **argv)
 	return 0;
 
 usage:
-	fprintf(stderr, "Usage: ogar-client -h -S <side> -s -p <port> -n <nickname> -P <proxy> <server address> \n");
+	fprintf(stderr, "Usage: ogar-client -h -m <mode> -S <side> -s -p <port> -n <nickname> -P <proxy> <server address> \n");
 	return 1;
 }

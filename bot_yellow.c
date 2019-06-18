@@ -74,7 +74,7 @@ coord intel_yellow(rencontre *voisins)
 			}
 
 			// Sorties
-			if(distance(dog->coord.X, dog->coord.Y, CENTER_PEN_X, CENTER_PEN_Y) <= MAP_SIZE_X/10 || sheep_viseur == NULL)
+			if(distance(dog->coord.X, dog->coord.Y, CENTER_PEN_X, CENTER_PEN_Y) <= MAP_SIZE_X/10 || sheep_viseur == NULL || distance(dog->coord.X, dog->coord.Y, MAP_SIZE_X-CENTER_PEN_X, CENTER_PEN_Y) <= MAP_SIZE_X/10 )
 			{
 				dog->mode = 0;
 			}
@@ -117,6 +117,7 @@ coord intel_yellow(rencontre *voisins)
 			{
 				dog->mode = 1;
 			}
+
 		break;
 
 		case 3:
