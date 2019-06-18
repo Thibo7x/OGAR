@@ -136,11 +136,7 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 					// BLUE
 						if (init_rank) {
 							init_rank = 0;
-							coordF dogF;
-							dogF.X = (float)dog->coord.X;
-							dogF.Y = (float)dog->coord.Y;
 							old_rank = first_rank();
-							// old_rank = get_rank_with_any_coos(dogF);
 							// printf("%d & %d\n", dog->coord.X, dog->coord.Y);
 							// printf("Rank : %d\n", old_rank);
 						}

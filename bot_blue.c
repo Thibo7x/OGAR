@@ -239,7 +239,13 @@ int first_rank(void)
   coordF dogF;
   dogF.X = (float)dog->coord.X;
   dogF.Y = (float)dog->coord.Y;
-  return get_rank_with_any_coos(dogF);
+  int rank = get_rank_with_any_coos(dogF);
+  int rank_to_return = 0;
+  while(table[rank_to_return] != rank)
+    {
+      ++rank_to_return;
+    }
+  return rank_to_return;
 }
 /* ---------------------------------*/
 coord spotting()
