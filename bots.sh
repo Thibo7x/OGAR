@@ -15,10 +15,20 @@ for color in {"yellow","blue","cyan","purple"}
 do
 	let "max = $color"
 	let "length = 0"
-	while [ $length -lt $max ]; do
-		./sock -p $Port -n $color -S $side 192.168.130.$Filler &
-		let "length++"
-	done
+	if [ $mode = 2 ]; then
+		while [ $length -lt $max ]; do
+			./sock -p $Port -n $color -S $side 192.168.130.$Filler &
+			let "length++"
+		done
+	fi
+
+	if [ $mode = 1 ]; then
+		while [ $length -lt $max ]; do
+			./sock -p $Port -n $color -S 0 192.168.130.$Filler &
+			let "length++"
+		done
+	fi
+
 done
 
 if [ $mode = 1 ]; then
