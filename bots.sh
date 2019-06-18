@@ -1,7 +1,7 @@
 #!/bin/bash
 read -r -p 'Multi (2) ou Solo (1) ? : ' mode
 if [ $mode = 2 ]; then
-	read -r -p 'Droite (1) ou Gauche (0) ? : ' side
+	read -r -p 'Droite (2) ou Gauche (1) ? : ' side
 fi
 read -r -p 'Nombre de bots jaune : ' yellow
 read -r -p 'Nombre de bots bleu : ' blue
@@ -15,10 +15,20 @@ for color in {"yellow","blue","cyan","purple"}
 do
 	let "max = $color"
 	let "length = 0"
-	while [ $length -lt $max ]; do
-		./sock -p $Port -n $color -S $side 192.168.130.$Filler &
-		let "length++"
-	done
+	if [ $mode = 2 ]; then
+		while [ $length -lt $max ]; do
+			./sock -p $Port -n $color -S $side 192.168.130.$Filler &
+			let "length++"
+		done
+	fi
+
+	if [ $mode = 1 ]; then
+		while [ $length -lt $max ]; do
+			./sock -p $Port -n $color -S 1 192.168.130.$Filler &
+			let "length++"
+		done
+	fi
+
 done
 
 if [ $mode = 1 ]; then

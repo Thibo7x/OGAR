@@ -136,9 +136,13 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 					// BLUE
 						if (init_rank) {
 							init_rank = 0;
+							coordF dogF;
+							dogF.X = (float)dog->coord.X;
+							dogF.Y = (float)dog->coord.Y;
 							old_rank = first_rank();
+							// old_rank = get_rank_with_any_coos(dogF);
 							// printf("%d & %d\n", dog->coord.X, dog->coord.Y);
-							// printf("Rank : %d\n", table[old_rank]);
+							// printf("Rank : %d\n", old_rank);
 						}
 						pos = intel_blue(voisins);
 					break;
@@ -336,9 +340,9 @@ int main(int argc, char **argv)
 		  couleur = optarg;
 			break;
 		case 'S':
-			//Side , 0 gauche 1 droite
+			//Side , 1 gauche 2 droite
 			side = atoi(optarg);
-			if (side)
+			if (side == 2)
 				{
 					CENTER_PEN_X = 9000.0;
 					CENTER_PEN_Y = 3000.0;
