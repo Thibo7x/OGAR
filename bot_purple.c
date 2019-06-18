@@ -42,14 +42,14 @@
 // //    printf("Target Top = (%f,%f) ; Target Bot = (%f,%f)\n",target_top.X,target_top.Y,target_bottom.X,target_bottom.Y);
 // //  }
 //
-// //A_REMPLACER par dog->coord. quand on aura intel_purple , sinon , isOK
+// isOK
 // int get_closest_point(void)
 // {
 //   int distance_table[4] = {10817,10817,10817,10817};
 //   int min = 0;
 //   for (int rank = 0 ; rank < 4 ; ++rank)
 //     {
-//       distance_table[rank] = distance(A_REMPLACER_X,A_REMPLACER_Y,(int)points[rank][0],(int)points[rank][1]);
+//       distance_table[rank] = distance(dog->coord.X,dog->coord.Y,(int)points[rank][0],(int)points[rank][1]);
 //       if (distance_table[rank] <= distance_table[min])
 //         min = rank;
 //     }
@@ -60,8 +60,8 @@
 // // {
 // //   for(int rank = 0 ; rank < 4 ; ++rank)
 // //     {
-// //       A_REMPLACER_X = points[rank][0];
-// //       A_REMPLACER_Y = points[rank][1];
+// //       dog->coord.X = points[rank][0];
+// //       dog->coord.Y = points[rank][1];
 // //       printf("Le rank le plus proche est %d.\n",get_closest_point());
 // //     }
 // // }

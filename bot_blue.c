@@ -333,8 +333,7 @@ int count_voisins(rencontre *firstNode)
 
 /* ----------------main----------------- */
 
-//Reste à faire :
-//Carrément toute la fonction intel_blue
+
 coord intel_blue(rencontre *voisins)
 {
   coord obj;
