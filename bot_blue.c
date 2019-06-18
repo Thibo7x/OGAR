@@ -98,7 +98,7 @@ int get_rank_with_any_coos(coordF position)
   int minimum;
   int depth = 0;
   //cas critique : si on appel la fonction lorsque le point se trouve pile entre 2 cases ou entre 4 cases
-  int rank_propose[4] = {max_rank,max_rank,max_rank,max_rank};
+  int rank_propose[4] = {max_rank-1,max_rank-1,max_rank-1,max_rank-1};
 
   //on enregistre l'ensemble des distances du point donné par rapport aux différents centres
   for(int rank = 1; rank <= max_rank; ++rank)
@@ -240,12 +240,13 @@ int first_rank(void)
   dogF.X = (float)dog->coord.X;
   dogF.Y = (float)dog->coord.Y;
   int rank = get_rank_with_any_coos(dogF);
-  int rank_to_return = 0;
+  int rank_to_return = 1;
   while(table[rank_to_return] != rank)
     {
       ++rank_to_return;
     }
-  return rank_to_return;
+  printf("[IN] FIRST_RANK : %d\n", rank_to_return);
+  return rank_to_return%max_rank;
 }
 /* ---------------------------------*/
 coord spotting()
@@ -303,7 +304,7 @@ void save_our_sheeps(rencontre *voisins)
             {
               // On l'ajoute
               yellow = NULL;
-              rencontre *sheep = malloc(sizeof(sheep));
+              rencontre *sheep = malloc(sizeof(struct rencontre));
               // Remplissage des caractéristiques
               sheep->ID = pointer->ID;
               sheep->coord = pointer->coord;

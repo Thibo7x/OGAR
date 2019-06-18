@@ -102,8 +102,7 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 					sendCommand(wsi,CODES_ASCII_LEFT[dog->color],CODES_ASCII_LENGTH_MULTI[dog->color]);
 			}
 			if(mode == 1)
-				sendCommand(wsi,CODES_ASCII_SOLO[dog->color],CODES_ASCII_LENGTH_SOLO[dog->color]);
-
+					sendCommand(wsi,CODES_ASCII_SOLO[dog->color],CODES_ASCII_LENGTH_SOLO[dog->color]);
 			break;
 
 			case 0x20:
@@ -146,6 +145,7 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 						if (init_rank) {
 							init_rank = 0;
 							old_rank = first_rank();
+							printf("[OUT] OLD RANK : %d\n", old_rank);
 							// printf("%d & %d\n", dog->coord.X, dog->coord.Y);
 							// printf("Rank : %d\n", old_rank);
 						}
@@ -364,7 +364,7 @@ int main(int argc, char **argv)
 			goto usage;
 		}
 	}
-	dog = malloc(sizeof(dog));
+	dog = malloc(sizeof(struct bot));
 	idColor(couleur);
 	dog->mode = 0;
 

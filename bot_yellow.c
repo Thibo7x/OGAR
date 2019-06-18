@@ -10,7 +10,8 @@
 #define min(a,b) (a<=b?a:b)
 #define max(a,b) (((a)>(b))?(a):(b))
 
-
+//Enregistrer les brebis qui se situent à moins de 1.5* la zone
+//Ne pas éviter les moutons jaunes qui ne sont pas à nous
 coord intel_yellow(rencontre *voisins)
 {
 	rencontre *sheep_viseur = voisins;
@@ -25,6 +26,13 @@ coord intel_yellow(rencontre *voisins)
 	blue_viseur = find_voisin_by_color((unsigned char *)"\x0\x0\xff",voisins);
 	yellow_viseur = find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins);
 	//printf("MODE : %d\n", dog->mode);
+	if(distance(dog->coord.X,dog->coord.Y, CENTER_PEN_X,CENTER_PEN_Y) <= MAP_SIZE_X/10 || distance(dog->coord.X,dog->coord.Y, MAP_SIZE_X-CENTER_PEN_X,CENTER_PEN_Y) <= MAP_SIZE_X/10)
+	{
+		dog->mode = 0;
+		obj.X = MAP_SIZE_X/2;
+		obj.Y = MAP_SIZE_Y/2;
+		return obj;
+	}
 	switch (dog->mode) {
 
 		case 0:
@@ -157,7 +165,7 @@ coord intel_yellow(rencontre *voisins)
 				ID_suivi = sheep_viseur->ID;
 				dog->mode = 2;
 			}
-			if(dog->coord.X < 50 || dog->coord.Y < 50 || dog->coord.X > MAP_SIZE_X-50 || dog->coord.Y > MAP_SIZE_Y-50 || distance(dog->coord.X,dog->coord.Y,0,(int)(MAP_SIZE_Y/2.0)) < (int)(MAP_SIZE_X/10.0) || ((distance(dog->coord.X,dog->coord.Y,(int)(MAP_SIZE_X),(int)(MAP_SIZE_Y/2.0)) < (int)(MAP_SIZE_X/10.0)) && (mode == 2)))
+			if(dog->coord.X < 50 || dog->coord.Y < 50 || dog->coord.X > MAP_SIZE_X-50 || dog->coord.Y > MAP_SIZE_Y-50)
 				dog->mode = 0;
 		break;
 
@@ -238,7 +246,7 @@ int three_in_the_center(rencontre* voisins)
 	int yellow_counter = 1;
 	while(yellow != NULL)
 	{
-		if(!memcmp(yellow->couleur,"\xff\xff\x0",3))
+		if(!memcmp(yellow->couleur,"\xff\xff\x0",3) /*&& !strcmp(yellow->nickname,dog->nickname)*/)
 		{
 			yellow_counter++;
 		}

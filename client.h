@@ -35,13 +35,4 @@ struct lws_protocols protocols[] = {
 	{NULL,NULL,0,0}
 };
 
-
-
-
 void moveBot(struct lws* wsi,unsigned int coordX,unsigned int coordY);
-//static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len);
-
-
-
-
-//unsigned int touch( bot* dog , effect* sheep_effect , bot* sheep);

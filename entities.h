@@ -15,6 +15,7 @@ typedef struct coordF {
 } coordF;
 
 typedef struct bot {
+    char nickname[10];
     unsigned char ID;
     coord coord;
     unsigned int color;
@@ -25,6 +26,7 @@ typedef struct bot {
 bot* dog;
 
 typedef struct rencontre {
+    char nickname[10];
     unsigned char ID;
     coord coord;
     unsigned char couleur[4];

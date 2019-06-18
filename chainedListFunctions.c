@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+//#include "entities.h"
 #include "chainedListFunctions.h"
 #include "mapFunctions.h"
 
@@ -136,7 +136,7 @@ rencontre* dechiffrageMessage(unsigned char* rbuf)
 	rencontre *firstNode = NULL;
 	unsigned char *reader_c = rbuf+3;
 	do {
-		rencontre *node = malloc(sizeof(node));
+		rencontre *node = malloc(sizeof(struct rencontre));
 		node->ID = (*reader_c); // ID
 		reader_c += 4;
 		int i;
@@ -162,7 +162,12 @@ rencontre* dechiffrageMessage(unsigned char* rbuf)
 		}
 		node->couleur[i] = '\0';
 		i = 0;
-		while (*(reader_c+i) != 0x0) i++;
+		while (*(reader_c+i) != 0x0)
+		{
+		  node->nickname[i] = *(reader_c+i);
+			i++;
+		}
+		node->nickname[i+1] = '\0';
 		reader_c += (i+1);
 
 		// Si c'est nous, on modifie chien
