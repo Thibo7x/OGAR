@@ -7,6 +7,7 @@ double MAP_SIZE_X;
 double MAP_SIZE_Y;
 double CENTER_PEN_X;
 double CENTER_PEN_Y;
+int mode;
 typedef struct node_view_borders view;
 struct node_view_borders
 {

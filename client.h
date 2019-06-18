@@ -14,7 +14,7 @@ int R_ACTION[] = { 50, 0, 300, 100, 300, 200 , 0};
 int X_VIEW[] = { 200, 2000, 800, 600, 600, 400 , 0};
 int Y_VIEW[] = { 200, 2000, 800, 600, 600, 1600 , 0};
 char* couleur;
-int side, mode;
+int side;
 static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len);
 void idColor(char* couleur);
 void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len);
