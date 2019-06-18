@@ -33,6 +33,7 @@ coord intel_cyan(rencontre *voisins)
       	obj.X = round(dog->coord.X + (sheep_direction.X)*20);
       	obj.Y = round(dog->coord.Y + (sheep_direction.Y)*20);
       }
+      printf("obj : [%d|%d]\n", obj.X,obj.Y);
     //Sortie
       if((distance(dog->coord.X,dog->coord.Y,9000-CENTER_PEN_X,CENTER_PEN_Y) > MAP_SIZE_X/10 + 100))
         dog->mode = 0;

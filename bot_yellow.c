@@ -79,7 +79,7 @@ coord intel_yellow(rencontre *voisins)
 				dog->mode = 0;
 			}
 
-			if(iii == 0.5*dog->R_action)
+			if(iii == 0.2*dog->R_action)
 			{
 				iii = 0;
 				dog->mode = 2;
