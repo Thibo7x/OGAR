@@ -317,15 +317,6 @@ void save_our_sheeps(rencontre *voisins)
   }
 }
 
-//renvoie 0 si la distance entre 2 points dépasse 3, renvoie 1 sinon , isOk
-int checkpoint(coord point,coordF target)
-{
-  int radius = distance(point.X,point.Y,(int)(target.X),(int)(target.Y));
-  if (radius < 3)
-    return 1;
-  else
-    return 0;
-}
 
 int count_voisins(rencontre *firstNode)
 {

@@ -32,6 +32,14 @@ int is_in_zone(rencontre *sheep)
 		return 0;
 }
 
+int is_in_opposite_zone(rencontre *sheep)
+{
+	if(distance(sheep->coord.X,sheep->coord.Y,MAP_SIZE_X-CENTER_PEN_X,CENTER_PEN_Y) <= MAP_SIZE_X/10)
+		return 1;
+	else
+		return 0;
+}
+
 coord circumvention(rencontre *sheep)
 {
 	int decalage = 0;
@@ -106,3 +114,13 @@ coord bring_back_our_sheeps(rencontre *sheep)
 // 	if (border->top < dog->R_action)
 // 		border->top = dog->R_action;
 // }
+
+//renvoie 0 si la distance entre 2 points dépasse 3, renvoie 1 sinon , isOk
+int checkpoint(coord point,coordF target)
+{
+  int radius = distance(point.X,point.Y,(int)(target.X),(int)(target.Y));
+  if (radius < 3)
+    return 1;
+  else
+    return 0;
+}

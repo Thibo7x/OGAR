@@ -29,6 +29,9 @@ int distance(int coordX1, int coordY1, int coordX2, int coordY2);
 coordF direction(int coordX1, int coordY1, int coordX2, int coordY2);
 coord reach_point(coord sheep, coordF direction);
 int is_in_zone(rencontre *sheep);
+int is_in_opposite_zone(rencontre *sheep);
 coord circumvention(rencontre *sheep);
 coord bring_back_our_sheeps(rencontre *sheep);
+int checkpoint(coord point,coordF target);
+
 #endif
