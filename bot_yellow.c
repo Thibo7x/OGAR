@@ -157,7 +157,7 @@ coord intel_yellow(rencontre *voisins)
 				ID_suivi = sheep_viseur->ID;
 				dog->mode = 2;
 			}
-			if(dog->coord.X < 50 || dog->coord.Y < 50 || dog->coord.X > MAP_SIZE_X-50 || dog->coord.Y > MAP_SIZE_Y-50)
+			if(dog->coord.X < 50 || dog->coord.Y < 50 || dog->coord.X > MAP_SIZE_X-50 || dog->coord.Y > MAP_SIZE_Y-50 || distance(dog->coord.X,dog->coord.Y,0,(int)(MAP_SIZE_Y/2.0)) < (int)(MAP_SIZE_X/10.0) || (distance(dog->coord.X,dog->coord.Y,(int)(MAP_SIZE_X),(int)(MAP_SIZE_Y/2.0)) < (int)(MAP_SIZE_X/10.0)) && (mode == 2))
 				dog->mode = 0;
 		break;
 

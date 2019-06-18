@@ -337,9 +337,6 @@ int count_voisins(rencontre *firstNode)
 	return ab;
 }
 
-/* ----------------main----------------- */
-
-
 coord intel_blue(rencontre *voisins)
 {
   coord obj;
@@ -410,21 +407,7 @@ coord intel_blue(rencontre *voisins)
 
 
 }
-/* ----------------main----------------- */
 
-/* ----------Work in progress----------- */
-// int maybe_it_is_chased(rencontre* voisins,int Identifier)
-// {
-//   int value_to_return = 0;
-//   printf("Nombre de moutons dans la liste : %d , Nombre de mouton dans le voisinage : %d\n",count_voisins(saved_sheeps),count_voisins(voisins));
-//   rencontre* target = rechercherListeChainee(voisins,Identifier);
-//   rencontre* saved_coord = rechercherListeChainee(saved_sheeps,Identifier);
-//   int dist = distance(target->coord.X,target->coord.Y,saved_coord->coord.X,saved_coord->coord.Y);
-//
-//   if (dist == 0)
-//     value_to_return = 1;
-// return value_to_return;
-// }
 
 coord turn_to_indicate(rencontre *sheep)
 //Indique les coordonnées à atteindre pour indiquer le mouton
