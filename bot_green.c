@@ -16,23 +16,47 @@ coord intel_green(rencontre *voisins)
       {
         dog->mode = 1;
       }
-
+      if(sheep_viseur != NULL && !is_in_zone(sheep_viseur))
+      {
+        ID_suivi = sheep_viseur->ID;
+        dog->mode = 2;
+      }
     break;
  //(x-CENTER_PEN_X)² +(y-CENTER_PEN_Y)² = (1.4*900)²
     case 1 :
       if(dog->coord.Y > CENTER_PEN_Y)
       {
-        obj.X = dog->coord.X + 100;
-        obj.Y = CENTER_PEN_Y + sqrt(pow(radius,2) - pow(obj.X - CENTER_PEN_X,2));
+        if(CENTER_PEN_X == 0.0)
+        {
+          obj.X = dog->coord.X + 100;
+          obj.Y = CENTER_PEN_Y + sqrt(pow(radius,2) - pow(obj.X - CENTER_PEN_X,2));
+        }
+        if(CENTER_PEN_X == 9000.0)
+        {
+          obj.X = dog->coord.X - 100;
+          obj.Y = CENTER_PEN_Y + sqrt(pow(radius,2) - pow(obj.X - CENTER_PEN_X,2));
+        }
       }
 
       if(dog->coord.Y <= CENTER_PEN_Y)
       {
-        obj.X = dog->coord.X - 100;
-        if(obj.X < 0) obj.X = 0;
-        obj.Y = CENTER_PEN_Y - sqrt(pow(radius,2) - pow(dog->coord.X - CENTER_PEN_X,2));
+        if(CENTER_PEN_X == 0.0)
+        {
+          obj.X = dog->coord.X - 100;
+          if(obj.X < 0) obj.X = 0;
+          obj.Y = CENTER_PEN_Y - sqrt(pow(radius,2) - pow(dog->coord.X - CENTER_PEN_X,2));
+        }
+
+        if(CENTER_PEN_X == 9000.0)
+        {
+          obj.X = dog->coord.X + 100;
+          if(obj.X > CENTER_PEN_X) obj.X = CENTER_PEN_X;
+          obj.Y = CENTER_PEN_Y - sqrt(pow(radius,2) - pow(dog->coord.X - CENTER_PEN_X,2));
+        }
+
+
       }
-      if((dog->coord.X < 50) && (dog->coord.Y < CENTER_PEN_Y))
+      if((abs(CENTER_PEN_X - dog->coord.X) < 50) && (dog->coord.Y < CENTER_PEN_Y))
         dog->mode = 0;
       if(sheep_viseur != NULL && !is_in_zone(sheep_viseur))
       {

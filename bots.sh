@@ -6,11 +6,12 @@ fi
 read -r -p 'Nombre de bots jaune : ' yellow
 read -r -p 'Nombre de bots bleu : ' blue
 read -r -p 'Nombre de bots cyan : ' cyan
+read -r -p 'Nombre de bots vert : ' green
 read -r -p 'IP serveur 192.168.130.XXX : ' Filler
 read -r -p 'Port de connection du serveur (2006 ou 1443) : ' Port
 
 
-for color in {"yellow","blue","cyan"}
+for color in {"yellow","blue","cyan","green"}
 do
 	let "max = $color"
 	let "length = 0"

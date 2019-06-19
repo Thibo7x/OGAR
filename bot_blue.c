@@ -348,7 +348,7 @@ coord intel_blue(rencontre *voisins)
       obj = spotting();
       save_our_sheeps(voisins); // MAJ sheeps around
       //Sortie
-      if( count_voisins(saved_sheeps) >= 4 || absolute_rank == max_rank/2)
+      if( count_voisins(saved_sheeps) >= 3 || absolute_rank == max_rank/2)
         dog->mode = 1;
     break;
 
