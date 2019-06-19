@@ -295,7 +295,7 @@ void save_our_sheeps(rencontre *voisins)
     {
       if ( (rechercherListeChainee(saved_sheeps, pointer->ID) == NULL))
       {
-        if(distance(pointer->coord.X,pointer->coord.Y, CENTER_PEN_X,CENTER_PEN_Y) > MAP_SIZE_X/10)
+        if((distance(pointer->coord.X,pointer->coord.Y, CENTER_PEN_X,CENTER_PEN_Y) > MAP_SIZE_X/10) || distance(pointer->coord.X,pointer->coord.Y, MAP_SIZE_X-CENTER_PEN_X,CENTER_PEN_Y) > MAP_SIZE_X/10)
         {
           while(yellow != NULL)
           {
@@ -348,7 +348,7 @@ coord intel_blue(rencontre *voisins)
       obj = spotting();
       save_our_sheeps(voisins); // MAJ sheeps around
       //Sortie
-      if( count_voisins(saved_sheeps) >= 4 || absolute_rank == max_rank)
+      if( count_voisins(saved_sheeps) >= 4 || absolute_rank == max_rank/2)
         dog->mode = 1;
     break;
 

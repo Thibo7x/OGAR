@@ -4,7 +4,7 @@ EXEC=sock
 
 all: $(EXEC)
 
-sock: test-client.o mapFunctions.o bot_yellow.o chainedListFunctions.o bot_blue.o bot_cyan.o bot_purple.o
+sock: test-client.o mapFunctions.o bot_yellow.o chainedListFunctions.o bot_blue.o bot_cyan.o bot_green.o
 	$(CC) -o $@ $^ $(FLAGS)
 
 test-client.o: test-client.c client.h
@@ -22,7 +22,7 @@ bot_blue.o: bot_blue.c bot_blue.h entities.h
 bot_cyan.o: bot_cyan.c bot_cyan.h entities.h
 	$(CC) -c $^ $(FLAGS)
 
-bot_purple.o: bot_purple.c bot_purple.h entities.h
+bot_green.o: bot_green.c bot_green.h entities.h
 	$(CC) -c $^ $(FLAGS)
 
 chainedListFunctions.o: chainedListFunctions.c chainedListFunctions.h

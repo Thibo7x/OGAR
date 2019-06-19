@@ -12,6 +12,7 @@
 #include "client.h"
 #include "bot_yellow.h"
 #include "bot_blue.h"
+#include "bot_green.h"
 #include "bot_cyan.h"
 #include "chainedListFunctions.h"
 #include "entities.h"
@@ -172,8 +173,7 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 					break;
 					case 2:
 					// GREEN
-						pos.X = 0;
-						pos.Y = 0;
+						pos = intel_green(voisins);
 					break;
 					case 3:
 						pos = intel_yellow(voisins);
