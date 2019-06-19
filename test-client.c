@@ -117,9 +117,11 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 					}
 			}
 			if(mode == 1)
+			{
 					sendCommand(wsi,CODES_ASCII_SOLO[dog->color],CODES_ASCII_LENGTH_SOLO[dog->color]);
 					our_strncpy(CODES_ASCII_SOLO[dog->color],dog->nickname,CODES_ASCII_LENGTH_SOLO[dog->color]);
 				//	printf("[SOLO] %s , %s \n",dog->nickname,(char*)CODES_ASCII_SOLO[dog->color]);
+			}
 			break;
 
 			case 0x20:

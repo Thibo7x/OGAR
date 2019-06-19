@@ -19,13 +19,14 @@ coord intel_yellow(rencontre *voisins)
 	rencontre *sheep_vise;
 	coordF random_direction;
 	coord obj;
+	srand(time(NULL));
 	int radius;
 
 	sheep_viseur = find_voisin_by_color((unsigned char *)"\xe6\xf0\xf0", voisins);
 	blue_viseur = find_voisin_by_color((unsigned char *)"\x0\x0\xff",voisins);
 	yellow_viseur = find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins);
 	//printf("MODE : %d\n", dog->mode);
-	if(distance(dog->coord.X,dog->coord.Y, CENTER_PEN_X,CENTER_PEN_Y) <= MAP_SIZE_X/10 || distance(dog->coord.X,dog->coord.Y, MAP_SIZE_X-CENTER_PEN_X,CENTER_PEN_Y) <= MAP_SIZE_X/10)
+	if(distance(dog->coord.X,dog->coord.Y, CENTER_PEN_X,CENTER_PEN_Y) <= MAP_SIZE_X/10 /*|| distance(dog->coord.X,dog->coord.Y, MAP_SIZE_X-CENTER_PEN_X,CENTER_PEN_Y) <= MAP_SIZE_X/10*/)
 	{
 		dog->mode = 0;
 		obj.X = MAP_SIZE_X/2;
@@ -95,7 +96,7 @@ coord intel_yellow(rencontre *voisins)
 
 		case 2:
 			//Ordre
-			if(yellow_viseur != NULL && sheep_viseur != NULL)
+			if(yellow_viseur != NULL && sheep_viseur != NULL /*&& !strcmp(dog->nickname, yellow_viseur->nickname)*/)
 			{
 				if (distance(yellow_viseur->coord.X,yellow_viseur->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) < distance(dog->coord.X,dog->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) )
 				{
@@ -120,7 +121,7 @@ coord intel_yellow(rencontre *voisins)
 
 			//Sorties
 			radius = (int) ceil(distance(obj.X, obj.Y, dog->coord.X, dog->coord.Y));
-			if (radius <= 50) // Il pousse le mouton s'il est bien positionné
+			if (radius <= 20) // Il pousse le mouton s'il est bien positionné
 			{
 				dog->mode = 1;
 			}
@@ -135,11 +136,22 @@ coord intel_yellow(rencontre *voisins)
 			}
 			else if(three_in_the_center(voisins) && (dog->coord.X == MAP_SIZE_X/2) && (dog->coord.Y == MAP_SIZE_Y/2) && has_lower_ID_center(voisins))
 			{
-				srand(time(NULL));
-				random_direction.X = (float)(rand() % 100000) / 100000.0 * pow(-1,(int)rand()%2);
-				random_direction.Y = (float)(rand() % 100000) / 100000.0 * pow(-1,(int)rand()%2);
-				obj.X = round(MAP_SIZE_X/2.0 + (random_direction.X)*200.0);
-				obj.Y = round(MAP_SIZE_Y/2.0 + (random_direction.Y)*200.0);
+				if(mode == 1)
+				{
+					random_direction.X = (float)(rand() % 100000) / 100000.0 * pow(-1,(int)rand()%2);
+					random_direction.Y = (float)(rand() % 100000) / 100000.0 * pow(-1,(int)rand()%2);
+					obj.X = round(MAP_SIZE_X/2.0 + (random_direction.X)*200.0);
+					obj.Y = round(MAP_SIZE_Y/2.0 + (random_direction.Y)*200.0);
+				}
+				if(mode == 2)
+				{
+					if(CENTER_PEN_X == 0.0) obj.X = 9000 - 0.5*dog->R_action;
+				  if(CENTER_PEN_X == 9000.0) obj.X = 0.5*dog->R_action;
+					if(rand()%2)
+						obj.Y = CENTER_PEN_Y - 1150;
+					else
+						obj.Y = CENTER_PEN_Y + 1150;
+				}
 			}
 			else obj = follow_blue_dog(voisins);
 			//Sorties
@@ -152,7 +164,7 @@ coord intel_yellow(rencontre *voisins)
 			obj = follow_blue_dog(voisins);
 			if(yellow_viseur != NULL && sheep_viseur != NULL)
 			{
-				if(distance(yellow_viseur->coord.X,yellow_viseur->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) < dog->R_action )
+				if(distance(yellow_viseur->coord.X,yellow_viseur->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) < distance(dog->coord.X,dog->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y ))
 				{
 					obj = follow_blue_dog(voisins);
 					break;

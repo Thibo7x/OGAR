@@ -295,7 +295,7 @@ void save_our_sheeps(rencontre *voisins)
     {
       if ( (rechercherListeChainee(saved_sheeps, pointer->ID) == NULL))
       {
-        if((distance(CENTER_PEN_X, CENTER_PEN_Y, pointer->coord.X, pointer->coord.Y) > MAP_SIZE_X/10) && (distance(MAP_SIZE_X-CENTER_PEN_X, CENTER_PEN_Y, pointer->coord.X, pointer->coord.Y) > MAP_SIZE_X/10))
+        if(distance(pointer->coord.X,pointer->coord.Y, CENTER_PEN_X,CENTER_PEN_Y) > MAP_SIZE_X/10)
         {
           while(yellow != NULL)
           {
