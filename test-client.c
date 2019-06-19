@@ -23,6 +23,14 @@
 // =====================================================================================================================================
 //	Start of function definition
 // =====================================================================================================================================
+void our_strncpy(unsigned char* source,char* destination,int length)
+{
+	int depth;
+	for (depth = 1 ; depth <= length ; ++depth)
+		{
+			destination[depth-1] = source[depth];
+		}
+}
 
 // Caught on CTRL C
 void sighandler(int sig)
@@ -99,17 +107,20 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 				if(side == 2)
 					{
 						sendCommand(wsi,CODES_ASCII_RIGHT[dog->color],CODES_ASCII_LENGTH_MULTI[dog->color]);
-						strncpy((char*)CODES_ASCII_RIGHT[dog->color],dog->nickname,CODES_ASCII_LENGTH_MULTI[dog->color]);
+						our_strncpy(CODES_ASCII_RIGHT[dog->color],dog->nickname,CODES_ASCII_LENGTH_MULTI[dog->color]);
+					//	printf("[MUTLI ; 2] : %s , %s \n",dog->nickname,(char*)CODES_ASCII_RIGHT[dog->color]);
 					}
 				if(side == 1)
 					{
 						sendCommand(wsi,CODES_ASCII_LEFT[dog->color],CODES_ASCII_LENGTH_MULTI[dog->color]);
-						strncpy((char*)CODES_ASCII_LEFT[dog->color],dog->nickname,CODES_ASCII_LENGTH_MULTI[dog->color]);
+						our_strncpy(CODES_ASCII_LEFT[dog->color],dog->nickname,CODES_ASCII_LENGTH_MULTI[dog->color]);
+					//	printf("[MUTLI ; 1] %s , %s \n",dog->nickname,(char*)CODES_ASCII_LEFT[dog->color]);
 					}
 			}
 			if(mode == 1)
 					sendCommand(wsi,CODES_ASCII_SOLO[dog->color],CODES_ASCII_LENGTH_SOLO[dog->color]);
-					strncpy((char*)CODES_ASCII_SOLO[dog->color],dog->nickname,CODES_ASCII_LENGTH_SOLO[dog->color]);
+					our_strncpy(CODES_ASCII_SOLO[dog->color],dog->nickname,CODES_ASCII_LENGTH_SOLO[dog->color]);
+				//	printf("[SOLO] %s , %s \n",dog->nickname,(char*)CODES_ASCII_SOLO[dog->color]);
 			break;
 
 			case 0x20:
