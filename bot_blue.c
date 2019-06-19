@@ -245,7 +245,7 @@ int first_rank(void)
     {
       ++rank_to_return;
     }
-  printf("[IN] FIRST_RANK : %d\n", rank_to_return);
+  //printf("[IN] FIRST_RANK : %d\n", rank_to_return);
   return rank_to_return%max_rank;
 }
 /* ---------------------------------*/
@@ -293,8 +293,7 @@ void save_our_sheeps(rencontre *voisins)
   {
     if (!memcmp(pointer->couleur,"\xe6\xf0\xf0",3))
     {
-      if ( (rechercherListeChainee(saved_sheeps, pointer->ID) == NULL) /*|| ((rechercherListeChainee(saved_sheeps, pointer->ID) != NULL) && maybe_it_is_chased(voisins,pointer->ID)) */)
-      //if ( (rechercherListeChainee(saved_sheeps, pointer->ID) == NULL) && (rechercherListeChainee(old_saved_sheeps, pointer->ID) == NULL) ) // Pas trouvé dans saved_sheeps ni dans old_saved_sheeps
+      if ( (rechercherListeChainee(saved_sheeps, pointer->ID) == NULL))
       {
         if((distance(CENTER_PEN_X, CENTER_PEN_Y, pointer->coord.X, pointer->coord.Y) > MAP_SIZE_X/10) && (distance(MAP_SIZE_X-CENTER_PEN_X, CENTER_PEN_Y, pointer->coord.X, pointer->coord.Y) > MAP_SIZE_X/10))
         {

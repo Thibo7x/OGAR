@@ -98,17 +98,17 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 				if(side == 2)
 					{
 						sendCommand(wsi,CODES_ASCII_RIGHT[dog->color],CODES_ASCII_LENGTH_MULTI[dog->color]);
-						strncpy((char*)CODES_ASCII_RIGHT[dog->color],dog->nickname,CODES_ASCII_LENGTH_MULTI[dog->color]);
+						strncpy(dog->nickname,(char*)CODES_ASCII_RIGHT[dog->color],CODES_ASCII_LENGTH_MULTI[dog->color]);
 					}
 				if(side == 1)
 					{
 						sendCommand(wsi,CODES_ASCII_LEFT[dog->color],CODES_ASCII_LENGTH_MULTI[dog->color]);
-						strncpy((char*)CODES_ASCII_LEFT[dog->color],dog->nickname,CODES_ASCII_LENGTH_MULTI[dog->color]);
+						strncpy(dog->nickname,(char*)CODES_ASCII_LEFT[dog->color],CODES_ASCII_LENGTH_MULTI[dog->color]);
 					}
 			}
 			if(mode == 1)
 					sendCommand(wsi,CODES_ASCII_SOLO[dog->color],CODES_ASCII_LENGTH_SOLO[dog->color]);
-					strncpy((char*)CODES_ASCII_SOLO[dog->color],dog->nickname,CODES_ASCII_LENGTH_SOLO[dog->color]);
+					strncpy(dog->nickname,(char*)CODES_ASCII_SOLO[dog->color],CODES_ASCII_LENGTH_SOLO[dog->color]);
 			break;
 
 			case 0x20:
