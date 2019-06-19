@@ -1,5 +1,6 @@
 #include <math.h>
 #include "mapFunctions.h"
+#include "entities.h"
 
 /****************************************************************************************************************************/
 int distance(int coordX1, int coordY1, int coordX2, int coordY2)
@@ -18,8 +19,8 @@ coordF direction(int coordX1, int coordY1, int coordX2, int coordY2)
 coord reach_point(coord sheep, coordF direction)
 {
 	coord reach_point;
-	reach_point.X = sheep.X + ceil((direction.X)*(dog->R_action/2));
-	reach_point.Y = sheep.Y + ceil((direction.Y)*(dog->R_action/2));
+	reach_point.X = sheep.X + round((direction.X) * ENTITY_SIZE/4);
+	reach_point.Y = sheep.Y + round((direction.Y) * ENTITY_SIZE/4);
 	return reach_point;
 }
 
@@ -75,16 +76,7 @@ coord circumvention(rencontre *sheep)
 coord bring_back_our_sheeps(rencontre *sheep)
 {
 	coord ret;
-	if(distance(dog->coord.X,dog->coord.Y,sheep->coord.X,sheep->coord.Y) < ( dog->R_action /3) )
-	{
-		ret.X = dog->coord.X;
-		ret.Y = dog->coord.Y;
-	}
-	else
-	{
-		ret.X = sheep->coord.X;
-		ret.Y = sheep->coord.Y;
-	}
+	ret = reach_point(sheep->coord, direction(CENTER_PEN_X, CENTER_PEN_Y, sheep->coord.X, sheep->coord.Y));
 	return ret;
 }
 
