@@ -90,7 +90,6 @@ int writePacket(struct lws *wsi)
 void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 {
 	rencontre *voisins;
-
 		switch (rbuf[0]) {
 			case 0x12:
 			//Q On Command, on répond avec le Nickname
@@ -145,7 +144,7 @@ void rcvFunction(struct lws *wsi, unsigned char* rbuf, size_t len)
 						if (init_rank) {
 							init_rank = 0;
 							old_rank = first_rank();
-							printf("[OUT] OLD RANK : %d\n", old_rank);
+							//printf("[OUT] OLD RANK : %d\n", old_rank);
 							// printf("%d & %d\n", dog->coord.X, dog->coord.Y);
 							// printf("Rank : %d\n", old_rank);
 						}
