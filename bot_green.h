@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <math.h>
 
+unsigned char ID_suivi;
 coord intel_green(rencontre *voisins);
 
 #endif
