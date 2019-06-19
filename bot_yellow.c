@@ -245,7 +245,7 @@ int three_in_the_center(rencontre* voisins)
 	int yellow_counter = 1;
 	while(yellow != NULL)
 	{
-		if(!memcmp(yellow->couleur,"\xff\xff\x0",3)/* && !strcmp(dog->nickname, yellow->nickname)*/)
+		if(!memcmp(yellow->couleur,"\xff\xff\x0",3) && !strcmp(dog->nickname, yellow->nickname))
 		{
 				yellow_counter++;
 		}
