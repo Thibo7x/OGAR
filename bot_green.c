@@ -6,6 +6,13 @@ coord intel_green(rencontre *voisins)
   rencontre *sheep_viseur = voisins;
   rencontre *sheep_vise;
   sheep_viseur = find_voisin_by_color((unsigned char *)"\xe6\xf0\xf0", voisins);
+  if(distance(dog->coord.X,dog->coord.Y,MAP_SIZE_X-CENTER_PEN_X,CENTER_PEN_Y) <= MAP_SIZE_X/10)
+  {
+    dog->mode = 0;
+    obj.X = CENTER_PEN_X;
+    obj.Y = CENTER_PEN_Y;
+    return obj;
+  }
   int radius = 1.4*MAP_SIZE_X/10;
   //printf("MODE %d, (%d,%d)\n",dog->mode, dog->coord.X,dog->coord.Y );
   switch(dog->mode) {

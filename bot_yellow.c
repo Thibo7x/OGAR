@@ -86,7 +86,20 @@ coord intel_yellow(rencontre *voisins)
 			{
 				dog->mode = 0;
 			}
-
+			if(sheep_viseur != NULL)
+			{
+				while(yellow_viseur != NULL)
+				{
+					if(distance(yellow_viseur->coord.X,yellow_viseur->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) < distance(dog->coord.X,dog->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y ) && !strcmp(yellow_viseur->nickname,sheep_viseur->nickname))
+					{
+						dog->mode = 0;
+						obj.X = MAP_SIZE_X/2;
+						obj.Y = MAP_SIZE_Y/2;
+						break;
+					}
+					yellow_viseur = yellow_viseur->next;
+				}
+			}
 			if(iii == 0.25*dog->R_action)
 			{
 				iii = 0;
@@ -96,9 +109,9 @@ coord intel_yellow(rencontre *voisins)
 
 		case 2:
 			//Ordre
-			if(yellow_viseur != NULL && sheep_viseur != NULL /*&& !strcmp(dog->nickname, yellow_viseur->nickname)*/)
+			if((sheep_viseur != NULL) && yellow_viseur != NULL)
 			{
-				if (distance(yellow_viseur->coord.X,yellow_viseur->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) < distance(dog->coord.X,dog->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) )
+				if(distance(yellow_viseur->coord.X,yellow_viseur->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) < distance(dog->coord.X,dog->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y )  && !strcmp(yellow_viseur->nickname,sheep_viseur->nickname))
 				{
 					dog->mode = 0;
 					obj.X = MAP_SIZE_X/2;
@@ -162,12 +175,18 @@ coord intel_yellow(rencontre *voisins)
 		case 4:
 			//Ordre
 			obj = follow_blue_dog(voisins);
-			if(yellow_viseur != NULL && sheep_viseur != NULL)
+			if(sheep_viseur != NULL)
 			{
-				if(distance(yellow_viseur->coord.X,yellow_viseur->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) < distance(dog->coord.X,dog->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y ))
+				while(yellow_viseur != NULL)
 				{
-					obj = follow_blue_dog(voisins);
-					break;
+					if(distance(yellow_viseur->coord.X,yellow_viseur->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) < distance(dog->coord.X,dog->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y )  && !strcmp(yellow_viseur->nickname,sheep_viseur->nickname))
+					{
+						obj.X = MAP_SIZE_X/2;
+						obj.Y = MAP_SIZE_Y/2;
+						dog->mode = 0;
+						break;
+					}
+					yellow_viseur = yellow_viseur->next;
 				}
 			}
 			//Sorties
@@ -263,7 +282,7 @@ int three_in_the_center(rencontre* voisins)
 		}
 		yellow = yellow->next;
 	}
-	if(yellow_counter > 2)
+	if(yellow_counter > 1)
 		return 1;
 	return 0;
 }
