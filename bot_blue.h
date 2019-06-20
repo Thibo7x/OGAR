@@ -24,12 +24,9 @@ int get_min(int* table);
 void get_axes_with_rank(int rank,coord* proposition);
 void generate_new_base(int* order);
 void save_our_sheeps(rencontre *voisins);
-coord turn_to_indicate(rencontre *sheep);
 coord spotting();
 int first_rank(void);
 int count_voisins(rencontre *firstNode);
-int maybe_it_is_chased(rencontre* voisins,int Identifier);
-//work in progress
 
 //tests
 void test_split(void);

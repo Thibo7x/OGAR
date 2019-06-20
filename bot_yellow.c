@@ -90,7 +90,7 @@ coord intel_yellow(rencontre *voisins)
 			{
 				while(yellow_viseur != NULL)
 				{
-					if(distance(yellow_viseur->coord.X,yellow_viseur->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) < distance(dog->coord.X,dog->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y ) && !strcmp(yellow_viseur->nickname,sheep_viseur->nickname))
+					if(distance(yellow_viseur->coord.X,yellow_viseur->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) < distance(dog->coord.X,dog->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y ))
 					{
 						dog->mode = 0;
 						obj.X = MAP_SIZE_X/2;
@@ -111,7 +111,7 @@ coord intel_yellow(rencontre *voisins)
 			//Ordre
 			if((sheep_viseur != NULL) && yellow_viseur != NULL)
 			{
-				if(distance(yellow_viseur->coord.X,yellow_viseur->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) < distance(dog->coord.X,dog->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y )  && !strcmp(yellow_viseur->nickname,sheep_viseur->nickname))
+				if(distance(yellow_viseur->coord.X,yellow_viseur->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) < distance(dog->coord.X,dog->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y ) )
 				{
 					dog->mode = 0;
 					obj.X = MAP_SIZE_X/2;
@@ -179,7 +179,7 @@ coord intel_yellow(rencontre *voisins)
 			{
 				while(yellow_viseur != NULL)
 				{
-					if(distance(yellow_viseur->coord.X,yellow_viseur->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) < distance(dog->coord.X,dog->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y )  && !strcmp(yellow_viseur->nickname,sheep_viseur->nickname))
+					if(distance(yellow_viseur->coord.X,yellow_viseur->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y) < distance(dog->coord.X,dog->coord.Y,sheep_viseur->coord.X,sheep_viseur->coord.Y ) )
 					{
 						obj.X = MAP_SIZE_X/2;
 						obj.Y = MAP_SIZE_Y/2;

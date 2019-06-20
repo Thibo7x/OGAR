@@ -407,14 +407,3 @@ coord intel_blue(rencontre *voisins)
 
 
 }
-
-
-coord turn_to_indicate(rencontre *sheep)
-//Indique les coordonnées à atteindre pour indiquer le mouton
-{
-  coordF sheep_direction = direction(MAP_SIZE_X/2,MAP_SIZE_Y/2,sheep->coord.X,sheep->coord.Y);
-  coord reach_point;
-  reach_point.X = MAP_SIZE_X/2 + ceil((sheep_direction.X)*150);
-	reach_point.Y = MAP_SIZE_Y/2 + ceil((sheep_direction.Y)*150);
-  return reach_point;
-}
