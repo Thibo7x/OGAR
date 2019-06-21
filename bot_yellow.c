@@ -26,7 +26,7 @@ coord intel_yellow(rencontre *voisins)
 	blue_viseur = find_voisin_by_color((unsigned char *)"\x0\x0\xff",voisins);
 	yellow_viseur = find_voisin_by_color((unsigned char *)"\xff\xff\x0",voisins);
 	//printf("MODE : %d\n", dog->mode);
-	if(((distance(dog->coord.X,dog->coord.Y, CENTER_PEN_X,CENTER_PEN_Y) <= MAP_SIZE_X/10 || distance(dog->coord.X,dog->coord.Y, MAP_SIZE_X-CENTER_PEN_X,CENTER_PEN_Y) <= MAP_SIZE_X/10) && mode == 2) || ((distance(dog->coord.X,dog->coord.Y, CENTER_PEN_X,CENTER_PEN_Y) <= MAP_SIZE_X/10) && mode == 1))
+	if(((distance(dog->coord.X,dog->coord.Y, CENTER_PEN_X,CENTER_PEN_Y) <= MAP_SIZE_X/10 || distance(dog->coord.X,dog->coord.Y, MAP_SIZE_X-CENTER_PEN_X,CENTER_PEN_Y) <= MAP_SIZE_X/10) && mode ==2) || ((distance(dog->coord.X,dog->coord.Y, CENTER_PEN_X,CENTER_PEN_Y) <= MAP_SIZE_X/10) && mode ==1))
 	{
 		dog->mode = 0;
 		obj.X = MAP_SIZE_X/2;
